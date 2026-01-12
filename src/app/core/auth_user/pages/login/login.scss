@@ -1,28 +1,13 @@
 /* login.component.scss */
-:root {
-  --base-hue: 222;
-  --bg-saturation: 47%;
-  --bg-lightness: 11%;
-  --accent-hue: 199;
-  --shadow-intensity: 0.5;
-  --glass-blur: 12px;
-
-  --main-bg: hsl(var(--base-hue), var(--bg-saturation), var(--bg-lightness));
-  --accent-color: hsl(var(--accent-hue), 89%, 61%);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-}
 
 .login-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    var(--main-bg) 0%,
-    hsl(var(--base-hue), 30%, 20%) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--main-bg) 0%,
+      hsl(var(--base-hue), 30%, 20%) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -31,11 +16,9 @@
   position: absolute;
   width: 500px;
   height: 500px;
-  background: radial-gradient(
-    circle,
-    var(--accent-color) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      var(--accent-color) 0%,
+      transparent 70%);
   opacity: 0.15;
   filter: blur(80px);
   border-radius: 50%;
@@ -46,6 +29,7 @@
   from {
     transform: translate(-20%, -20%);
   }
+
   to {
     transform: translate(30%, 30%);
   }
@@ -58,12 +42,12 @@
   z-index: 1;
 }
 
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+.card-main {
+  background: var(--panel-bg);
+  backdrop-filter: blur(var(--panel-blur));
+  border: 1px solid var(--panel-border);
   border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, var(--shadow-intensity));
+  box-shadow: var(--card-shadow);
 }
 
 .icon-box {
@@ -80,17 +64,17 @@
 }
 
 .form-control {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  color: white;
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
 }
 
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
 }
 
 .form-control:focus {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--input-focus-bg);
   border-color: var(--accent-color);
   box-shadow: none;
   color: white;
@@ -105,13 +89,13 @@
 
 .btn-custom {
   background: var(--accent-color);
-  color: #0f172a;
+  color: var(--text-contrast);
   font-weight: 600;
   border-radius: 12px;
   padding: 12px;
   border: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px hsla(var(--accent-hue), 80%, 50%, 0.4);
+  box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .btn-custom:hover {
@@ -121,6 +105,6 @@
 }
 
 .error {
-  color: #f87171;
+  color: var(--color-error);
   font-size: 0.9rem;
 }

@@ -3,27 +3,36 @@
    THEME GLOBAL (consolidado y ajustado)
 ====================================================== */
 :root {
-  /* Base */
+  /* Base Colors */
   --base-hue: 222;
   --bg-saturation: 47%;
   --bg-lightness: 11%;
-
-  /* Accent */
   --accent-hue: 199;
 
-  /* Effects */
-  --shadow-intensity: 0.5;
-  --glass-blur: 12px;
-
-  /* Derived */
-  --main-bg: hsl(
-    var(--base-hue),
-    var(--bg-saturation),
-    var(--bg-lightness)
-  );
+  /* Theme Colors */
+  --main-bg: hsl(var(--base-hue), var(--bg-saturation), var(--bg-lightness));
   --accent-color: hsl(var(--accent-hue), 89%, 61%);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-glow: hsla(var(--accent-hue), 80%, 50%, 0.4);
+
+  /* Text Colors */
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-contrast: #0f172a;
+
+  /* Status Colors */
+  --color-error: #f87171;
+  --color-success: #34d399;
+
+  /* Panels & Cards */
+  --panel-bg: rgba(255, 255, 255, 0.05);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --panel-blur: 12px;
+  --shadow-intensity: 0.5;
+  --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, var(--shadow-intensity));
+
+  /* Inputs & Forms */
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-focus-bg: rgba(255, 255, 255, 0.08);
 }
 
 /* ======================================================
@@ -38,13 +47,11 @@ body {
   margin: 0;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(
-    135deg,
-    var(--main-bg) 0%,
-    hsl(var(--base-hue), 30%, 20%) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--main-bg) 0%,
+      hsl(var(--base-hue), 30%, 20%) 100%);
   background-attachment: fixed;
-  color: #ffffff;
+  color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
   transition: background 0.3s ease;
@@ -57,11 +64,9 @@ body {
   position: absolute;
   width: 500px;
   height: 500px;
-  background: radial-gradient(
-    circle,
-    var(--accent-color) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      var(--accent-color) 0%,
+      transparent 70%);
   opacity: 0.15;
   filter: blur(80px);
   border-radius: 50%;
@@ -73,6 +78,7 @@ body {
   from {
     transform: translate(-10%, -10%);
   }
+
   to {
     transform: translate(30%, 20%);
   }
@@ -83,22 +89,21 @@ body {
 ====================================================== */
 .navbar {
   background: hsla(var(--accent-hue), 40%, 10%, 0.7);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--panel-blur));
+  -webkit-backdrop-filter: blur(var(--panel-blur));
   border-bottom: 2px solid var(--accent-color);
 }
 
 /* ======================================================
-   GLASS CARD SYSTEM
+   CARD SYSTEM
 ====================================================== */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+.card-main {
+  background: var(--panel-bg);
+  backdrop-filter: blur(var(--panel-blur));
+  -webkit-backdrop-filter: blur(var(--panel-blur));
+  border: 1px solid var(--panel-border);
   border-radius: 24px;
-  box-shadow: 0 25px 50px -12px
-    rgba(0, 0, 0, var(--shadow-intensity));
+  box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -109,15 +114,14 @@ body {
   }
 }
 
-.glass-card-header {
+.card-header-custom {
   background: rgba(255, 255, 255, 0.08);
   padding: 1.25rem 2rem;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--panel-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #ffffff;
-  font-weight: 600;
+  color: var(--text-main);
 }
 
 /* ======================================================
@@ -131,8 +135,7 @@ body {
   padding: 12px 30px;
   border: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px
-    hsla(var(--accent-hue), 80%, 50%, 0.4);
+  box-shadow: 0 4px 15px var(--accent-glow);
 
   &:hover {
     filter: brightness(1.2);
@@ -153,7 +156,7 @@ body {
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--panel-border);
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -180,7 +183,7 @@ body {
   .nav-link {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--panel-border);
     margin-right: 10px;
     border-radius: 12px;
     padding: 10px 20px;
@@ -208,7 +211,7 @@ body {
     td {
       background: rgba(255, 255, 255, 0.05);
       padding: 1.2rem;
-      border-bottom: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--panel-border);
       vertical-align: middle;
       color: rgba(255, 255, 255, 0.9);
       font-weight: 400;
@@ -247,8 +250,7 @@ body {
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  border: 1px solid
-    hsla(var(--accent-hue), 80%, 50%, 0.2);
+  border: 1px solid hsla(var(--accent-hue), 80%, 50%, 0.2);
 }
 
 /* ======================================================
@@ -309,50 +311,52 @@ body {
 /* ======================================================
    Elementos de pagina internas
 ====================================================== */
-.glass-form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--accent-color);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: block;
+/* ======================================================
+   Form elements
+====================================================== */
+.form-label-custom {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
 }
 
-.glass-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: white;
-    padding: 12px 15px;
-    transition: all 0.3s ease;
+.form-input-custom {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  color: white;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
 }
 
-.glass-input:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 0.25rem hsla(var(--accent-hue), 80%, 50%, 0.25);
-    color: white;
-    outline: none;
+.form-input-custom:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.25rem var(--accent-glow);
+  color: white;
+  outline: none;
 }
 
-.glass-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+.form-input-custom::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* Ajuste para selectores (dropdowns) */
-select.glass-input {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-    appearance: none;
+select.form-input-custom {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  appearance: none;
 }
 
-select.glass-input option {
-    background: #0f172a; /* Fondo sólido para legibilidad de opciones */
-    color: white;
+select.form-input-custom option {
+  background: #0f172a;
+  /* Fondo sólido para legibilidad de opciones */
+  color: white;
 }
-
-

@@ -5,4 +5,4 @@ export const MAIN_ROUTES: Routes = [
         path: '',
         loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent)
     },
-]
+];
