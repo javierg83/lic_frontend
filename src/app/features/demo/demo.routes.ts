@@ -12,6 +12,11 @@ export const DEMO_ROUTES: Routes = [
   },
 
   {
+    path: 'new',
+    loadComponent: () => import('./pages/new/new').then(m => m.New)
+  },
+
+  {
     path: 'show/:id',
     loadComponent: () =>
       import('./pages/show/show')

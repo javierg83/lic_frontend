@@ -1,7 +1,10 @@
 <div class="container">
-  <div class="mb-4">
-    <h3 class="mb-2" style="color: var(--gray-medium); text-transform: uppercase; font-size: 0.8rem;">Listado Demo desde
+  <div class="mb-4 d-flex justify-content-between align-items-center">
+    <h3 class="mb-0" style="color: var(--gray-medium); text-transform: uppercase; font-size: 0.8rem;">Listado Demo desde
       FastAPI</h3>
+    <button class="btn btn-primary btn-sm" routerLink="/demo/new">
+      <i class="bi bi-plus"></i> Nuevo
+    </button>
   </div>
 
   @if (demoService.loading()) {

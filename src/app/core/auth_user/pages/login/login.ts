@@ -20,7 +20,7 @@ export class AuthService {
 
   login(user: string, pass: string): Observable<any> {
     const body = {
-      username: user = 'usuario1',
+      username: user = 'usuario',
       password: pass = 'password'
     };
 

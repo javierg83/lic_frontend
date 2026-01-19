@@ -1,0 +1,80 @@
+<div class="container">
+    <div class="mb-4 d-flex align-items-center">
+        <button class="btn btn-outline-secondary btn-sm me-3" routerLink="/demo/list">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+        <h3 class="mb-0" style="color: var(--gray-medium); text-transform: uppercase; font-size: 0.8rem;">
+            Nuevo Registro Demo
+        </h3>
+    </div>
+
+    <div class="card shadow-sm border-0 bg-glass p-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            @if (newService.message()) {
+            <div class="alert alert-success border-0 px-3 py-2 mb-4" role="alert" style="font-size: 0.9rem;">
+                {{ newService.message() }}
+            </div>
+            }
+
+            @if (newService.error()) {
+            <div class="alert alert-danger border-0 px-3 py-2 mb-4" role="alert" style="font-size: 0.9rem;">
+                {{ newService.error() }}
+            </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">Nombre Completo</label>
+                    <input type="text" class="form-control" formControlName="nombre"
+                        [class.is-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+                        placeholder="Ej. Juan Pérez">
+                    @if (form.get('nombre')?.touched && form.get('nombre')?.invalid) {
+                    <div class="invalid-feedback">El nombre es requerido (mín. 3 caracteres).</div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">Teléfono</label>
+                    <input type="text" class="form-control" formControlName="telefono"
+                        [class.is-invalid]="form.get('telefono')?.touched && form.get('telefono')?.invalid"
+                        placeholder="Ej. +123456789">
+                    @if (form.get('telefono')?.touched && form.get('telefono')?.invalid) {
+                    <div class="invalid-feedback">Ingrese un teléfono válido.</div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" formControlName="fecha_nacimiento"
+                        [class.is-invalid]="form.get('fecha_nacimiento')?.touched && form.get('fecha_nacimiento')?.invalid">
+                    @if (form.get('fecha_nacimiento')?.touched && form.get('fecha_nacimiento')?.invalid) {
+                    <div class="invalid-feedback">La fecha es requerida.</div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">Edad</label>
+                    <input type="number" class="form-control" formControlName="edad"
+                        [class.is-invalid]="form.get('edad')?.touched && form.get('edad')?.invalid"
+                        placeholder="Ej. 25">
+                    @if (form.get('edad')?.touched && form.get('edad')?.invalid) {
+                    <div class="invalid-feedback">Ingrese una edad válida (0-120).</div>
+                    }
+                </div>
+
+                <div class="col-12 mt-4 pt-2 border-top">
+                    <button type="submit" class="btn btn-primary px-4"
+                        [disabled]="newService.loading() || form.invalid">
+                        @if (newService.loading()) {
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Guardando...
+                        } @else {
+                        Guardar Registro
+                        }
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
