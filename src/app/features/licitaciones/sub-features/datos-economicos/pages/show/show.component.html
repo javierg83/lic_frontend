@@ -1,0 +1,33 @@
+<div class="card datos-economicos-card" *ngIf="!loading() && datos()">
+    <div class="card-header">
+        2. Datos Económicos
+    </div>
+    <div class="card-body">
+        <div class="grid-container">
+            <div class="field">
+                <label>Presupuesto máximo</label>
+                <div class="value-box">{{ datos()?.presupuesto_referencial || 'No especificado' }}</div>
+            </div>
+            <div class="field">
+                <label>Moneda de la oferta</label>
+                <div class="value-box">{{ datos()?.moneda || 'No especificado' }}</div>
+            </div>
+            <div class="field">
+                <label>Forma de pago</label>
+                <div class="value-box">{{ datos()?.forma_pago || 'No especificado' }}</div>
+            </div>
+            <div class="field">
+                <label>Plazo de pago</label>
+                <div class="value-box">{{ datos()?.plazo_pago || 'No especificado' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading()" class="loading-inline">
+    Cargando datos económicos...
+</div>
+
+<div *ngIf="error() && !loading()" class="error-inline">
+    {{ error() }}
+</div>

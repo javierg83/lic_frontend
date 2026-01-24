@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { LicitacionService } from '../../services/licitacion.service';
 
 @Component({
@@ -76,13 +76,13 @@ import { LicitacionService } from '../../services/licitacion.service';
 })
 export class LicitacionListComponent implements OnInit {
   public licitacionService = inject(LicitacionService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.licitacionService.getLicitaciones().subscribe();
   }
 
   onShow(id: string): void {
-    console.log('Show licitacion:', id);
-    // Future implementation
+    this.router.navigate(['/licitaciones', id]);
   }
 }

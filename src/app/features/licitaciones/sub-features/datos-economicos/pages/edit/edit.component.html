@@ -1,0 +1,46 @@
+<div class="edit-card" *ngIf="!loading()">
+    <div class="header">
+        <h3>Editar Datos Económicos</h3>
+        <p class="subtitle">Actualice la información financiera de la licitación #{{ licitacionId() }}</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #editForm="ngForm">
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="presupuesto">Presupuesto máximo</label>
+                <input type="number" id="presupuesto" name="presupuesto"
+                    [(ngModel)]="formData().presupuesto_referencial" required>
+            </div>
+
+            <div class="form-field">
+                <label for="moneda">Moneda de la oferta</label>
+                <select id="moneda" name="moneda" [(ngModel)]="formData().moneda" required>
+                    <option value="CLP">CLP - Peso Chileno</option>
+                    <option value="USD">USD - Dólar Americano</option>
+                    <option value="EUR">EUR - Euro</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="forma_pago">Forma de pago</label>
+                <input type="text" id="forma_pago" name="forma_pago" [(ngModel)]="formData().forma_pago" required>
+            </div>
+
+            <div class="form-field">
+                <label for="plazo_pago">Plazo de pago</label>
+                <input type="text" id="plazo_pago" name="plazo_pago" [(ngModel)]="formData().plazo_pago" required>
+            </div>
+        </div>
+
+        <div class="error-msg" *ngIf="error()">{{ error() }}</div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" [routerLink]="['../']">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="saving() || !editForm.form.valid">
+                {{ saving() ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+        </div>
+    </form>
+</div>
+
+<div *ngIf="loading()" class="loading-state">Cargando formulario...</div>

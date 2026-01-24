@@ -27,3 +27,15 @@ export interface LicitacionListItem {
 export interface LicitacionListResponse {
     licitaciones: LicitacionListItem[];
 }
+
+export interface LicitacionShowResponse {
+    id: string;
+    codigo: string;
+    titulo: string;
+    organismo: string;
+    unidad_solicitante: string;
+    descripcion: string;
+    estado: string;
+    fecha_carga: string;
+}
+

@@ -1,0 +1,39 @@
+<div class="card datos-economicos-card" *ngIf="!loading() && datos()">
+    <div class="card-header" *ngIf="showTitle">
+        <div class="header-content">
+            <span>2. Datos Económicos</span>
+            <a *ngIf="showEditButton" class="tag-edit" [routerLink]="['datos-economicos/editar']">
+                Editar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="grid-container">
+            <div class="field">
+                <label>Presupuesto máximo</label>
+                <div class="value-box">{{ datos()?.presupuesto_referencial || 'No especificado' | number }}</div>
+            </div>
+            <div class="field">
+                <label>Moneda de la oferta</label>
+                <div class="value-box">{{ datos()?.moneda || 'No especificado' }}</div>
+            </div>
+            <div class="field">
+                <label>Forma de pago</label>
+                <div class="value-box">{{ datos()?.forma_pago || 'No especificado' }}</div>
+            </div>
+            <div class="field">
+                <label>Plazo de pago</label>
+                <div class="value-box">{{ datos()?.plazo_pago || 'No especificado' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading()" class="status-msg loading-inline">
+    <div class="spinner"></div>
+    Cargando datos económicos...
+</div>
+
+<div *ngIf="error() && !loading()" class="status-msg error-inline">
+    {{ error() }}
+</div>

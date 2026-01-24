@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse, LicitacionNewResponse, LicitacionListResponse } from '../models/licitacion.model';
+import { ApiResponse, LicitacionNewResponse, LicitacionListResponse, LicitacionShowResponse } from '../models/licitacion.model';
 import { map, catchError, of, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -39,6 +39,15 @@ export class LicitacionService {
             })
         );
     }
+
+    getLicitacion(id: string): Observable<ApiResponse<LicitacionShowResponse>> {
+        return this.http.get<ApiResponse<LicitacionShowResponse>>(`${this.API_URL}/${id}`).pipe(
+            catchError(err => {
+                return of({ success: false, message: 'Error al obtener los detalles de la licitación', data: null as any });
+            })
+        );
+    }
+
 
     createLicitacion(nombre: string, files: File[]) {
         this._loading.set(true);

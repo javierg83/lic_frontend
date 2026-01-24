@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="header-section">
+        <h1>Detalle de Licitación</h1>
+        <div class="status-info" *ngIf="licitacion()">
+            <strong>Estado:</strong> {{ licitacion()?.estado }}
+        </div>
+    </div>
+
+    <div *ngIf="loading()" class="loading-state">
+        Cargando detalles de la licitación...
+    </div>
+
+    <div *ngIf="error()" class="error-state">
+        {{ error() }}
+        <button class="btn-back" routerLink="/licitaciones/list">Volver al listado</button>
+    </div>
+
+    <div class="card" *ngIf="!loading() && licitacion()">
+        <div class="card-header">
+            1. Cabecera de la Licitación
+        </div>
+        <div class="card-body">
+            <div class="grid-container">
+                <div class="field">
+                    <label>ID Licitación / Código</label>
+                    <div class="value">{{ licitacion()?.codigo || 'No asignado' }}</div>
+                </div>
+                <div class="field">
+                    <label>Título</label>
+                    <div class="value">{{ licitacion()?.titulo }}</div>
+                </div>
+                <div class="field">
+                    <label>Organismo</label>
+                    <div class="value">{{ licitacion()?.organismo }}</div>
+                </div>
+                <div class="field">
+                    <label>Unidad solicitante</label>
+                    <div class="value">{{ licitacion()?.unidad_solicitante || 'No disponible' }}</div>
+                </div>
+            </div>
+
+            <div class="description-section">
+                <label>Descripción</label>
+                <div class="description-box">
+                    {{ licitacion()?.descripcion || 'Sin descripción disponible.' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-datos-economicos-card [licitacionId]="licitacion()!.id"> </app-datos-economicos-card>
+
+    <div class="actions" *ngIf="!loading()">
+        <button class="btn-back" routerLink="/licitaciones/list">Volver al listado</button>
+    </div>
+</div>
