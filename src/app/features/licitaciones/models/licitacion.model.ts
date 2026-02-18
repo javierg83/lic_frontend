@@ -36,6 +36,7 @@ export interface LicitacionShowResponse {
     unidad_solicitante: string;
     descripcion: string;
     estado: string;
+    estado_publicacion?: string;
     fecha_carga: string;
 }
 

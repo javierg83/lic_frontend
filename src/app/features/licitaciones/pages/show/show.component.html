@@ -2,7 +2,8 @@
     <div class="header-section">
         <h1>Detalle de Licitación</h1>
         <div class="status-info" *ngIf="licitacion()">
-            <strong>Estado:</strong> {{ licitacion()?.estado }}
+            <div><strong>Estado Proceso:</strong> {{ licitacion()?.estado }}</div>
+            <div *ngIf="licitacion()?.estado_publicacion"><strong>Estado Publicación:</strong> {{ licitacion()?.estado_publicacion }}</div>
         </div>
     </div>
 
