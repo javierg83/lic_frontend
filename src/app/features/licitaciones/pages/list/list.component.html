@@ -18,6 +18,7 @@
         <thead>
             <tr>
                 <th>Nombre Licitación</th>
+                <th>Presupuesto</th>
                 <th>Estado</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
@@ -26,6 +27,14 @@
         <tbody>
             <tr *ngFor="let item of licitacionService.list()?.licitaciones">
                 <td>{{ item.nombre }}</td>
+                <td>
+                    <ng-container *ngIf="item.presupuesto; else noPresupuesto">
+                        {{ item.moneda ? item.moneda + ' ' : '' }}{{ item.presupuesto | number:'1.2-2' }}
+                    </ng-container>
+                    <ng-template #noPresupuesto>
+                        <span class="text-muted">No especificado</span>
+                    </ng-template>
+                </td>
                 <td>
                     <span class="status-badge">{{ item.estado }}</span>
                 </td>

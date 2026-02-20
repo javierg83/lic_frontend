@@ -22,6 +22,8 @@ export interface LicitacionListItem {
     nombre: string;
     estado: string;
     fecha_carga: string;
+    presupuesto?: number;
+    moneda?: string;
 }
 
 export interface LicitacionListResponse {
