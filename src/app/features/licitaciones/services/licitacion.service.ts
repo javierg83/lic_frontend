@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse, LicitacionNewResponse, LicitacionListResponse, LicitacionShowResponse } from '../models/licitacion.model';
+import { ApiResponse, LicitacionNewResponse, LicitacionListResponse, LicitacionShowResponse, AuditoriaListResponse } from '../models/licitacion.model';
 import { map, catchError, of, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -48,6 +48,17 @@ export class LicitacionService {
         );
     }
 
+    getAuditoria(id: string): Observable<AuditoriaListResponse> {
+        // Retorna el data directamente según el schema generado en FastAPI que no usa el wrapper `ApiResponse` estándar por ahora,
+        // (FastAPI schema es AuditoriaListResponse directamente a diferencia de las demás respuestas legacy)
+        // Adjust si configuramos ApiResponse en el backend Controller.
+        return this.http.get<AuditoriaListResponse>(`${this.API_URL}/${id}/auditoria`).pipe(
+            catchError(err => {
+                console.error("Error fetching auditoria", err);
+                return of({ data: [] });
+            })
+        );
+    }
 
     createLicitacion(nombre: string, files: File[]) {
         this._loading.set(true);

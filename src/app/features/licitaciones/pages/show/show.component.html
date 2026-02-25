@@ -3,7 +3,8 @@
         <h1>Detalle de Licitación</h1>
         <div class="status-info" *ngIf="licitacion()">
             <div><strong>Estado Proceso:</strong> {{ licitacion()?.estado }}</div>
-            <div *ngIf="licitacion()?.estado_publicacion"><strong>Estado Publicación:</strong> {{ licitacion()?.estado_publicacion }}</div>
+            <div *ngIf="licitacion()?.estado_publicacion"><strong>Estado Publicación:</strong> {{
+                licitacion()?.estado_publicacion }}</div>
         </div>
     </div>
 
@@ -79,6 +80,64 @@
         <app-datos-economicos-card [licitacionId]="licitacion()!.id.toString()"></app-datos-economicos-card>
 
         <app-items-show [licitacionId]="licitacion()!.id.toString()"></app-items-show>
+
+        <app-items-homologados [licitacionId]="licitacion()!.id.toString()"></app-items-homologados>
+
+        <!-- Sección de Auditoría Semántica -->
+        <div class="card mt-20">
+            <div class="card-header accordion-header" (click)="toggleAuditoria()"
+                style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <div class="header-content">
+                    <span>Auditoría de Extracción Semántica (LLM Reasoning)</span>
+                </div>
+                <div class="expand-icon">
+                    <span *ngIf="!isAuditoriaOpen()">▼ Mostrar</span>
+                    <span *ngIf="isAuditoriaOpen()">▲ Ocultar</span>
+                </div>
+            </div>
+            <div class="card-body" *ngIf="isAuditoriaOpen()">
+                <div *ngIf="auditoria().length === 0" class="no-data">
+                    No hay registros de auditoría disponibles para esta licitación.
+                </div>
+
+                <div *ngIf="auditoria().length > 0" class="audit-table-container">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Campo</th>
+                                <th>Valor Extraído</th>
+                                <th>Razonamiento LLM</th>
+                                <th>Evidencias (Fuentes)</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of auditoria()">
+                                <td><span class="badge">{{ item.concepto }}</span></td>
+                                <td><strong>{{ item.campo_extraido }}</strong></td>
+                                <td class="value-cell" [title]="item.valor_extraido">{{ item.valor_extraido || 'N/A' }}
+                                </td>
+                                <td class="reasoning-cell" [title]="item.razonamiento">{{ item.razonamiento || 'Sin
+                                    justificación' }}</td>
+                                <td>
+                                    <ul class="sources-list"
+                                        *ngIf="item.lista_fuentes && item.lista_fuentes.length > 0">
+                                        <li *ngFor="let fuente of item.lista_fuentes">
+                                            Doc: {{ fuente.documento || 'ND' }} <span *ngIf="fuente.pagina">- Pág: {{
+                                                fuente.pagina }}</span>
+                                        </li>
+                                    </ul>
+                                    <span *ngIf="!item.lista_fuentes || item.lista_fuentes.length === 0"
+                                        class="no-sources">No indica fuentes</span>
+                                </td>
+                                <td class="date-cell">{{ item.creado_en | date:'short' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="actions" *ngIf="!loading()">

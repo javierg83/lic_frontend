@@ -42,3 +42,25 @@ export interface LicitacionShowResponse {
     fecha_carga: string;
 }
 
+export interface FuenteDoc {
+    documento?: string;
+    pagina?: number;
+    parrafo?: string;
+    redis_key?: string;
+}
+
+export interface AuditoriaItem {
+    id: string;
+    licitacion_id: string;
+    semantic_run_id?: string;
+    concepto: string;
+    campo_extraido: string;
+    valor_extraido?: string;
+    razonamiento?: string;
+    lista_fuentes?: FuenteDoc[];
+    creado_en: string;
+}
+
+export interface AuditoriaListResponse {
+    data: AuditoriaItem[];
+}

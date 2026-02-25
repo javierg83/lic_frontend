@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LicitacionService } from '../../services/licitacion.service';
-import { LicitacionShowResponse } from '../../models/licitacion.model';
+import { LicitacionShowResponse, AuditoriaItem } from '../../models/licitacion.model';
 import { DatosEconomicosCardComponent } from '../../sub-features/datos-economicos/components/datos-economicos-card/datos-economicos-card.component';
 import { ItemsShowComponent } from '../../sub-features/items/pages/show/show.component';
+import { ItemsHomologadosComponent } from '../../components/items-homologados/items-homologados.component';
 
 @Component({
     selector: 'app-licitacion-show',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent],
+    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent, ItemsHomologadosComponent],
     templateUrl: './show.component.html',
     styleUrls: ['./show.component.css']
 })
@@ -19,6 +20,7 @@ export class LicitacionShowComponent implements OnInit {
     private licitacionService = inject(LicitacionService);
 
     public licitacion = signal<LicitacionShowResponse | null>(null);
+    public auditoria = signal<AuditoriaItem[]>([]);
     public loading = signal<boolean>(true);
     public error = signal<string | null>(null);
 
@@ -30,10 +32,14 @@ export class LicitacionShowComponent implements OnInit {
     // Notifications
     public notification = signal<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
 
+    // UI state
+    public isAuditoriaOpen = signal<boolean>(false);
+
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.fetchLicitacion(id);
+            this.fetchAuditoria(id);
         } else {
             this.error.set('ID de licitación no proporcionado');
             this.loading.set(false);
@@ -56,6 +62,23 @@ export class LicitacionShowComponent implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    fetchAuditoria(id: string): void {
+        this.licitacionService.getAuditoria(id).subscribe({
+            next: (res) => {
+                if (res && res.data) {
+                    this.auditoria.set(res.data);
+                }
+            },
+            error: (err) => {
+                console.error('Error cargando auditoría:', err);
+            }
+        });
+    }
+
+    toggleAuditoria(): void {
+        this.isAuditoriaOpen.update(val => !val);
     }
 
     startEdit(): void {
