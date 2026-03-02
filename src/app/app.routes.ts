@@ -35,6 +35,12 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadChildren: () => import('./features/licitaciones/licitaciones.routes').then(m => m.LICITACIONES_ROUTES)
   },
+  {
+    path: 'dashboard',
+    component: MainLayoutComponent,
+    canMatch: [authGuard],
+    loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+  },
 
   { path: '**', redirectTo: 'login' }
 
