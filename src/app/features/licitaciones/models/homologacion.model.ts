@@ -19,5 +19,6 @@ export interface ResultadoHomologacion {
     nombre_item: string;
     cantidad: number;
     descripcion_detectada: string;
+    candidato_seleccionado_id?: string;
     candidatos: CandidatoHomologacion[];
 }

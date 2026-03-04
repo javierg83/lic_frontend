@@ -19,6 +19,9 @@
             <tr>
                 <th>Nombre Licitación</th>
                 <th>Presupuesto</th>
+                <th>Ítems</th>
+                <th>Homologados</th>
+                <th>% Homol.</th>
                 <th>Estado</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
@@ -35,6 +38,9 @@
                         <span class="text-muted">No especificado</span>
                     </ng-template>
                 </td>
+                <td>{{ item.cantidad_items || 0 }}</td>
+                <td>{{ item.cantidad_homologados || 0 }}</td>
+                <td>{{ item.porcentaje_homologacion | number:'1.0-1' }}%</td>
                 <td>
                     <span class="status-badge">{{ item.estado }}</span>
                 </td>

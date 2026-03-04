@@ -1,6 +1,10 @@
 <div class="items-container">
-    <div class="items-header">
-        4.1 Ítems Homologados
+    <div class="items-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>4.1 Ítems Homologados</span>
+        <button class="btn-primary" (click)="saveSelections()" [disabled]="loading() || saving()"
+            *ngIf="homologaciones().length > 0">
+            {{ saving() ? 'Guardando...' : 'Guardar Selecciones' }}
+        </button>
     </div>
 
     <div class="items-card">
@@ -53,8 +57,10 @@
 
                                     <!-- Columnas del Candidato Homologado -->
                                     <td class="text-center">
-                                        <input type="checkbox"
-                                            [name]="'candidato_' + item.homologacion_id + '_' + candidato.ranking">
+                                        <input type="radio" [name]="'candidato_' + item.homologacion_id"
+                                            [value]="candidato.producto.codigo"
+                                            [checked]="item.candidato_seleccionado_id === candidato.producto.codigo"
+                                            (change)="onSelectCandidato(itemIndex, candidato.producto.codigo)">
                                     </td>
                                     <td class="text-center"><span class="badge"
                                             [class.badge-primary]="candidato.ranking === 1">{{ candidato.ranking

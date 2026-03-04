@@ -24,6 +24,9 @@ export interface LicitacionListItem {
     fecha_carga: string;
     presupuesto?: number;
     moneda?: string;
+    cantidad_items?: number;
+    cantidad_homologados?: number;
+    porcentaje_homologacion?: number;
 }
 
 export interface LicitacionListResponse {
