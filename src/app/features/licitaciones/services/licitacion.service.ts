@@ -49,13 +49,19 @@ export class LicitacionService {
     }
 
     getAuditoria(id: string): Observable<AuditoriaListResponse> {
-        // Retorna el data directamente según el schema generado en FastAPI que no usa el wrapper `ApiResponse` estándar por ahora,
-        // (FastAPI schema es AuditoriaListResponse directamente a diferencia de las demás respuestas legacy)
-        // Adjust si configuramos ApiResponse en el backend Controller.
         return this.http.get<AuditoriaListResponse>(`${this.API_URL}/${id}/auditoria`).pipe(
             catchError(err => {
                 console.error("Error fetching auditoria", err);
                 return of({ data: [] });
+            })
+        );
+    }
+
+    getAiMetrics(id: string): Observable<ApiResponse<import('../models/ai-metrics.model').AIMetricsResponse>> {
+        return this.http.get<ApiResponse<import('../models/ai-metrics.model').AIMetricsResponse>>(`${this.API_URL}/${id}/ai-metrics`).pipe(
+            catchError(err => {
+                console.error("Error fetching AI metrics", err);
+                return of({ success: false, message: 'Error al obtener métricas', data: null as any });
             })
         );
     }

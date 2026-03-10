@@ -17,6 +17,7 @@
     <table *ngIf="!licitacionService.loading() && licitacionService.list()">
         <thead>
             <tr>
+                <th>Tipo Licitación</th>
                 <th>Nombre Licitación</th>
                 <th>Presupuesto</th>
                 <th>Ítems</th>
@@ -29,6 +30,9 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of licitacionService.list()?.licitaciones">
+                <td><span class="badge badge-info" [title]="item.tipo_licitacion">{{ item.tipo_licitacion ===
+                        'COMPRA_AGIL' ? 'Compra Ágil' : (item.tipo_licitacion ? 'Licitación' : 'Licitación') }}</span>
+                </td>
                 <td>{{ item.nombre }}</td>
                 <td>
                     <ng-container *ngIf="item.presupuesto; else noPresupuesto">

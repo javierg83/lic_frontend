@@ -21,6 +21,7 @@ export class LicitacionShowComponent implements OnInit {
 
     public licitacion = signal<LicitacionShowResponse | null>(null);
     public auditoria = signal<AuditoriaItem[]>([]);
+    public aiMetrics = signal<import('../../models/ai-metrics.model').AIMetricsResponse | null>(null);
     public loading = signal<boolean>(true);
     public error = signal<string | null>(null);
 
@@ -34,12 +35,14 @@ export class LicitacionShowComponent implements OnInit {
 
     // UI state
     public isAuditoriaOpen = signal<boolean>(false);
+    public isAiMetricsOpen = signal<boolean>(false);
 
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.fetchLicitacion(id);
             this.fetchAuditoria(id);
+            this.fetchAiMetrics(id);
         } else {
             this.error.set('ID de licitación no proporcionado');
             this.loading.set(false);
@@ -77,8 +80,25 @@ export class LicitacionShowComponent implements OnInit {
         });
     }
 
+    fetchAiMetrics(id: string): void {
+        this.licitacionService.getAiMetrics(id).subscribe({
+            next: (res) => {
+                if (res.success && res.data) {
+                    this.aiMetrics.set(res.data);
+                }
+            },
+            error: (err) => {
+                console.error('Error cargando métricas de IA:', err);
+            }
+        });
+    }
+
     toggleAuditoria(): void {
         this.isAuditoriaOpen.update(val => !val);
+    }
+
+    toggleAiMetrics(): void {
+        this.isAiMetricsOpen.update(val => !val);
     }
 
     startEdit(): void {

@@ -27,6 +27,7 @@ export interface LicitacionListItem {
     cantidad_items?: number;
     cantidad_homologados?: number;
     porcentaje_homologacion?: number;
+    tipo_licitacion?: string;
 }
 
 export interface LicitacionListResponse {
@@ -42,6 +43,7 @@ export interface LicitacionShowResponse {
     descripcion: string;
     estado: string;
     estado_publicacion?: string;
+    tipo_licitacion?: string;
     fecha_carga: string;
 }
 
