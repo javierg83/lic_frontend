@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, Input } from '@angular/core';
+import { Component, OnInit, inject, signal, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ItemsService } from '../../services/items.service';
@@ -19,6 +19,20 @@ export class ItemsShowComponent implements OnInit {
     public items = signal<ItemLicitacion[]>([]);
     public loading = signal<boolean>(true);
     public error = signal<string | null>(null);
+
+    // Pagination
+    public pageSize = signal<number>(20);
+    public currentPage = signal<number>(1);
+
+    public totalPages = computed(() => {
+        return Math.ceil(this.items().length / this.pageSize()) || 1;
+    });
+
+    public paginatedItems = computed(() => {
+        const start = (this.currentPage() - 1) * this.pageSize();
+        const end = start + Number(this.pageSize());
+        return this.items().slice(start, end);
+    });
 
     // Editing state
     public editingId = signal<string | null>(null);
@@ -95,5 +109,17 @@ export class ItemsShowComponent implements OnInit {
         setTimeout(() => {
             this.notification.set({ message: '', type: null });
         }, 3000);
+    }
+
+    changePage(page: number): void {
+        if (page >= 1 && page <= this.totalPages()) {
+            this.currentPage.set(page);
+        }
+    }
+
+    onChangePageSize(event: Event): void {
+        const target = event.target as HTMLSelectElement;
+        this.pageSize.set(Number(target.value));
+        this.currentPage.set(1);
     }
 }

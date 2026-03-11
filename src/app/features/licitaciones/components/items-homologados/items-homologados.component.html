@@ -43,12 +43,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <ng-container *ngFor="let item of homologaciones(); let itemIndex = index">
+                        <ng-container *ngFor="let item of paginatedHomologaciones(); let itemIndex = index">
                             <ng-container *ngIf="item.candidatos && item.candidatos.length > 0; else noCandidatos">
                                 <tr *ngFor="let candidato of item.candidatos; let isFirst = first">
                                     <!-- Columnas del Ítem Solicitado (con rowspan para agrupar) -->
                                     <!-- ngIf applies when inside the loop to determine grouping layout -->
-                                    <td *ngIf="isFirst" [attr.rowspan]="item.candidatos.length">{{ itemIndex + 1 }}</td>
+                                    <td *ngIf="isFirst" [attr.rowspan]="item.candidatos.length">{{ (currentPage() - 1) *
+                                        pageSize() + itemIndex + 1 }}</td>
                                     <td *ngIf="isFirst" [attr.rowspan]="item.candidatos.length"><strong>{{
                                             item.nombre_item ||
                                             item.item_key || '' }}</strong></td>
@@ -89,7 +90,7 @@
                             <ng-template #noCandidatos>
                                 <tr class="no-match-row">
                                     <!-- Ítem solicitado -->
-                                    <td>{{ itemIndex + 1 }}</td>
+                                    <td>{{ (currentPage() - 1) * pageSize() + itemIndex + 1 }}</td>
                                     <td><strong>{{ item.nombre_item || item.item_key || '' }}</strong></td>
                                     <td class="text-center">{{ item.cantidad || '' }}</td>
                                     <!-- Sin candidatos span -->
@@ -101,6 +102,30 @@
                         </ng-container>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="pagination-footer mt-15"
+                style="margin-top: 15px; padding: 12px 20px; border-top: 1px solid #e5e7eb; background-color: #f9fafb; display: flex; justify-content: flex-end; align-items: center; color: #495057; gap: 15px; font-size: 0.85rem;">
+                <div class="items-per-page" style="display: flex; align-items: center; gap: 10px;">
+                    Ítems por página:
+                    <select (change)="onChangePageSize($event)" [value]="pageSize()"
+                        style="padding: 5px 10px; border: 1px solid #ced4da; border-radius: 4px; background-color: #fff; color: #495057;">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="pagination-controls" style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn-pagination" (click)="changePage(currentPage() - 1)"
+                        [disabled]="currentPage() === 1" [ngStyle]="{'opacity': currentPage() === 1 ? '0.5' : '1'}"
+                        style="padding: 4px 12px; background-color: #fff; border: 1px solid #d1d5db; border-radius: 4px; color: #495057; cursor: pointer;">Anterior</button>
+                    <span style="font-weight: 500;">Página {{ currentPage() }} de {{ totalPages() }}</span>
+                    <button class="btn-pagination" (click)="changePage(currentPage() + 1)"
+                        [disabled]="currentPage() === totalPages()"
+                        [ngStyle]="{'opacity': currentPage() === totalPages() ? '0.5' : '1'}"
+                        style="padding: 4px 12px; background-color: #fff; border: 1px solid #d1d5db; border-radius: 4px; color: #495057; cursor: pointer;">Siguiente</button>
+                </div>
             </div>
 
             <ng-template #emptyState>

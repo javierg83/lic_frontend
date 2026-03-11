@@ -1,4 +1,4 @@
-import { Component, Input, signal, effect, inject } from '@angular/core';
+import { Component, Input, signal, effect, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ResultadoHomologacion } from '../../models/homologacion.model';
@@ -17,6 +17,20 @@ export class ItemsHomologadosComponent {
   loading = signal<boolean>(false);
   saving = signal<boolean>(false);
   error = signal<string | null>(null);
+
+  // Pagination
+  public pageSize = signal<number>(20);
+  public currentPage = signal<number>(1);
+
+  public totalPages = computed(() => {
+    return Math.ceil(this.homologaciones().length / this.pageSize()) || 1;
+  });
+
+  public paginatedHomologaciones = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + Number(this.pageSize());
+    return this.homologaciones().slice(start, end);
+  });
 
   private http = inject(HttpClient);
 
@@ -85,6 +99,18 @@ export class ItemsHomologadosComponent {
           this.saving.set(false);
         }
       });
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+
+  onChangePageSize(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize.set(Number(target.value));
+    this.currentPage.set(1);
   }
 }
 

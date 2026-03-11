@@ -31,8 +31,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of items(); let i = index">
-                        <td class="col-num">{{ i + 1 }}</td>
+                    <tr *ngFor="let item of paginatedItems(); let i = index">
+                        <td class="col-num">{{ (currentPage() - 1) * pageSize() + i + 1 }}</td>
 
                         <!-- nombre_item -->
                         <td class="col-producto">
@@ -88,14 +88,17 @@
             <div class="pagination-footer">
                 <div class="items-per-page">
                     Ítems por página:
-                    <select>
-                        <option>20</option>
+                    <select (change)="onChangePageSize($event)" [value]="pageSize()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
                 <div class="pagination-controls">
-                    <button class="btn-pagination">Anterior</button>
-                    <span>Página 1 de 1</span>
-                    <button class="btn-pagination">Siguiente</button>
+                    <button class="btn-pagination" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+                    <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
+                    <button class="btn-pagination" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
                 </div>
             </div>
         </div>
