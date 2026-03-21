@@ -16,6 +16,10 @@ export class LicitacionNewComponent {
     selectedFiles = signal<File[]>([]);
     isDragOver = signal<boolean>(false);
 
+    // Variables para Compra Ágil
+    activeTab = signal<'manual' | 'agil'>('manual');
+    importUrlUrlOrCode = signal<string>('');
+
     loading = this.licitacionService.loading;
     response = this.licitacionService.response;
     error = this.licitacionService.error;
@@ -66,6 +70,11 @@ export class LicitacionNewComponent {
     onSubmit() {
         if (!this.nombre() || this.selectedFiles().length === 0) return;
         this.licitacionService.createLicitacion(this.nombre(), this.selectedFiles());
+    }
+
+    onSubmitImport() {
+        if (!this.importUrlUrlOrCode().trim()) return;
+        this.licitacionService.importCompraAgil(this.importUrlUrlOrCode());
     }
 
     getFileError(fileName: string): string | undefined {

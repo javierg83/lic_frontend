@@ -3,60 +3,78 @@
     <h3>Crear Nueva Licitación</h3>
   </div>
 
-  <div class="form-group">
-    <label for="nombre">Nombre de la Licitación</label>
-    <input 
-      type="text" 
-      id="nombre" 
-      [(ngModel)]="nombre" 
-      placeholder="Ej: Licitación de Insumos 2026"
-      class="form-input-custom"
+  <div class="tabs-container"
+    style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem;">
+    <button class="btn-custom" [style.background]="activeTab() === 'manual' ? '#007bff' : 'transparent'"
+      [style.color]="activeTab() === 'manual' ? 'white' : '#333'" (click)="activeTab.set('manual')"
       [disabled]="loading()">
-  </div>
-
-  <div 
-    class="drop-zone" 
-    [class.drag-over]="isDragOver()" 
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)"
-    (drop)="onDrop($event)"
-    (click)="fileInput.click()">
-    
-    <div class="icon">📁</div>
-    <p>Arrastra tus archivos aquí o haz clic para seleccionar</p>
-    <input 
-      #fileInput 
-      type="file" 
-      multiple 
-      (change)="onFileSelected($event)" 
-      style="display: none;">
-  </div>
-
-  <div class="file-list" *ngIf="selectedFiles().length > 0">
-    <div 
-      class="file-item" 
-      *ngFor="let file of selectedFiles(); let i = index"
-      [class.invalid]="getFileError(file.name)">
-      
-      <div class="file-info">
-        <span class="file-name">{{ file.name }}</span>
-        <span class="file-error" *ngIf="getFileError(file.name)">
-          {{ getFileError(file.name) }}
-        </span>
-      </div>
-
-      <button class="btn-remove" (click)="removeFile(i)" *ngIf="!loading()">✕</button>
-    </div>
-  </div>
-
-  <div style="margin-top: 2rem;">
-    <button 
-      class="btn-custom btn-success" 
-      (click)="onSubmit()" 
-      [disabled]="loading() || !nombre() || selectedFiles().length === 0">
-      {{ loading() ? 'Procesando...' : 'Crear Licitación' }}
+      Carga Manual Tradicional
+    </button>
+    <button class="btn-custom" [style.background]="activeTab() === 'agil' ? '#007bff' : 'transparent'"
+      [style.color]="activeTab() === 'agil' ? 'white' : '#333'" (click)="activeTab.set('agil')" [disabled]="loading()">
+      Importar Compra Ágil 🚀
     </button>
   </div>
+
+  <!-- SECCIÓN MANUAL -->
+  <ng-container *ngIf="activeTab() === 'manual'">
+    <div class="form-group">
+      <label for="nombre">Nombre de la Licitación</label>
+      <input type="text" id="nombre" [(ngModel)]="nombre" placeholder="Ej: Licitación de Insumos 2026"
+        class="form-input-custom" [disabled]="loading()">
+    </div>
+
+    <div class="drop-zone" [class.drag-over]="isDragOver()" (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+
+      <div class="icon">📁</div>
+      <p>Arrastra tus archivos aquí o haz clic para seleccionar</p>
+      <input #fileInput type="file" multiple (change)="onFileSelected($event)" style="display: none;" accept=".pdf,.doc,.docx,.txt,.xlsx,.xls,.csv,.json">
+    </div>
+
+    <div class="file-list" *ngIf="selectedFiles().length > 0">
+      <div class="file-item" *ngFor="let file of selectedFiles(); let i = index"
+        [class.invalid]="getFileError(file.name)">
+
+        <div class="file-info">
+          <span class="file-name">{{ file.name }}</span>
+          <span class="file-error" *ngIf="getFileError(file.name)">
+            {{ getFileError(file.name) }}
+          </span>
+        </div>
+
+        <button class="btn-remove" (click)="removeFile(i)" *ngIf="!loading()">✕</button>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <button class="btn-custom btn-success" (click)="onSubmit()"
+        [disabled]="loading() || !nombre() || selectedFiles().length === 0">
+        {{ loading() ? 'Procesando Documentos...' : 'Crear Licitación' }}
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- SECCIÓN COMPRA ÁGIL -->
+  <ng-container *ngIf="activeTab() === 'agil'">
+    <div class="form-group">
+      <label for="url_agil">Código o URL de la Compra Ágil</label>
+      <input type="text" id="url_agil" [(ngModel)]="importUrlUrlOrCode" placeholder="Ej: 1738-77-COT26 ó https://..."
+        class="form-input-custom" [disabled]="loading()">
+      <small style="color: #666; display: block; margin-top: 0.5rem;">
+        El sistema descargará automáticamente la ficha técnica y los documentos adjuntos de Mercado Público.
+      </small>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <button class="btn-custom btn-success" (click)="onSubmitImport()" [disabled]="loading() || !importUrlUrlOrCode()">
+        <span *ngIf="!loading()">Iniciar Extracción Automática</span>
+        <span *ngIf="loading()">
+          Conectando a Mercado Público... Extraendo documentos...
+        </span>
+      </button>
+    </div>
+  </ng-container>
 
   <div *ngIf="error()" class="status-badge" style="margin-top: 1rem; border-color: #e74c3c; color: #e74c3c;">
     {{ error() }}

@@ -30,8 +30,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of licitacionService.list()?.licitaciones">
-                <td><span class="badge badge-info" [title]="item.tipo_licitacion">{{ item.tipo_licitacion ===
-                        'COMPRA_AGIL' ? 'Compra Ágil' : (item.tipo_licitacion ? 'Licitación' : 'Licitación') }}</span>
+                <td>
+                    <span *ngIf="item.tipo_licitacion" class="badge badge-info" [title]="item.tipo_licitacion">
+                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
+                    </span>
                 </td>
                 <td>{{ item.nombre }}</td>
                 <td>

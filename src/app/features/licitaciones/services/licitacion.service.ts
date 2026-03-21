@@ -95,6 +95,34 @@ export class LicitacionService {
         ).subscribe(() => this._loading.set(false));
     }
 
+    importCompraAgil(url_or_code: string) {
+        this._loading.set(true);
+        this._error.set(null);
+        this._response.set(null);
+
+        return this.http.post<ApiResponse<any>>(`${this.API_URL}/import-agil`, { url_or_code }).pipe(
+            map(res => {
+                if (res.success) {
+                    this._response.set({
+                        id: res.data.licitacion_id,
+                        nombre: res.data.codigo,
+                        archivos_procesados: res.data.archivos_descargados?.map((a: any) => ({
+                            nombre: a.nombre,
+                            valido: true
+                        })) || []
+                    } as any);
+                    return res;
+                } else {
+                    throw new Error(res.message);
+                }
+            }),
+            catchError(err => {
+                this._error.set(err.message || 'Error de conexión o error al importar Compra Ágil');
+                return of({ success: false, message: 'Server Error', data: null });
+            })
+        ).subscribe(() => this._loading.set(false));
+    }
+
     updateLicitacion(id: string, data: Partial<LicitacionShowResponse>): Observable<ApiResponse<LicitacionShowResponse>> {
         return this.http.put<ApiResponse<LicitacionShowResponse>>(`${this.API_URL}/${id}`, data).pipe(
             catchError(err => {
