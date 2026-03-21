@@ -158,6 +158,10 @@
                     <span style="font-size: 0.9em; color: #666; margin-right: 15px;">
                         Total Tokens: <strong>{{ aiMetrics()?.total_all | number }}</strong>
                     </span>
+                    <span style="font-size: 0.9em; color: #28a745; margin-right: 15px;">
+                        Costo Est.: <strong>{{ aiMetrics()?.total_cost_all | number:'1.2-2' }} USD</strong> / 
+                        <strong>${{ aiMetrics()?.total_cost_all_clp | number:'1.0-0' }} CLP</strong>
+                    </span>
                     <span class="expand-icon">▼ Mostrar</span>
                 </div>
                 <div *ngIf="isAiMetricsOpen() || !aiMetrics()" class="expand-icon">
@@ -191,6 +195,16 @@
                             <strong style="font-size: 1.4em; color: #007bff;">{{ aiMetrics()?.total_all | number
                                 }}</strong>
                         </div>
+                        <div style="border-left: 2px solid #dee2e6; padding-left: 20px;">
+                            <span style="display: block; font-size: 0.8em; color: #666;">Costo Total Estimado</span>
+                            <strong style="font-size: 1.4em; color: #28a745;">{{ aiMetrics()?.total_cost_all |
+                                number:'1.2-2' }} USD</strong>
+                        </div>
+                        <div style="border-left: 2px solid #dee2e6; padding-left: 20px;">
+                            <span style="display: block; font-size: 0.8em; color: #666;">Costo en Pesos (CLP)</span>
+                            <strong style="font-size: 1.4em; color: #28a745;">${{ aiMetrics()?.total_cost_all_clp |
+                                number:'1.0-0' }}</strong>
+                        </div>
                     </div>
 
                     <!-- Breakdown Table -->
@@ -203,7 +217,9 @@
                                     <th>Modelo</th>
                                     <th style="text-align: right;">Input</th>
                                     <th style="text-align: right;">Output</th>
-                                    <th style="text-align: right;"><strong>Total</strong></th>
+                                    <th style="text-align: right;">Tokens</th>
+                                    <th style="text-align: right; color: #28a745;"><strong>USD</strong></th>
+                                    <th style="text-align: right; color: #28a745;"><strong>CLP</strong></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -214,8 +230,11 @@
                                     <td><code>{{ item.model }}</code></td>
                                     <td style="text-align: right; color: #6c757d;">{{ item.total_input | number }}</td>
                                     <td style="text-align: right; color: #6c757d;">{{ item.total_output | number }}</td>
-                                    <td style="text-align: right;"><strong>{{ item.total_tokens | number }}</strong>
-                                    </td>
+                                    <td style="text-align: right; color: #6c757d;">{{ item.total_tokens | number }}</td>
+                                    <td style="text-align: right; color: #28a745;">{{ item.total_cost |
+                                        number:'1.2-4' }}</td>
+                                    <td style="text-align: right; color: #28a745;"><strong>${{ item.total_cost_clp |
+                                            number:'1.0-0' }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>

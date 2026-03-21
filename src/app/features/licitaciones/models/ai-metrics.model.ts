@@ -7,6 +7,10 @@ export interface AITokenUsageResponse {
     input_tokens: number;
     output_tokens: number;
     total_tokens: number;
+    input_cost?: number;
+    output_cost?: number;
+    total_cost?: number;
+    total_cost_clp?: number;
     created_at: string;
 }
 
@@ -17,6 +21,10 @@ export interface AIMetricsSummary {
     total_input: number;
     total_output: number;
     total_tokens: number;
+    input_cost?: number;
+    output_cost?: number;
+    total_cost?: number;
+    total_cost_clp?: number;
 }
 
 export interface AIMetricsResponse {
@@ -26,4 +34,6 @@ export interface AIMetricsResponse {
     total_input_all: number;
     total_output_all: number;
     total_all: number;
+    total_cost_all?: number;
+    total_cost_all_clp?: number;
 }
