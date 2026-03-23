@@ -7,11 +7,12 @@ import { LicitacionShowResponse, AuditoriaItem } from '../../models/licitacion.m
 import { DatosEconomicosCardComponent } from '../../sub-features/datos-economicos/components/datos-economicos-card/datos-economicos-card.component';
 import { ItemsShowComponent } from '../../sub-features/items/pages/show/show.component';
 import { ItemsHomologadosComponent } from '../../components/items-homologados/items-homologados.component';
+import { EntregasCardComponent } from '../../sub-features/entregas/components/entregas-card/entregas-card.component';
 
 @Component({
     selector: 'app-licitacion-show',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent, ItemsHomologadosComponent],
+    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent, ItemsHomologadosComponent, EntregasCardComponent],
     templateUrl: './show.component.html',
     styleUrls: ['./show.component.css']
 })

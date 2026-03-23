@@ -1,0 +1,83 @@
+<div class="card mt-20">
+    <div class="card-header" *ngIf="showTitle || showEditButton">
+        <div class="header-content" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span *ngIf="showTitle">Detalles de Entrega</span>
+            <button *ngIf="showEditButton && !isEditing()" class="tag-edit" (click)="startEdit()">
+                Editar
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div *ngIf="loading()" class="loading-state">
+            Cargando datos de entrega...
+        </div>
+
+        <div *ngIf="error()" class="error-state">
+            {{ error() }}
+        </div>
+
+        <div *ngIf="!loading() && !error() && datos()">
+            <!-- Notification Alert -->
+            <div *ngIf="notification().type" [class]="'notification-bar ' + notification().type" style="margin-bottom: 15px;">
+                {{ notification().message }}
+            </div>
+
+            <div class="grid-container">
+                <div class="field">
+                    <label>Dirección de Entrega</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.direccion_entrega || 'No especificada' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().direccion_entrega" class="edit-input">
+                </div>
+                
+                <div class="field">
+                    <label>Comuna</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.comuna_entrega || 'No especificada' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().comuna_entrega" class="edit-input">
+                </div>
+
+                <div class="field">
+                    <label>Plazo de Entrega</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.plazo_entrega || 'No especificado' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().plazo_entrega" class="edit-input">
+                </div>
+
+                <div class="field">
+                    <label>Fecha de Entrega</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.fecha_entrega || 'No especificada' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().fecha_entrega" class="edit-input" placeholder="Ej: 25-10-2026">
+                </div>
+                
+                <div class="field">
+                    <label>Contacto de Entrega</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.contacto_entrega || 'No especificado' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().contacto_entrega" class="edit-input">
+                </div>
+
+                <div class="field">
+                    <label>Horario</label>
+                    <div *ngIf="!isEditing()" class="value">{{ datos()?.horario_entrega || 'No especificado' }}</div>
+                    <input *ngIf="isEditing()" [(ngModel)]="editForm().horario_entrega" class="edit-input">
+                </div>
+
+                <div class="field" style="grid-column: 1 / -1;">
+                    <label>Instrucciones Especiales</label>
+                    <div *ngIf="!isEditing()" class="description-box" style="margin-top: 5px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                        {{ datos()?.instrucciones_entrega || 'Sin instrucciones adicionales' }}
+                    </div>
+                    <textarea *ngIf="isEditing()" [(ngModel)]="editForm().instrucciones_entrega" class="edit-textarea" style="width: 100%; min-height: 80px; margin-top: 5px; padding: 10px;"></textarea>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons-inline" *ngIf="isEditing()" style="margin-top: 20px;">
+                <button class="btn-save" (click)="saveEdit()" [disabled]="saving()">
+                    {{ saving() ? 'Guardando...' : 'Guardar Cambios' }}
+                </button>
+                <button class="btn-cancel" (click)="cancelEdit()" [disabled]="saving()">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
