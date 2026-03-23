@@ -25,6 +25,9 @@ export class AuthService {
           if (res?.nombre_usuario) {
             localStorage.setItem('nombre_usuario', res.nombre_usuario);
           }
+          if (res?.rol) {
+            localStorage.setItem('rol', res.rol);
+          }
         }
       })
     );
@@ -46,6 +49,13 @@ isLogged(): boolean {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('nombre_usuario');
+    localStorage.removeItem('rol');
     this.router.navigate(['/login']);
+  }
+
+  isAdmin(): boolean {
+    const rol = localStorage.getItem('rol');
+    return rol === 'admin';
   }
 }

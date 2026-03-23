@@ -93,7 +93,7 @@
         <app-items-homologados [licitacionId]="licitacion()!.id.toString()"></app-items-homologados>
 
         <!-- Sección de Auditoría Semántica -->
-        <div class="card mt-20">
+        <div class="card mt-20" *ngIf="isAdmin()">
             <div class="card-header accordion-header" (click)="toggleAuditoria()"
                 style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                 <div class="header-content">
@@ -149,7 +149,7 @@
         </div>
 
         <!-- Sección de Métricas de Inteligencia Artificial -->
-        <div class="card mt-20">
+        <div class="card mt-20" *ngIf="isAdmin()">
             <div class="card-header accordion-header" (click)="toggleAiMetrics()"
                 style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                 <div class="header-content">

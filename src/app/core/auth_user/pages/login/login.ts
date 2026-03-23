@@ -20,8 +20,8 @@ export class AuthService {
 
   login(user: string, pass: string): Observable<any> {
     const body = {
-      username: user = 'usuario',
-      password: pass = 'password'
+      username: user,
+      password: pass
     };
 
     return this.http.post<any>(this.API_URL, body).pipe(
@@ -39,6 +39,9 @@ export class AuthService {
           localStorage.setItem('token', data.access_token);
           if (data?.nombre_usuario) {
             localStorage.setItem('nombre_usuario', data.nombre_usuario);
+          }
+          if (data?.rol) {
+            localStorage.setItem('rol', data.rol);
           }
         }
       })
@@ -61,7 +64,14 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('nombre_usuario');
+    localStorage.removeItem('rol');
     this.router.navigate(['/login']);
+  }
+
+  isAdmin(): boolean {
+    const rol = localStorage.getItem('rol');
+    return rol === 'admin';
   }
 }
 

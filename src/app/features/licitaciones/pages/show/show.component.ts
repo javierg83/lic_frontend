@@ -8,6 +8,7 @@ import { DatosEconomicosCardComponent } from '../../sub-features/datos-economico
 import { ItemsShowComponent } from '../../sub-features/items/pages/show/show.component';
 import { ItemsHomologadosComponent } from '../../components/items-homologados/items-homologados.component';
 import { EntregasCardComponent } from '../../sub-features/entregas/components/entregas-card/entregas-card.component';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
     selector: 'app-licitacion-show',
@@ -19,6 +20,7 @@ import { EntregasCardComponent } from '../../sub-features/entregas/components/en
 export class LicitacionShowComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private licitacionService = inject(LicitacionService);
+    private authService = inject(AuthService);
 
     public licitacion = signal<LicitacionShowResponse | null>(null);
     public auditoria = signal<AuditoriaItem[]>([]);
@@ -37,8 +39,10 @@ export class LicitacionShowComponent implements OnInit {
     // UI state
     public isAuditoriaOpen = signal<boolean>(false);
     public isAiMetricsOpen = signal<boolean>(false);
+    public isAdmin = signal<boolean>(false);
 
     ngOnInit(): void {
+        this.isAdmin.set(this.authService.isAdmin());
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.fetchLicitacion(id);
