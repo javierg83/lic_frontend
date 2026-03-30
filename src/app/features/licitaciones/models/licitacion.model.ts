@@ -34,6 +34,16 @@ export interface LicitacionListResponse {
     licitaciones: LicitacionListItem[];
 }
 
+export interface ArchivoShow {
+    id: string;
+    id_interno: number;
+    nombre_archivo_org: string;
+    tipo_contenido?: string;
+    peso_bytes?: number;
+    estado_procesamiento: string;
+    fecha_subida: string;
+}
+
 export interface LicitacionShowResponse {
     id: string;
     codigo: string;
@@ -45,6 +55,7 @@ export interface LicitacionShowResponse {
     estado_publicacion?: string;
     tipo_licitacion?: string;
     fecha_carga: string;
+    archivos: ArchivoShow[];
 }
 
 export interface FuenteDoc {

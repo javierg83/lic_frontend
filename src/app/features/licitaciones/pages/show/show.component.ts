@@ -148,4 +148,21 @@ export class LicitacionShowComponent implements OnInit {
             this.notification.set({ message: '', type: null });
         }, 3000);
     }
+
+    public formatFileSize(bytes?: number): string {
+        if (!bytes) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    public getStatusClass(status: string): string {
+        const s = status.toUpperCase();
+        if (s === 'PENDIENTE') return 'badge-pendiente';
+        if (s === 'PROCESANDO') return 'badge-procesando';
+        if (s === 'PROCESADO') return 'badge-procesado';
+        if (s === 'ERROR') return 'badge-error';
+        return 'badge-default';
+    }
 }

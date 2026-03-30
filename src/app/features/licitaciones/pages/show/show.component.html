@@ -84,6 +84,48 @@
             </div>
         </div>
 
+        <div class="card mt-20">
+            <div class="card-header">
+                <div class="header-content">
+                    <span>2. Documentos Iniciales</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div *ngIf="licitacion()?.archivos?.length === 0" class="no-data">
+                    No se subieron archivos iniciales para esta licitación.
+                </div>
+                
+                <div *ngIf="licitacion()?.archivos && licitacion()!.archivos.length > 0" class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre del Archivo</th>
+                                <th>Tipo</th>
+                                <th>Tamaño</th>
+                                <th>Fecha Subida</th>
+                                <th style="text-align: center;">Estado Proc.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let file of licitacion()!.archivos; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td class="file-name"><strong>{{ file.nombre_archivo_org }}</strong></td>
+                                <td>{{ file.tipo_contenido || 'Desconocido' }}</td>
+                                <td>{{ formatFileSize(file.peso_bytes) }}</td>
+                                <td>{{ file.fecha_subida | date:'short' }}</td>
+                                <td style="text-align: center;">
+                                    <span class="badge-status" [ngClass]="getStatusClass(file.estado_procesamiento)">
+                                        {{ file.estado_procesamiento }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <app-datos-economicos-card [licitacionId]="licitacion()!.id.toString()"></app-datos-economicos-card>
 
         <app-entregas-card [licitacionId]="licitacion()!.id.toString()"></app-entregas-card>
