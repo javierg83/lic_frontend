@@ -8,12 +8,13 @@ import { DatosEconomicosCardComponent } from '../../sub-features/datos-economico
 import { ItemsShowComponent } from '../../sub-features/items/pages/show/show.component';
 import { ItemsHomologadosComponent } from '../../components/items-homologados/items-homologados.component';
 import { EntregasCardComponent } from '../../sub-features/entregas/components/entregas-card/entregas-card.component';
+import { GestionLicitacionCardComponent } from '../../sub-features/gestion/components/gestion-licitacion-card/gestion-licitacion-card.component';
 import { AuthService } from '../../../../core/services/auth';
 
 @Component({
     selector: 'app-licitacion-show',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent, ItemsHomologadosComponent, EntregasCardComponent],
+    imports: [CommonModule, RouterModule, FormsModule, DatosEconomicosCardComponent, ItemsShowComponent, ItemsHomologadosComponent, EntregasCardComponent, GestionLicitacionCardComponent],
     templateUrl: './show.component.html',
     styleUrls: ['./show.component.css']
 })

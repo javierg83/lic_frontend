@@ -1,0 +1,135 @@
+<div class="card gestion-licitacion-card" *ngIf="!loading()">
+    <div class="card-header" *ngIf="showTitle">
+        <div class="header-content">
+            <span>6. Gestión de Licitación</span>
+        </div>
+    </div>
+
+    <!-- Notification Alert -->
+    <div *ngIf="notification().type" [class]="'notification-bar ' + notification().type">
+        {{ notification().message }}
+    </div>
+
+    <div class="card-body">
+        <div class="grid-container">
+            <div class="field">
+                <label>Estado</label>
+                <select [(ngModel)]="editForm().estado" class="edit-input">
+                    <option value="HOMOLOGACION_COMPLETADA" disabled>Homologación Completada</option>
+                    <option value="EN_ANALISIS">En Análisis</option>
+                    <option value="EN_PREPARACION_OFERTA">Preparación Oferta</option>
+                    <option value="POSTULACION_ENVIADA">Postulación Enviada</option>
+                    <option value="OFERTA_PRESENTADA">Oferta Presentada</option>
+                    <option value="EN_EVALUACION">En Evaluación</option>
+                    <option value="ADJUDICADA">Adjudicada</option>
+                    <option value="NO_ADJUDICADA">No Adjudicada</option>
+                    <option value="DECLINADA">Declinada</option>
+                    <option value="CERRADA">Cerrada</option>
+                </select>
+            </div>
+            
+            <div class="field">
+                <label>Monto</label>
+                <input type="number" [(ngModel)]="editForm().monto" class="edit-input" placeholder="Opcional">
+            </div>
+
+            <div class="field">
+                <label>Fecha Resultado</label>
+                <input type="date" [(ngModel)]="editForm().fecha_resultado" class="edit-input">
+            </div>
+
+            <div class="field">
+                <label>Fecha Cierre</label>
+                <input type="date" [(ngModel)]="editForm().fecha_cierre" class="edit-input">
+            </div>
+            
+            <div class="field" style="grid-column: 1 / -1;">
+                <label>Observaciones</label>
+                <textarea [(ngModel)]="editForm().observaciones" class="edit-textarea" placeholder="Observaciones en la gestión de esta licitación..."></textarea>
+            </div>
+        </div>
+
+        <!-- Archivos adjuntos selection section -->
+        <h4 style="color: #4b5563; margin-top: 20px; font-weight: 600; font-size: 0.9em;">Archivos Adjuntos Nuevos</h4>
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+            <input type="file" multiple (change)="onFilesSelected($event)" style="display: none;" id="fileUploadInput">
+            <label for="fileUploadInput" class="btn-cancel" style="cursor: pointer; display: inline-block;">
+                Seleccionar archivos...
+            </label>
+            <span style="font-size: 0.85em; color: #6b7280;">({{ selectedFiles().length }} archivos listos para guardar)</span>
+        </div>
+
+        <!-- Selected files queue list -->
+        <div *ngIf="selectedFiles().length > 0" style="margin-bottom: 20px;">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li *ngFor="let file of selectedFiles(); let i = index" style="font-size: 0.9em; padding: 6px 0; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between;">
+                    <span>📄 {{ file.name }} <small>({{ (file.size / 1024 / 1024).toFixed(2) }} MB)</small></span>
+                    <button style="background: none; border: none; color: #ef4444; cursor: pointer; font-weight: bold;" (click)="removeSelectedFile(i)" title="Quitar">&times;</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Unified Action -->
+        <div class="action-buttons" style="margin-top: 20px;">
+            <button class="btn-save" (click)="saveEdit()" [disabled]="saving() || uploadingFiles()">
+                {{ (saving() || uploadingFiles()) ? 'Guardando Registro y Archivos...' : 'Guardar Gestión' }}
+            </button>
+        </div>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <!-- Listado de Documentos Previos -->
+        <div>
+            <h4 style="color: #4b5563; margin-bottom: 20px;">Documentos Existentes</h4>
+            
+            <div *ngIf="loadingDocs()" class="status-msg loading-inline">
+                <div class="spinner"></div> Cargando documentos...
+            </div>
+
+            <div *ngIf="!loadingDocs() && documentos().length === 0" class="no-data" style="text-align: center; padding: 20px; background-color: #f9fafb; border-radius: 8px;">
+                No se han registrado documentos.
+            </div>
+
+            <table class="audit-table" *ngIf="!loadingDocs() && documentos().length > 0">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Tipo</th>
+                        <th style="width: 30%">Nombre Archivo</th>
+                        <th style="width: 30%">Enlace Públco</th>
+                        <th style="width: 15%">Fecha Subida</th>
+                        <th style="width: 10%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let doc of documentos()">
+                        <td><span class="badge" style="background-color: #4b5563;">{{ doc.tipo_documento }}</span></td>
+                        <td style="font-weight: 500;">{{ doc.nombre_archivo }}</td>
+                        <td style="word-break: break-all; font-size: 0.9em; color: #3b82f6;">
+                            <a [href]="'http://localhost:8000/licitaciones/gestion/documentos/' + doc.id + '/download'" target="_blank">
+                                Abrir Archivo Seguro
+                            </a>
+                        </td>
+                        <td style="font-size: 0.9em; color: #6b7280;">{{ doc.fecha_subida | date:'short' }}</td>
+                        <td style="text-align: center;">
+                            <button 
+                                (click)="deleteDocumento(doc)" 
+                                style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1.2em;" 
+                                title="Eliminar archivo permanentemente">
+                                ❌
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading()" class="status-msg loading-inline">
+    <div class="spinner"></div>
+    Cargando gestión...
+</div>
+
+<div *ngIf="error() && !loading()" class="status-msg error-inline">
+    {{ error() }}
+</div>

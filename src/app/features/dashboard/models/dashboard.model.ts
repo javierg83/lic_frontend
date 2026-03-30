@@ -16,8 +16,18 @@ export interface UsuarioStats {
     porcentaje_items: number;
 }
 
+export interface MetricasFinancieras {
+    monto_postulado: number;
+    monto_adjudicado: number;
+    monto_perdido: number;
+    monto_en_evaluacion: number;
+    win_rate: number;
+}
+
 export interface DashboardResponse {
     kpis: KPIs;
+    distribucion_estados: { [key: string]: number };
+    metricas_financieras: MetricasFinancieras;
     por_usuario: { [key: string]: UsuarioStats };
     uso_mensual: { [key: string]: number };
     items_mas_cotizados: [string, number][];

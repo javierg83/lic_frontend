@@ -92,6 +92,8 @@
 
         <app-items-homologados [licitacionId]="licitacion()!.id.toString()"></app-items-homologados>
 
+        <app-gestion-licitacion-card [licitacionId]="licitacion()!.id.toString()"></app-gestion-licitacion-card>
+
         <!-- Sección de Auditoría Semántica -->
         <div class="card mt-20" *ngIf="isAdmin()">
             <div class="card-header accordion-header" (click)="toggleAuditoria()"

@@ -40,23 +40,54 @@
             </div>
         </div>
 
+        <!-- Financial KPIs -->
+        <h3 style="margin-top: 30px; margin-bottom: 15px; color: #374151; font-weight: 600;">Dashboard Financiero de Conversión</h3>
+        <div class="kpi-row" style="margin-bottom: 30px;">
+            <div class="kpi-card" style="border-top: 4px solid #3b82f6;">
+                <span class="kpi-title">Monto Ofertado Global</span>
+                <span class="kpi-value money" style="color: #3b82f6;">{{ formatCurrency(data.metricas_financieras.monto_postulado) }}</span>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #10b981;">
+                <span class="kpi-title">Monto Adjudicado (Ganado)</span>
+                <span class="kpi-value money" style="color: #10b981;">{{ formatCurrency(data.metricas_financieras.monto_adjudicado) }}</span>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #ef4444;">
+                <span class="kpi-title">Monto Perdido</span>
+                <span class="kpi-value money" style="color: #ef4444;">{{ formatCurrency(data.metricas_financieras.monto_perdido) }}</span>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #f59e0b;">
+                <span class="kpi-title">Monto En Evaluación</span>
+                <span class="kpi-value money" style="color: #f59e0b;">{{ formatCurrency(data.metricas_financieras.monto_en_evaluacion) }}</span>
+            </div>
+            <div class="kpi-card" style="background: linear-gradient(135deg, #2563eb, #db2777); color: white;">
+                <span class="kpi-title" style="color: #e5e7eb;">WIN RATE (TASA DE ÉXITO)</span>
+                <span class="kpi-value" style="color: white; font-size: 2.5rem;">{{ data.metricas_financieras.win_rate }}%</span>
+            </div>
+        </div>
+
         <!-- Gráficos Principales -->
         <div class="charts-grid">
             <div class="chart-card">
-                <h3>Pipeline / Funnel Comercial</h3>
+                <h3>Pipeline Integral Operativo</h3>
                 <div class="canvas-container">
                     <canvas id="pipelineChart"></canvas>
                 </div>
             </div>
+            <div class="chart-card">
+                <h3>Distribución Monetaria Oficial</h3>
+                <div class="canvas-container">
+                    <canvas id="financialDoughnutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid" style="grid-template-columns: 1fr;">
             <div class="chart-card">
                 <h3>Uso del Sistema y Carga (Histórico)</h3>
                 <div class="canvas-container">
                     <canvas id="usoMensualChart"></canvas>
                 </div>
             </div>
-        </div>
-
-        <div class="charts-grid" style="grid-template-columns: 1fr;">
             <div class="chart-card">
                 <h3>Rendimiento Comercial por Usuario (Cargadas vs Ganadas)</h3>
                 <div class="canvas-container">
