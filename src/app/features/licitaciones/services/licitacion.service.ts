@@ -131,6 +131,22 @@ export class LicitacionService {
         );
     }
 
+    deleteLicitacion(id: string): Observable<ApiResponse<void>> {
+        return this.http.delete<ApiResponse<void>>(`${this.API_URL}/${id}`).pipe(
+            catchError(err => {
+                return of({ success: false, message: 'Error al eliminar la licitación', data: null as any });
+            })
+        );
+    }
+
+    bulkDeleteLicitaciones(ids: string[]): Observable<ApiResponse<void>> {
+        return this.http.post<ApiResponse<void>>(`${this.API_URL}/bulk-delete`, { ids }).pipe(
+            catchError(err => {
+                return of({ success: false, message: 'Error al enviar eliminación masiva', data: null as any });
+            })
+        );
+    }
+
     resetState() {
         this._response.set(null);
         this._error.set(null);
