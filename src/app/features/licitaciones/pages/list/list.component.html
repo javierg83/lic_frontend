@@ -2,6 +2,13 @@
     <div class="header-row">
         <h2>Listado de Licitaciones</h2>
         <div style="display: flex; gap: 1rem; align-items: center;">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Buscar por nombre, ID, estado..." 
+                [ngModel]="searchTerm()" 
+                (ngModelChange)="searchTerm.set($event)">
+            
             <button *ngIf="selectedIds.size > 0" class="btn-delete" (click)="onBulkDelete()" [disabled]="deletingBulk" style="padding: 0.6rem 1.25rem; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s;">
                 <svg *ngIf="!deletingBulk" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -43,24 +50,70 @@
                 <th style="width: 40px; text-align: center;">
                     <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll($event)">
                 </th>
-                <th>Tipo Licitación</th>
-                <th>Nombre Licitación</th>
-                <th>Presupuesto</th>
-                <th>Ítems</th>
-                <th>Homologados</th>
-                <th>% Homol.</th>
-                <th>Estado</th>
-                <th>Fecha</th>
+                <th class="sort-header" (click)="toggleSort('tipo_licitacion')">
+                    Tipo {{ getSortIcon('tipo_licitacion') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('nombre')">
+                    Nombre {{ getSortIcon('nombre') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('presupuesto')">
+                    Presupuesto {{ getSortIcon('presupuesto') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('cantidad_items')">
+                    Ítems {{ getSortIcon('cantidad_items') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('cantidad_homologados')">
+                    Homol. {{ getSortIcon('cantidad_homologados') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('porcentaje_homologacion')">
+                    % {{ getSortIcon('porcentaje_homologacion') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('estado')">
+                    Estado {{ getSortIcon('estado') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('fecha_carga')">
+                    Fecha {{ getSortIcon('fecha_carga') }}
+                </th>
                 <th>Acciones</th>
+            </tr>
+            <tr class="filter-row">
+                <td></td>
+                <td>
+                    <select class="filter-select" (change)="updateColumnFilter('tipo_licitacion', $any($event.target).value)">
+                        <option value="">Todos</option>
+                        <option value="LICITACION">Licitación</option>
+                        <option value="COMPRA_AGIL">Compra Ágil</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="filter-input" placeholder="Filtrar nombre..." 
+                           list="namesList"
+                           (input)="updateColumnFilter('nombre', $any($event.target).value)">
+                    <datalist id="namesList">
+                        <option *ngFor="let name of uniqueNames()" [value]="name"></option>
+                    </datalist>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <select class="filter-select" (change)="updateColumnFilter('estado', $any($event.target).value)">
+                        <option value="">Todos</option>
+                        <option *ngFor="let st of estados" [value]="st">{{ st }}</option>
+                    </select>
+                </td>
+                <td></td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let item of licitacionService.list()?.licitaciones" [ngStyle]="{'background-color': selectedIds.has(item.id) ? '#f3f4f6' : 'transparent'}">
+            <tr *ngFor="let item of filteredLicitaciones()" [ngStyle]="{'background-color': selectedIds.has(item.id) ? '#f3f4f6' : 'transparent'}">
                 <td style="text-align: center;">
                     <input type="checkbox" [checked]="selectedIds.has(item.id)" (change)="toggleSelection(item.id)">
                 </td>
                 <td>
-                    <span *ngIf="item.tipo_licitacion" class="badge badge-info" [title]="item.tipo_licitacion">
+                    <span class="badge badge-info" [title]="item.tipo_licitacion || 'LICITACION_PUBLICA'">
                         {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
                     </span>
                 </td>

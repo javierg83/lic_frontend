@@ -19,6 +19,7 @@ export interface LicitacionNewResponse {
 
 export interface LicitacionListItem {
     id: string;
+    id_interno?: number;
     nombre: string;
     estado: string;
     fecha_carga: string;

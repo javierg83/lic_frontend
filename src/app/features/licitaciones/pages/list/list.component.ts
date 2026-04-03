@@ -1,12 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LicitacionService } from '../../services/licitacion.service';
 
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-licitacion-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './list.component.html',
   styles: [`
     .table-container {
@@ -80,6 +82,40 @@ import { LicitacionService } from '../../services/licitacion.service';
       background-color: #fee2e2 !important;
       border-radius: 4px;
     }
+    .sort-header {
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .sort-header:hover {
+      background-color: #f3f4f6;
+    }
+    .search-input {
+      padding: 0.5rem 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      width: 250px;
+    }
+    .badge-info {
+      background-color: #e1effe;
+      color: #1e429f;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .filter-row td {
+      padding: 0.5rem;
+      background-color: #f3f4f6;
+    }
+    .filter-input, .filter-select {
+      width: 100%;
+      padding: 0.4rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
   `]
 })
 export class LicitacionListComponent implements OnInit {
@@ -88,6 +124,101 @@ export class LicitacionListComponent implements OnInit {
 
   ngOnInit(): void {
     this.licitacionService.getLicitaciones().subscribe();
+  }
+
+  // Filtering and Sorting state
+  public searchTerm = signal('');
+  public sortColumn = signal<string>('fecha_carga');
+  public sortDirection = signal<'asc' | 'desc'>('desc');
+
+  // Per-column filters
+  public columnFilters = signal({
+    tipo_licitacion: '',
+    nombre: '',
+    estado: ''
+  });
+
+  public readonly estados = [
+    'PENDIENTE', 'PROCESANDO_DOCUMENTOS', 'DOCUMENTOS_PROCESADOS', 
+    'ERROR_PROCESO_DOCUMENTAL', 'REQUIERE_REVISION_TECNICA',
+    'EXTRACCION_SEMANTICA_EN_PROCESO', 'EXTRACCION_SEMANTICA_COMPLETADA',
+    'HOMOLOGACION_EN_PROCESO', 'HOMOLOGACION_COMPLETADA', 'ERROR_EXTRACCION_SEMANTICA',
+    'EN_ANALISIS', 'EN_PREPARACION_OFERTA', 'POSTULACION_ENVIADA',
+    'OFERTA_PRESENTADA', 'EN_EVALUACION', 'ADJUDICADA', 'NO_ADJUDICADA',
+    'DECLINADA', 'CERRADA'
+  ];
+
+  // Computed signal for the final list
+  public filteredLicitaciones = computed(() => {
+    let list = this.licitacionService.list()?.licitaciones || [];
+
+    // Global Filter
+    const term = this.searchTerm().toLowerCase();
+    if (term) {
+      list = list.filter(item => 
+        item.nombre.toLowerCase().includes(term) ||
+        (item.id_interno?.toString() || '').includes(term) ||
+        item.estado.toLowerCase().includes(term) ||
+        (item.tipo_licitacion || 'LICITACION').toLowerCase().includes(term)
+      );
+    }
+
+    // Column Filters
+    const filters = this.columnFilters();
+    if (filters.tipo_licitacion) {
+      list = list.filter(item => {
+        const type = item.tipo_licitacion || 'LICITACION_PUBLICA';
+        return type === filters.tipo_licitacion || (filters.tipo_licitacion === 'LICITACION' && type === 'LICITACION_PUBLICA');
+      });
+    }
+    if (filters.nombre) {
+      const n = filters.nombre.toLowerCase();
+      list = list.filter(item => item.nombre.toLowerCase().includes(n));
+    }
+    if (filters.estado) {
+      list = list.filter(item => item.estado === filters.estado);
+    }
+
+    // Sort
+    const col = this.sortColumn();
+    const dir = this.sortDirection();
+
+    return [...list].sort((a: any, b: any) => {
+      let valA = a[col];
+      let valB = b[col];
+
+      // Handle nulls
+      if (valA === null || valA === undefined) valA = '';
+      if (valB === null || valB === undefined) valB = '';
+
+      if (valA < valB) return dir === 'asc' ? -1 : 1;
+      if (valA > valB) return dir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  });
+
+  // Unique names for datalist
+  public uniqueNames = computed(() => {
+    const list = this.licitacionService.list()?.licitaciones || [];
+    return [...new Set(list.map(item => item.nombre))].sort();
+  });
+
+  public updateColumnFilter(column: string, value: string): void {
+    this.columnFilters.update(prev => ({ ...prev, [column]: value }));
+  }
+
+  public toggleSort(column: string): void {
+    if (this.sortColumn() === column) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortColumn.set(column);
+      this.sortDirection.set('asc');
+    }
+  }
+
+  public getSortIcon(column: string): string {
+    if (this.sortColumn() !== column) return '↕';
+    return this.sortDirection() === 'asc' ? '↑' : '↓';
   }
 
 
