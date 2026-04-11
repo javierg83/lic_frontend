@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DemoNewRequest, DemoNewResponse } from '../models/new.model';
@@ -6,7 +7,7 @@ import { ApiResponse } from '../models/list.model';
 @Injectable({ providedIn: 'root' })
 export class DemoNewService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/demo/new';
+    private readonly API_URL = `${environment.apiUrl}/demo/new`;
 
     private _loading = signal<boolean>(false);
     private _message = signal<string | null>(null);

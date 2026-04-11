@@ -1,3 +1,4 @@
+import { environment } from '../../../../../environments/environment';
 import { Component, Input, signal, effect, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -47,7 +48,7 @@ export class ItemsHomologadosComponent {
     this.error.set(null);
 
     // Endpoint for homologations: GET /licitaciones/{id}/homologaciones
-    this.http.get<any>(`http://localhost:8000/licitaciones/${this.licitacionId}/homologaciones`)
+    this.http.get<any>(`${environment.apiUrl}/licitaciones/${this.licitacionId}/homologaciones`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -83,7 +84,7 @@ export class ItemsHomologadosComponent {
       selections[item.homologacion_id] = item.candidato_seleccionado_id || null;
     }
 
-    this.http.post<any>(`http://localhost:8000/licitaciones/${this.licitacionId}/homologaciones/guardar`, { selecciones: selections })
+    this.http.post<any>(`${environment.apiUrl}/licitaciones/${this.licitacionId}/homologaciones/guardar`, { selecciones: selections })
       .subscribe({
         next: (response) => {
           if (response.success) {

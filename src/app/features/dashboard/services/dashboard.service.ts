@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -8,7 +9,7 @@ import { DashboardResponse } from '../models/dashboard.model';
 })
 export class DashboardService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8000/api/control-room';
+    private apiUrl = `${environment.apiUrl}/api/control-room`;
 
     getResumen(): Observable<DashboardResponse> {
         return this.http.get<{ success: boolean, message: string, data: DashboardResponse }>(`${this.apiUrl}/resumen`)

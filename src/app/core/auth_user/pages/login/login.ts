@@ -1,3 +1,4 @@
+import { environment } from '../../../../../environments/environment';
 
 // ----------------------------------------------------------------------------
 // SERVICE
@@ -14,7 +15,7 @@ import { Observable, tap, map } from 'rxjs';
 })
 export class AuthService {
 
-  private API_URL = 'http://localhost:8000/auth/login';
+  private API_URL = `${environment.apiUrl}/auth/login`;
 
   constructor(private http: HttpClient, private router: Router) { }
 

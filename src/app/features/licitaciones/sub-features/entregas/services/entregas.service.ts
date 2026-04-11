@@ -1,3 +1,4 @@
+import { environment } from '../../../../../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
@@ -7,7 +8,7 @@ import { EntregaResponse } from '../models/entregas.model';
 @Injectable({ providedIn: 'root' })
 export class EntregasService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/licitaciones';
+    private readonly API_URL = `${environment.apiUrl}/licitaciones`;
 
     getEntregas(id: string): Observable<ApiResponse<EntregaResponse>> {
         return this.http.get<ApiResponse<EntregaResponse>>(`${this.API_URL}/${id}/entregas`).pipe(

@@ -1,3 +1,4 @@
+import { environment } from '../../../../../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
@@ -7,7 +8,7 @@ import { DatosEconomicosResponse } from '../models/datos-economicos.model';
 @Injectable({ providedIn: 'root' })
 export class DatosEconomicosService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/licitaciones';
+    private readonly API_URL = `${environment.apiUrl}/licitaciones`;
 
     getDatosEconomicos(id: string): Observable<ApiResponse<DatosEconomicosResponse>> {
         return this.http.get<ApiResponse<DatosEconomicosResponse>>(`${this.API_URL}/${id}/datos-economicos`).pipe(

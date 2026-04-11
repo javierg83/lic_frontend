@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -6,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ConfigService {
-  private apiUrl = 'http://localhost:8000/api/config';
+  private apiUrl = `${environment.apiUrl}/api/config`;
 
   constructor(private http: HttpClient) {}
 

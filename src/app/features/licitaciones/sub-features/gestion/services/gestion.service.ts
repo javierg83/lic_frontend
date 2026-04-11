@@ -1,3 +1,4 @@
+import { environment } from '../../../../../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
@@ -7,7 +8,7 @@ import { GestionLicitacion, GestionDocumento } from '../models/gestion.model';
 @Injectable({ providedIn: 'root' })
 export class GestionService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/licitaciones';
+    private readonly API_URL = `${environment.apiUrl}/licitaciones`;
 
     getGestion(id: string): Observable<ApiResponse<GestionLicitacion>> {
         return this.http.get<ApiResponse<GestionLicitacion>>(`${this.API_URL}/${id}/gestion`).pipe(

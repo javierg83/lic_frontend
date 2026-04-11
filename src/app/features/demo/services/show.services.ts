@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DemoShowApiResponse, DemoShowRequest, DemoShowResponse } from '../models/show.model';
@@ -5,7 +6,7 @@ import { DemoShowApiResponse, DemoShowRequest, DemoShowResponse } from '../model
 @Injectable({ providedIn: 'root' })
 export class DemoShowService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/demo/show';
+    private readonly API_URL = `${environment.apiUrl}/demo/show`;
 
     // Signals para manejar el estado global de este feature
     private _item = signal<DemoShowResponse | null>(null);

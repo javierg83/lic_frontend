@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse, LicitacionNewResponse, LicitacionListResponse, LicitacionShowResponse, AuditoriaListResponse } from '../models/licitacion.model';
@@ -6,7 +7,7 @@ import { map, catchError, of, Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class LicitacionService {
     private http = inject(HttpClient);
-    private readonly API_URL = 'http://localhost:8000/licitaciones';
+    private readonly API_URL = `${environment.apiUrl}/licitaciones`;
 
     private _loading = signal<boolean>(false);
     private _response = signal<LicitacionNewResponse | null>(null);
