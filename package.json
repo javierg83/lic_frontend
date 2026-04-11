@@ -10,7 +10,7 @@
     "heroku-postbuild": "ng build"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "prettier": {
     "printWidth": 100,
