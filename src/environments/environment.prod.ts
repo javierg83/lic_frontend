@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://placeholder-backend-url.herokuapp.com'
+  apiUrl: 'https://im-lic-backend-344735f9570f.herokuapp.com'
 };
