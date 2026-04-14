@@ -59,6 +59,14 @@ body {
     font-weight: 700;
     color: var(--text-dark);
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    img {
+      height: 28px;
+      width: auto;
+    }
 
     strong {
       color: var(--text-dark);
@@ -103,6 +111,14 @@ body {
     &:hover {
       background: var(--text-dark);
     }
+  }
+}
+
+.login-logo {
+  text-align: center;
+  img {
+    height: 50px;
+    width: auto;
   }
 }
 
