@@ -93,8 +93,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.scss'
 })
 export class Login {
-  email = 'usuario@ejemplo.com';
-  password = 'password';
+  email = '';
+  password = '';
   error = signal<string | null>(null);
   loading = signal(false);
 
