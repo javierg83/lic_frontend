@@ -44,6 +44,9 @@ export class AuthService {
           if (data?.rol) {
             localStorage.setItem('rol', data.rol);
           }
+          if (data?.cliente_id) {
+            localStorage.setItem('cliente_id', data.cliente_id);
+          }
         }
       })
     );
@@ -67,6 +70,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('nombre_usuario');
     localStorage.removeItem('rol');
+    localStorage.removeItem('cliente_id');
     this.router.navigate(['/login']);
   }
 

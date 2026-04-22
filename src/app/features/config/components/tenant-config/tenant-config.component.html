@@ -1,0 +1,116 @@
+<div class="config-container container py-4 animate__animated animate__fadeIn">
+  <div class="card shadow border-0 overflow-hidden">
+    <div class="card-header bg-primary text-white p-4">
+      <h3 class="mb-0">Gestión de Cliente (Tenant)</h3>
+      <p class="mb-0 text-white-50">Configura tu catálogo propio y criterios de derivación automática.</p>
+    </div>
+    
+    <div class="card-body p-4 bg-light">
+      <div class="row g-4">
+        
+        <!-- SECCIÓN CATÁLOGO -->
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-box-seam me-2 text-primary"></i> Mi Catálogo de Productos
+              </h5>
+              <p class="text-muted small mb-4">
+                Sube tu catálogo en formato **CSV** (columnas: codigo, nombre_producto, descripcion, precio_referencial). 
+                Este catálogo se usará para la homologación inteligente de nuevas licitaciones.
+              </p>
+
+              <div class="mb-3">
+                <input 
+                  type="file" 
+                  class="form-control form-control-sm" 
+                  id="catalogFile" 
+                  accept=".csv" 
+                  (change)="onFileSelected($event)"
+                  [disabled]="isUploading"
+                >
+              </div>
+
+              @if (uploadError) {
+                <div class="alert alert-danger p-2 small" role="alert">
+                  {{ uploadError }}
+                </div>
+              }
+
+              @if (uploadSuccess) {
+                <div class="alert alert-success p-2 small" role="alert">
+                  ¡Catálogo actualizado correctamente!
+                </div>
+              }
+
+              <button 
+                class="btn btn-primary w-100 mt-2" 
+                [disabled]="!selectedFile || isUploading"
+                (click)="uploadFile()"
+              >
+                @if (isUploading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                {{ isUploading ? 'Subiendo...' : 'Actualizar Catálogo' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN PREFERENCIAS (KEYWORDS) -->
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-funnel me-2 text-primary"></i> Filtros de Derivación
+              </h5>
+              <p class="text-muted small mb-3">
+                Agrega palabras clave. Las licitaciones que contengan estos términos en su título o descripción se derivarán automáticamente a tu bandeja.
+              </p>
+
+              <div class="input-group mb-3">
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  placeholder="Ej: software, servidores..." 
+                  [(ngModel)]="newKeyword"
+                  (keyup.enter)="addKeyword()"
+                >
+                <button class="btn btn-outline-primary btn-sm" type="button" (click)="addKeyword()">Agregar</button>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2 mb-4" style="min-height: 50px;">
+                @for (kw of keywords; track kw) {
+                  <span class="badge rounded-pill bg-info text-dark d-flex align-items-center p-2 px-3">
+                    {{ kw }}
+                    <i class="bi bi-x-circle ms-2 cursor-pointer" style="cursor: pointer;" (click)="removeKeyword(kw)"></i>
+                  </span>
+                } @empty {
+                  <div class="text-muted small italic">Sin palabras clave configuradas.</div>
+                }
+              </div>
+
+              @if (kwSuccess) {
+                <div class="alert alert-success p-2 small mb-3" role="alert">
+                  Preferencias guardadas exitosamente.
+                </div>
+              }
+
+              <button 
+                class="btn btn-success w-100" 
+                [disabled]="isSavingKeywords"
+                (click)="saveKeywords()"
+              >
+                @if (isSavingKeywords) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                {{ isSavingKeywords ? 'Guardando...' : 'Guardar Preferencias' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

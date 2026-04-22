@@ -1,45 +1,7 @@
-<div class="config-container container py-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom p-4">
-      <h3 class="mb-0">Configuración</h3>
-    </div>
-    
-    <div class="card-body p-4">
-      <div class="upload-section">
-        <h5 class="mb-3">Catálogo de Productos</h5>
-        <p class="text-muted mb-4">
-          Sube el archivo Excel (.xls, .xlsx) que contiene el catálogo de productos utilizados por el ETL para el proceso de homologación.
-        </p>
-
-        <div class="form-group mb-3">
-          <label for="catalogFile" class="form-label">Seleccionar archivo</label>
-          <input 
-            type="file" 
-            class="form-control" 
-            id="catalogFile" 
-            accept=".xls,.xlsx" 
-            (change)="onFileSelected($event)"
-            [disabled]="isUploading"
-          >
-        </div>
-
-        <div *ngIf="uploadError" class="alert alert-danger mt-3" role="alert">
-          {{ uploadError }}
-        </div>
-
-        <div *ngIf="uploadSuccess" class="alert alert-success mt-3" role="alert">
-          El catálogo se ha subido correctamente y está listo para ser utilizado.
-        </div>
-
-        <button 
-          class="btn btn-primary mt-2" 
-          [disabled]="!selectedFile || isUploading"
-          (click)="uploadFile()"
-        >
-          <span *ngIf="isUploading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          {{ isUploading ? 'Subiendo...' : 'Subir Catálogo' }}
-        </button>
-      </div>
-    </div>
-  </div>
+<div class="config-main-container container py-4">
+  @if (isAdmin) {
+    <app-admin-clientes></app-admin-clientes>
+  } @else {
+    <app-tenant-config></app-tenant-config>
+  }
 </div>

@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from '../../core/guards/admin-guard';
 
 export const LICITACIONES_ROUTES: Routes = [
     {
         path: 'new',
+        canActivate: [adminGuard],
         loadComponent: () => import('./pages/new/new.component').then(m => m.LicitacionNewComponent)
     },
     {

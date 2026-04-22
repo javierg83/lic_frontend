@@ -7,13 +7,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ConfigService {
-  private apiUrl = `${environment.apiUrl}/api/config`;
+  private apiUrl = `${environment.apiUrl}/clientes`;
 
   constructor(private http: HttpClient) {}
 
-  uploadCatalogo(file: File): Observable<any> {
+  uploadCatalogo(clienteId: string, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${this.apiUrl}/catalogo/upload`, formData);
+    return this.http.post(`${this.apiUrl}/${clienteId}/productos/upload_csv`, formData);
+  }
+
+  getPreferencias(clienteId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${clienteId}/preferencias`);
+  }
+
+  updatePreferencias(clienteId: string, keywords: string[]): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${clienteId}/preferencias`, { palabras_clave: keywords });
   }
 }

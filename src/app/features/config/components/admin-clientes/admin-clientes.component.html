@@ -1,0 +1,121 @@
+<div class="admin-config-container animate__animated animate__fadeIn">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0 text-primary fw-bold">Administración de Clientes (Tenants)</h3>
+    <button class="btn btn-primary" (click)="toggleCreateForm()">
+      <i class="bi" [ngClass]="showCreateForm ? 'bi-x-lg' : 'bi-plus-lg'"></i>
+      {{ showCreateForm ? 'Cancelar' : 'Nuevo Cliente' }}
+    </button>
+  </div>
+
+  <!-- Formulario de Creación -->
+  @if (showCreateForm) {
+    <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInDown">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">Registrar Nuevo Cliente</h5>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <label class="form-label small text-muted">Nombre de la Empresa</label>
+            <input type="text" class="form-control" [(ngModel)]="newCliente.nombre" placeholder="Ej: TechSoluciones Ltda">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small text-muted">RUT</label>
+            <input type="text" class="form-control" [(ngModel)]="newCliente.rut" placeholder="76.xxx.xxx-x">
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-success w-100" [disabled]="isSaving || !newCliente.nombre || !newCliente.rut" (click)="saveCliente()">
+              @if (isSaving) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Guardar Cliente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Listado de Clientes -->
+  <div class="card shadow-sm border-0 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th class="ps-4">Empresa</th>
+            <th>RUT</th>
+            <th>Estado</th>
+            <th>Creado</th>
+            <th class="text-end pe-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (isLoading) {
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="mt-2 text-muted">Cargando clientes...</div>
+              </td>
+            </tr>
+          } @else {
+            @for (cliente of clientes; track cliente.id) {
+              <tr>
+                <td class="ps-4">
+                  <div class="fw-bold text-dark">{{ cliente.nombre }}</div>
+                  <div class="text-muted small">{{ cliente.id }}</div>
+                </td>
+                <td>{{ cliente.rut }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="cliente.activo ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'">
+                    {{ cliente.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="text-muted small">{{ cliente.created_at | date:'shortDate' }}</td>
+                <td class="text-end pe-4">
+                  <button class="btn btn-outline-primary btn-sm" (click)="verDetalle(cliente)">
+                    <i class="bi bi-eye me-1"></i> Ver Parámetros
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center py-5 text-muted">No hay clientes registrados.</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Detalle Parámetros (Simple overlay) -->
+  @if (selectedCliente) {
+    <div class="custom-modal-overlay animate__animated animate__fadeIn">
+      <div class="custom-modal-content animate__animated animate__zoomIn">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0 fw-bold">Parámetros: {{ selectedCliente.nombre }}</h4>
+          <button class="btn-close" (click)="cerrarDetalle()"></button>
+        </div>
+        
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase small fw-bold mb-3">Palabras Clave de Derivación</h6>
+          <div class="d-flex flex-wrap gap-2">
+            @for (kw of selectedCliente.palabras_clave; track kw) {
+              <span class="badge bg-light text-dark border p-2 px-3">
+                {{ kw }}
+              </span>
+            } @empty {
+              <div class="text-muted italic small">
+                Este cliente no tiene palabras clave configuradas.
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="text-end">
+          <button class="btn btn-secondary" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

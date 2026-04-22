@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LicitacionService } from '../../services/licitacion.service';
+import { AuthService } from '../../../../core/services/auth';
 
 import { FormsModule } from '@angular/forms';
 
@@ -11,6 +12,22 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './list.component.html',
   styles: [`
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: white; padding: 2rem; border-radius: 12px; width: 400px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); text-align: center;
+    }
+    .modal-actions {
+      display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;
+    }
+    .btn-cancel {
+      padding: 0.6rem 1.25rem; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;
+    }
+    .btn-cancel:hover { background: #d1d5db; }
     .table-container {
       padding: 2rem;
       background: white;
@@ -121,6 +138,9 @@ import { FormsModule } from '@angular/forms';
 export class LicitacionListComponent implements OnInit {
   public licitacionService = inject(LicitacionService);
   private router = inject(Router);
+  private authService = inject(AuthService);
+
+  public isAdmin = computed(() => this.authService.isAdmin());
 
   ngOnInit(): void {
     this.licitacionService.getLicitaciones().subscribe();
@@ -148,9 +168,16 @@ export class LicitacionListComponent implements OnInit {
     'DECLINADA', 'CERRADA'
   ];
 
+  public optimisticDeletedIds = signal<Set<string>>(new Set());
+
   // Computed signal for the final list
   public filteredLicitaciones = computed(() => {
     let list = this.licitacionService.list()?.licitaciones || [];
+
+    const deleted = this.optimisticDeletedIds();
+    if (deleted.size > 0) {
+        list = list.filter(item => !deleted.has(item.id));
+    }
 
     // Global Filter
     const term = this.searchTerm().toLowerCase();
@@ -227,6 +254,8 @@ export class LicitacionListComponent implements OnInit {
     public deletingBulk = false;
     public deleteMessage: { text: string; type: 'success' | 'error' | 'info' } | null = null;
     public selectedIds: Set<string> = new Set();
+    
+    public confirmModal: { message: string, onConfirm: () => void, onCancel: () => void } | null = null;
 
     onShow(id: string): void {
         this.router.navigate(['/licitaciones', id]);
@@ -257,10 +286,17 @@ export class LicitacionListComponent implements OnInit {
     }
 
     onDelete(id: string, nombre: string): void {
-        if (!confirm(`¿Estás seguro que deseas eliminar permanentemente la licitación '${nombre}'?`)) {
-            return;
-        }
+        this.confirmModal = {
+            message: `¿Estás seguro que deseas eliminar permanentemente la licitación '${nombre}'?`,
+            onCancel: () => this.confirmModal = null,
+            onConfirm: () => {
+                this.confirmModal = null;
+                this.executeDelete(id, nombre);
+            }
+        };
+    }
 
+    private executeDelete(id: string, nombre: string): void {
         this.deletingId = id;
         this.deleteMessage = null;
 
@@ -268,11 +304,17 @@ export class LicitacionListComponent implements OnInit {
             next: (res) => {
                 if (res.success) {
                     this.deleteMessage = { text: res.message || `Licitación '${nombre}' enviada a eliminar en segundo plano.`, type: 'info' };
-                    // Optionally unselect if it was selected
+                    // Optimistic update
+                    this.optimisticDeletedIds.update(set => {
+                        const newSet = new Set(set);
+                        newSet.add(id);
+                        return newSet;
+                    });
                     this.selectedIds.delete(id);
+                    // Polling / Refresco
                     setTimeout(() => {
                         this.licitacionService.getLicitaciones().subscribe();
-                    }, 500); // Wait a bit for background job to possibly start and reflect
+                    }, 2000);
                 } else {
                     this.deleteMessage = { text: `Error al intentar eliminar: ${res.message}`, type: 'error' };
                 }
@@ -290,29 +332,51 @@ export class LicitacionListComponent implements OnInit {
     onBulkDelete(): void {
         const count = this.selectedIds.size;
         if (count === 0) return;
-        if (!confirm(`¿Estás seguro que deseas eliminar permanentemente las ${count} licitaciones seleccionadas y todos sus recursos vinculados? Esta acción no se puede deshacer.`)) {
-            return;
-        }
+        
+        this.confirmModal = {
+            message: `¿Estás seguro que deseas eliminar permanentemente las ${count} licitaciones seleccionadas y todos sus recursos vinculados? Esta acción no se puede deshacer.`,
+            onCancel: () => this.confirmModal = null,
+            onConfirm: () => {
+                this.confirmModal = null;
+                this.executeBulkDelete(count);
+            }
+        };
+    }
 
+    private executeBulkDelete(count: number): void {
         this.deletingBulk = true;
-        this.deleteMessage = null;
+        this.deleteMessage = { text: 'Iniciando eliminación...', type: 'info' }; 
         const idsArray = Array.from(this.selectedIds);
+        
+        console.log("🔥 [onBulkDelete] Enviando request a servicio bulkDeleteLicitaciones:", idsArray);
 
         this.licitacionService.bulkDeleteLicitaciones(idsArray).subscribe({
             next: (res) => {
+                console.log("🔥 [onBulkDelete] Respuesta recibida HTTP:", res);
                 if (res.success) {
                     this.deleteMessage = { text: res.message || `${count} licitaciones enviadas a eliminar en segundo plano.`, type: 'info' };
+                    
+                    // Optimistic update
+                    this.optimisticDeletedIds.update(set => {
+                        const newSet = new Set(set);
+                        idsArray.forEach(id => newSet.add(id));
+                        return newSet;
+                    });
                     this.selectedIds.clear();
+
+                    console.log("🔥 [onBulkDelete] Configurando refresh en 2 segundos...");
                     setTimeout(() => {
                         this.licitacionService.getLicitaciones().subscribe();
-                    }, 1000); // Give background task time
+                    }, 2000); // Give background task time
                 } else {
+                    console.error("🔥 [onBulkDelete] Respuesta fallida logic:", res.message);
                     this.deleteMessage = { text: `Error en eliminación masiva: ${res.message}`, type: 'error' };
                 }
                 this.deletingBulk = false;
                 setTimeout(() => this.deleteMessage = null, 5000);
             },
             error: (err) => {
+                console.error("🔥 [onBulkDelete] Error Catch fatal en subscribe:", err);
                 this.deleteMessage = { text: 'Ocurrió un error de red al intentar la eliminación masiva.', type: 'error' };
                 this.deletingBulk = false;
                 setTimeout(() => this.deleteMessage = null, 5000);

@@ -21,17 +21,25 @@ export class AuthService {
 
     return this.http.post<any>(this.API_URL, body).pipe(
       tap(res => {
-        if (res?.access_token) {
-          localStorage.setItem('token', res.access_token);
-          if (res?.nombre_usuario) {
-            localStorage.setItem('nombre_usuario', res.nombre_usuario);
+        const payload = res?.data ?? res; // Compatibilidad: soporta ApiResponse envelope y respuesta directa
+        if (payload?.access_token) {
+          localStorage.setItem('token', payload.access_token);
+          if (payload?.nombre_usuario) {
+            localStorage.setItem('nombre_usuario', payload.nombre_usuario);
           }
-          if (res?.rol) {
-            localStorage.setItem('rol', res.rol);
+          if (payload?.rol) {
+            localStorage.setItem('rol', payload.rol);
+          }
+          if (payload?.cliente_id) {
+            localStorage.setItem('cliente_id', payload.cliente_id);
           }
         }
       })
     );
+  }
+
+  getClienteId(): string | null {
+    return localStorage.getItem('cliente_id');
   }
 
 isLogged(): boolean {
@@ -52,6 +60,7 @@ isLogged(): boolean {
     localStorage.removeItem('token');
     localStorage.removeItem('nombre_usuario');
     localStorage.removeItem('rol');
+    localStorage.removeItem('cliente_id');
     this.router.navigate(['/login']);
   }
 

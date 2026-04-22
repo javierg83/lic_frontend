@@ -1,0 +1,19 @@
+.config-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.upload-section {
+  padding: 1rem;
+  border: 1px dashed #ced4da;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+.upload-section h5 {
+  color: #495057;
+}
+
+.upload-section p {
+  font-size: 0.9rem;
+}
