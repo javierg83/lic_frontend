@@ -42,3 +42,11 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+
+.password-reset-container {
+  max-width: 400px;
+}
+
+.password-reset-container .input-group {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}

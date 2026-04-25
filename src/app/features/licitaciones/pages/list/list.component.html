@@ -62,11 +62,14 @@
                 <th class="sort-header" (click)="toggleSort('cantidad_items')">
                     Ítems {{ getSortIcon('cantidad_items') }}
                 </th>
+                <th class="sort-header" (click)="toggleSort('cantidad_con_candidatos')">
+                    Candidatos {{ getSortIcon('cantidad_con_candidatos') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('porcentaje_cobertura')">
+                    % {{ getSortIcon('porcentaje_cobertura') }}
+                </th>
                 <th class="sort-header" (click)="toggleSort('cantidad_homologados')">
                     Homol. {{ getSortIcon('cantidad_homologados') }}
-                </th>
-                <th class="sort-header" (click)="toggleSort('porcentaje_homologacion')">
-                    % {{ getSortIcon('porcentaje_homologacion') }}
                 </th>
                 <th class="sort-header" (click)="toggleSort('estado')">
                     Estado {{ getSortIcon('estado') }}
@@ -93,6 +96,7 @@
                         <option *ngFor="let name of uniqueNames()" [value]="name"></option>
                     </datalist>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -127,8 +131,14 @@
                     </ng-template>
                 </td>
                 <td>{{ item.cantidad_items || 0 }}</td>
+                <td>{{ item.cantidad_con_candidatos || 0 }}</td>
+                <td>
+                    {{ item.porcentaje_cobertura | number:'1.0-1' }}%
+                    <span *ngIf="item.alerta_homologacion" class="alert-bell" title="¡Cobertura de catálogo alcanzada!">
+                        🔔
+                    </span>
+                </td>
                 <td>{{ item.cantidad_homologados || 0 }}</td>
-                <td>{{ item.porcentaje_homologacion | number:'1.0-1' }}%</td>
                 <td>
                     <span class="status-badge">{{ item.estado }}</span>
                 </td>

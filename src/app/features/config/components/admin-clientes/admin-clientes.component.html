@@ -14,11 +14,11 @@
       <div class="card-body p-4">
         <h5 class="fw-bold mb-3">Registrar Nuevo Cliente</h5>
         <div class="row g-3">
-          <div class="col-md-5">
+          <div class="col-md-6">
             <label class="form-label small text-muted">Nombre de la Empresa</label>
             <input type="text" class="form-control" [(ngModel)]="newCliente.nombre" placeholder="Ej: TechSoluciones Ltda">
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label class="form-label small text-muted">RUT</label>
             <input type="text" class="form-control" [(ngModel)]="newCliente.rut" placeholder="76.xxx.xxx-x">
           </div>
@@ -29,6 +29,18 @@
               }
               Guardar Cliente
             </button>
+          </div>
+        </div>
+        
+        <!-- Credenciales Iniciales -->
+        <div class="row g-3 mt-2">
+          <div class="col-md-6">
+            <label class="form-label small text-muted">Usuario Admin (Opcional)</label>
+            <input type="text" class="form-control" [(ngModel)]="newCliente.admin_username_input" placeholder="admin_empresa">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small text-muted">Contraseña (Opcional)</label>
+            <input type="password" class="form-control" [(ngModel)]="newCliente.admin_password_input" placeholder="********">
           </div>
         </div>
       </div>
@@ -72,7 +84,7 @@
                 <td class="text-muted small">{{ cliente.created_at | date:'shortDate' }}</td>
                 <td class="text-end pe-4">
                   <button class="btn btn-outline-primary btn-sm" (click)="verDetalle(cliente)">
-                    <i class="bi bi-eye me-1"></i> Ver Parámetros
+                    <i class="bi bi-eye me-1"></i> Configuración
                   </button>
                 </td>
               </tr>
@@ -92,10 +104,49 @@
     <div class="custom-modal-overlay animate__animated animate__fadeIn">
       <div class="custom-modal-content animate__animated animate__zoomIn">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="mb-0 fw-bold">Parámetros: {{ selectedCliente.nombre }}</h4>
+          <h4 class="mb-0 fw-bold">Configuración: {{ selectedCliente.nombre }}</h4>
           <button class="btn-close" (click)="cerrarDetalle()"></button>
         </div>
         
+        <!-- SECCIÓN CREDENCIALES -->
+        <div class="mb-4 p-3 bg-light rounded border">
+          <h6 class="text-primary text-uppercase small fw-bold mb-3">
+            <i class="bi bi-person-badge me-2"></i>Acceso Administrador
+          </h6>
+          
+          <div *ngIf="selectedCliente.admin_username" class="d-flex align-items-center mb-3">
+            <span class="text-muted me-2">Usuario:</span>
+            <span class="badge bg-white text-dark border">{{ selectedCliente.admin_username }}</span>
+          </div>
+
+          <div *ngIf="!selectedCliente.admin_username" class="mb-3">
+            <div class="alert alert-info py-2 small">
+              Este cliente no tiene un usuario administrador asignado.
+            </div>
+            <div class="form-group mb-2">
+              <label class="small text-muted">Nombre de Usuario (Login)</label>
+              <input type="text" [(ngModel)]="newAdminUsername" class="form-control form-control-sm" placeholder="ej: admin_dental">
+            </div>
+            <div class="form-group mb-2">
+              <label class="small text-muted">Contraseña</label>
+              <input type="password" [(ngModel)]="newAdminPassword" class="form-control form-control-sm" placeholder="********">
+            </div>
+            <button class="btn btn-success btn-sm w-100" (click)="crearAdminUser()" [disabled]="!newAdminUsername || !newAdminPassword || isSavingUser">
+              Crear Usuario Inicial
+            </button>
+          </div>
+          
+          <div class="password-reset-container" *ngIf="selectedCliente.admin_username">
+            <label class="form-label small text-muted">Cambiar Contraseña</label>
+            <div class="input-group">
+              <input type="password" [(ngModel)]="newPassword" class="form-control" placeholder="Nueva clave">
+              <button class="btn btn-primary" (click)="cambiarPassword()" [disabled]="!newPassword || isUpdatingPassword">
+                {{ isUpdatingPassword ? '...' : 'Actualizar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="mb-4">
           <h6 class="text-muted text-uppercase small fw-bold mb-3">Palabras Clave de Derivación</h6>
           <div class="d-flex flex-wrap gap-2">
@@ -107,6 +158,44 @@
               <div class="text-muted italic small">
                 Este cliente no tiene palabras clave configuradas.
               </div>
+            }
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="text-primary text-uppercase small fw-bold mb-3">
+            <i class="bi bi-bell-fill me-2"></i>Alertas de Homologación
+          </h6>
+          <div class="p-3 bg-light rounded border">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" role="switch" id="switchAlerta" 
+                [(ngModel)]="selectedCliente.alerta_homologacion_activa">
+              <label class="form-check-label" for="switchAlerta">Activar alerta de cobertura</label>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label small text-muted">Umbral de Cobertura Mínima (%)</label>
+              <div class="input-group input-group-sm w-50">
+                <input type="number" class="form-control" [(ngModel)]="selectedCliente.alerta_homologacion_umbral" min="0" max="100">
+                <span class="input-group-text">%</span>
+              </div>
+              <div class="form-text" style="font-size: 0.75rem;">La alerta (🔔) aparecerá cuando la cantidad de ítems con candidatos alcance este porcentaje.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small text-muted">Correo de Contacto</label>
+              <input type="email" class="form-control form-control-sm" [(ngModel)]="selectedCliente.correo_contacto" placeholder="ej: compras@empresa.com">
+              <div class="form-text" style="font-size: 0.75rem;">Se utilizará para notificar (funcionalidad futura).</div>
+            </div>
+
+            <button class="btn btn-primary btn-sm" (click)="guardarConfiguracion()" [disabled]="isSavingConfig">
+              @if (isSavingConfig) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Guardar Configuración
+            </button>
+            @if (configSuccessMessage) {
+              <div class="text-success small mt-2">{{ configSuccessMessage }}</div>
             }
           </div>
         </div>

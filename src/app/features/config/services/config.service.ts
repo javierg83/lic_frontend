@@ -24,4 +24,12 @@ export class ConfigService {
   updatePreferencias(clienteId: string, keywords: string[]): Observable<any> {
     return this.http.put(`${this.apiUrl}/${clienteId}/preferencias`, { palabras_clave: keywords });
   }
+
+  getConfiguracion(clienteId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${clienteId}/configuracion`);
+  }
+
+  updateConfiguracion(clienteId: string, config: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${clienteId}/configuracion`, config);
+  }
 }

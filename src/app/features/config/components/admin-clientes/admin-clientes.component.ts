@@ -16,10 +16,12 @@ export class AdminClientesComponent implements OnInit {
   
   // Para creación
   showCreateForm = false;
-  newCliente: Partial<Cliente> = {
+  newCliente: any = {
     nombre: '',
     rut: '',
-    activo: true
+    activo: true,
+    admin_username_input: '',
+    admin_password_input: ''
   };
   isSaving = false;
 
@@ -57,7 +59,7 @@ export class AdminClientesComponent implements OnInit {
   toggleCreateForm(): void {
     this.showCreateForm = !this.showCreateForm;
     if (!this.showCreateForm) {
-      this.newCliente = { nombre: '', rut: '', activo: true };
+      this.newCliente = { nombre: '', rut: '', activo: true, admin_username_input: '', admin_password_input: '' };
     }
   }
 
@@ -93,5 +95,96 @@ export class AdminClientesComponent implements OnInit {
 
   cerrarDetalle(): void {
     this.selectedCliente = null;
+    this.newAdminUsername = '';
+    this.newAdminPassword = '';
+  }
+
+  // Creación de usuario inicial para cliente existente
+  newAdminUsername = '';
+  newAdminPassword = '';
+  isSavingUser = false;
+
+  crearAdminUser(): void {
+    if (!this.selectedCliente || !this.newAdminUsername || !this.newAdminPassword) return;
+
+    this.isSavingUser = true;
+    this.adminService.createAdminUser(this.selectedCliente.id, {
+      username: this.newAdminUsername,
+      password: this.newAdminPassword
+    }).subscribe({
+      next: (res) => {
+        if (res.success) {
+          alert('Usuario creado correctamente');
+          // Actualizar vista
+          if (this.selectedCliente) {
+            this.selectedCliente.admin_username = this.newAdminUsername;
+          }
+          this.newAdminUsername = '';
+          this.newAdminPassword = '';
+        }
+        this.isSavingUser = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isSavingUser = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Cambio de password
+  newPassword = '';
+  isUpdatingPassword = false;
+
+  cambiarPassword(): void {
+    if (!this.selectedCliente?.admin_username || !this.newPassword) return;
+
+    this.isUpdatingPassword = true;
+    this.adminService.updatePassword(this.selectedCliente.admin_username, this.newPassword).subscribe({
+      next: (res) => {
+        if (res.success) {
+          alert('Contraseña actualizada correctamente');
+          this.newPassword = '';
+        }
+        this.isUpdatingPassword = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isUpdatingPassword = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Configuración
+  isSavingConfig = false;
+  configSuccessMessage = '';
+
+  guardarConfiguracion(): void {
+    if (!this.selectedCliente) return;
+
+    this.isSavingConfig = true;
+    this.configSuccessMessage = '';
+
+    const configData = {
+      alerta_homologacion_umbral: this.selectedCliente.alerta_homologacion_umbral,
+      alerta_homologacion_activa: this.selectedCliente.alerta_homologacion_activa,
+      correo_contacto: this.selectedCliente.correo_contacto
+    };
+
+    this.adminService.updateConfiguracion(this.selectedCliente.id, configData).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.configSuccessMessage = 'Configuración guardada exitosamente';
+          setTimeout(() => this.configSuccessMessage = '', 3000);
+        }
+        this.isSavingConfig = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isSavingConfig = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

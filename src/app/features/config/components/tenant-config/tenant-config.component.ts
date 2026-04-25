@@ -22,6 +22,14 @@ export class TenantConfigComponent implements OnInit {
   isSavingKeywords = false;
   kwSuccess = false;
 
+  configData = {
+    alerta_homologacion_umbral: 60.0,
+    alerta_homologacion_activa: true,
+    correo_contacto: ''
+  };
+  isSavingConfig = false;
+  configSuccess = false;
+
   private authService = inject(AuthService);
   private configService = inject(ConfigService);
   private cdr = inject(ChangeDetectorRef);
@@ -38,6 +46,18 @@ export class TenantConfigComponent implements OnInit {
       next: (res) => {
         if (res.success && res.data?.palabras_clave) {
           this.keywords = res.data.palabras_clave;
+        }
+      }
+    });
+
+    this.configService.getConfiguracion(clienteId).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.configData = {
+            alerta_homologacion_umbral: res.data.alerta_homologacion_umbral ?? 60.0,
+            alerta_homologacion_activa: res.data.alerta_homologacion_activa ?? true,
+            correo_contacto: res.data.correo_contacto ?? ''
+          };
         }
       }
     });
@@ -125,6 +145,30 @@ export class TenantConfigComponent implements OnInit {
       error: (err) => {
         this.isSavingKeywords = false;
         console.error('Error guardando preferencias:', err);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  saveConfig(): void {
+    const clienteId = this.authService.getClienteId();
+    if (!clienteId) return;
+
+    this.isSavingConfig = true;
+    this.configSuccess = false;
+
+    this.configService.updateConfiguracion(clienteId, this.configData).subscribe({
+      next: (res) => {
+        this.isSavingConfig = false;
+        if (res.success) {
+          this.configSuccess = true;
+          setTimeout(() => this.configSuccess = false, 3000);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isSavingConfig = false;
+        console.error('Error guardando configuración:', err);
         this.cdr.detectChanges();
       }
     });

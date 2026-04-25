@@ -133,6 +133,23 @@ import { FormsModule } from '@angular/forms';
       border-radius: 4px;
       font-size: 0.8rem;
     }
+    .alert-bell {
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      display: inline-block;
+      animation: bell-ring 2s infinite ease-in-out;
+      transform-origin: top center;
+    }
+    @keyframes bell-ring {
+      0% { transform: rotate(0); }
+      10% { transform: rotate(15deg); }
+      20% { transform: rotate(-10deg); }
+      30% { transform: rotate(5deg); }
+      40% { transform: rotate(-5deg); }
+      50% { transform: rotate(2deg); }
+      60% { transform: rotate(-2deg); }
+      70%, 100% { transform: rotate(0); }
+    }
   `]
 })
 export class LicitacionListComponent implements OnInit {

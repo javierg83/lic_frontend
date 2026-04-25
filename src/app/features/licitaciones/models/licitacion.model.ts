@@ -26,8 +26,12 @@ export interface LicitacionListItem {
     presupuesto?: number;
     moneda?: string;
     cantidad_items?: number;
+    cantidad_con_candidatos?: number;
+    porcentaje_cobertura?: number;
     cantidad_homologados?: number;
     porcentaje_homologacion?: number;
+    alerta_homologacion?: boolean;
+    umbral_homologacion?: number;
     tipo_licitacion?: string;
 }
 
