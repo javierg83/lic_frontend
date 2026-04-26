@@ -98,6 +98,30 @@ body {
     }
   }
 
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      line-height: 1.2;
+      
+      .user-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+      }
+      
+      .company-name {
+        font-size: 0.75rem;
+        color: var(--accent);
+      }
+    }
+  }
+
   .btn-logout {
     background: var(--accent);
     color: white;

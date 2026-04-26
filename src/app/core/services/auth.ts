@@ -27,6 +27,9 @@ export class AuthService {
           if (payload?.nombre_usuario) {
             localStorage.setItem('nombre_usuario', payload.nombre_usuario);
           }
+          if (payload?.nombre_empresa) {
+            localStorage.setItem('nombre_empresa', payload.nombre_empresa);
+          }
           if (payload?.rol) {
             localStorage.setItem('rol', payload.rol);
           }
@@ -42,23 +45,32 @@ export class AuthService {
     return localStorage.getItem('cliente_id');
   }
 
-isLogged(): boolean {
-  const token = localStorage.getItem('token');
-  if (!token) return false;
-
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const expired = payload.exp * 1000 < Date.now();
-    return !expired;
-  } catch (e) {
-    return false;
+  getNombreUsuario(): string | null {
+    return localStorage.getItem('nombre_usuario');
   }
-}
+
+  getNombreEmpresa(): string | null {
+    return localStorage.getItem('nombre_empresa');
+  }
+
+  isLogged(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expired = payload.exp * 1000 < Date.now();
+      return !expired;
+    } catch (e) {
+      return false;
+    }
+  }
 
 
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('nombre_usuario');
+    localStorage.removeItem('nombre_empresa');
     localStorage.removeItem('rol');
     localStorage.removeItem('cliente_id');
     this.router.navigate(['/login']);

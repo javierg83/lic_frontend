@@ -167,7 +167,7 @@ export class AdminClientesComponent implements OnInit {
     this.configSuccessMessage = '';
 
     const configData = {
-      alerta_homologacion_umbral: this.selectedCliente.alerta_homologacion_umbral,
+      alerta_homologacion_umbral: this.selectedCliente.umbral,
       alerta_homologacion_activa: this.selectedCliente.alerta_homologacion_activa,
       correo_contacto: this.selectedCliente.correo_contacto
     };

@@ -66,8 +66,11 @@ export class TenantConfigComponent implements OnInit {
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      if (!file.name.endsWith('.csv')) {
-        this.uploadError = 'El catálogo multicliente debe ser un archivo .CSV';
+      const allowedExtensions = ['.csv', '.xls', '.xlsx'];
+      const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      
+      if (!allowedExtensions.includes(fileExtension)) {
+        this.uploadError = 'El catálogo debe ser un archivo .CSV o Excel (.XLS, .XLSX)';
         this.selectedFile = null;
         return;
       }
@@ -80,7 +83,7 @@ export class TenantConfigComponent implements OnInit {
   uploadFile(): void {
     const clienteId = this.authService.getClienteId();
     if (!this.selectedFile) {
-      this.uploadError = 'Debes seleccionar un archivo CSV primero.';
+      this.uploadError = 'Debes seleccionar un archivo CSV o Excel primero.';
       return;
     }
     if (!clienteId) {

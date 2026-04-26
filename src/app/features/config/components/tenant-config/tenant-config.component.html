@@ -16,7 +16,7 @@
                 <i class="bi bi-box-seam me-2 text-primary"></i> Mi Catálogo de Productos
               </h5>
               <p class="text-muted small mb-4">
-                Sube tu catálogo en formato **CSV** (columnas: codigo, nombre_producto, descripcion, precio_referencial). 
+                Sube tu catálogo en formato **CSV o Excel** (columnas: codigo, nombre_producto, descripcion, precio_referencial). 
                 Este catálogo se usará para la homologación inteligente de nuevas licitaciones.
               </p>
 
@@ -25,7 +25,7 @@
                   type="file" 
                   class="form-control form-control-sm" 
                   id="catalogFile" 
-                  accept=".csv" 
+                  accept=".csv, .xls, .xlsx" 
                   (change)="onFileSelected($event)"
                   [disabled]="isUploading"
                 >

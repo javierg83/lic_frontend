@@ -25,7 +25,11 @@
     </ul>
 
     <!-- DERECHA -->
-    <div class="navbar-right">
+    <div class="navbar-right d-flex align-items-center">
+      <div class="user-info me-3">
+        <span class="user-name">{{ userName }}</span>
+        <span class="company-name">{{ companyName }}</span>
+      </div>
       <button class="btn-logout" (click)="logout()">Logout</button>
     </div>
   </div>

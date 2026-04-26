@@ -55,6 +55,7 @@
           <tr>
             <th class="ps-4">Empresa</th>
             <th>RUT</th>
+            <th>Umbral</th>
             <th>Estado</th>
             <th>Creado</th>
             <th class="text-end pe-4">Acciones</th>
@@ -76,6 +77,11 @@
                   <div class="text-muted small">{{ cliente.id }}</div>
                 </td>
                 <td>{{ cliente.rut }}</td>
+                <td>
+                  <span class="badge bg-light text-dark border">
+                    {{ cliente.umbral }}%
+                  </span>
+                </td>
                 <td>
                   <span class="badge rounded-pill" [ngClass]="cliente.activo ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'">
                     {{ cliente.activo ? 'Activo' : 'Inactivo' }}
@@ -176,7 +182,7 @@
             <div class="mb-3">
               <label class="form-label small text-muted">Umbral de Cobertura Mínima (%)</label>
               <div class="input-group input-group-sm w-50">
-                <input type="number" class="form-control" [(ngModel)]="selectedCliente.alerta_homologacion_umbral" min="0" max="100">
+                <input type="number" class="form-control" [(ngModel)]="selectedCliente.umbral" min="0" max="100">
                 <span class="input-group-text">%</span>
               </div>
               <div class="form-text" style="font-size: 0.75rem;">La alerta (🔔) aparecerá cuando la cantidad de ítems con candidatos alcance este porcentaje.</div>

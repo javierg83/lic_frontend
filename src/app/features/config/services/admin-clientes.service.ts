@@ -12,6 +12,7 @@ export interface Cliente {
   palabras_clave?: string[];
   admin_username?: string; // Nuevo
   alerta_homologacion_umbral?: number;
+  umbral?: number;
   alerta_homologacion_activa?: boolean;
   correo_contacto?: string;
   // Para envío en creación
