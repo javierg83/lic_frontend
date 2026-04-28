@@ -30,17 +30,26 @@ export class TenantConfigComponent implements OnInit {
   isSavingConfig = false;
   configSuccess = false;
 
+  productos: any[] = [];
+  isLoadingProductos = false;
+
   private authService = inject(AuthService);
   private configService = inject(ConfigService);
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-    this.loadPreferencias();
+    this.loadData();
   }
 
-  loadPreferencias(): void {
+  loadData(): void {
     const clienteId = this.authService.getClienteId();
     if (!clienteId) return;
+
+    this.loadPreferencias(clienteId);
+    this.loadProductos(clienteId);
+  }
+
+  loadPreferencias(clienteId: string): void {
 
     this.configService.getPreferencias(clienteId).subscribe({
       next: (res) => {
@@ -59,6 +68,23 @@ export class TenantConfigComponent implements OnInit {
             correo_contacto: res.data.correo_contacto ?? ''
           };
         }
+      }
+    });
+  }
+
+  loadProductos(clienteId: string): void {
+    this.isLoadingProductos = true;
+    this.configService.getProductos(clienteId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.productos = res.data;
+        }
+        this.isLoadingProductos = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isLoadingProductos = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -101,6 +127,7 @@ export class TenantConfigComponent implements OnInit {
         if (response.success) {
           this.uploadSuccess = true;
           this.selectedFile = null;
+          this.loadProductos(clienteId);
         } else {
           this.uploadError = response.message || 'Error desconocido';
         }

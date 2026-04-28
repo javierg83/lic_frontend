@@ -15,6 +15,7 @@ export interface Cliente {
   umbral?: number;
   alerta_homologacion_activa?: boolean;
   correo_contacto?: string;
+  total_productos?: number;
   // Para envío en creación
   admin_username_input?: string;
   admin_password_input?: string;
@@ -57,5 +58,9 @@ export class AdminClientesService {
 
   updateConfiguracion(clienteId: string, config: any): Observable<any> {
     return this.http.put(`${environment.apiUrl}/clientes/${clienteId}/configuracion`, config);
+  }
+
+  getClienteProductos(clienteId: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/clientes/${clienteId}/productos`);
   }
 }

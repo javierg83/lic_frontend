@@ -32,4 +32,8 @@ export class ConfigService {
   updateConfiguracion(clienteId: string, config: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${clienteId}/configuracion`, config);
   }
+
+  getProductos(clienteId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${clienteId}/productos`);
+  }
 }

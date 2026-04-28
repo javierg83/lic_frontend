@@ -27,6 +27,8 @@ export class AdminClientesComponent implements OnInit {
 
   // Detalle
   selectedCliente: Cliente | null = null;
+  productos: any[] = [];
+  isLoadingProductos = false;
 
   private adminService = inject(AdminClientesService);
   private cdr = inject(ChangeDetectorRef);
@@ -81,20 +83,44 @@ export class AdminClientesComponent implements OnInit {
 
   verDetalle(cliente: Cliente): void {
     console.log('[AdminClientes] Cargando detalle para:', cliente.id);
+    this.productos = [];
+    this.isLoadingProductos = true;
+    
     this.adminService.getClienteDetail(cliente.id).subscribe({
       next: (res) => {
         console.log('[AdminClientes] Detalle recibido:', res);
         if (res.success) {
           this.selectedCliente = res.data;
+          this.loadProductos(cliente.id);
           this.cdr.detectChanges();
         }
       },
-      error: (err) => console.error('[AdminClientes] Error cargando detalle:', err)
+      error: (err) => {
+        console.error('[AdminClientes] Error cargando detalle:', err);
+        this.isLoadingProductos = false;
+      }
+    });
+  }
+
+  loadProductos(clienteId: string): void {
+    this.adminService.getClienteProductos(clienteId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.productos = res.data;
+        }
+        this.isLoadingProductos = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isLoadingProductos = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
   cerrarDetalle(): void {
     this.selectedCliente = null;
+    this.productos = [];
     this.newAdminUsername = '';
     this.newAdminPassword = '';
   }
