@@ -462,3 +462,198 @@ select:focus {
     }
   }
 }
+
+/* ======================================================
+   HOMOGENEIZED UI COMPONENTS (Tablas y Formularios)
+====================================================== */
+
+/* --- Formularios y Tarjetas (Sección 1 Cabecera style) --- */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.field label {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.value {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    color: #1f2937;
+    font-size: 0.875rem;
+    min-height: 2.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.edit-input, .filter-input, .filter-select {
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #111827;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.edit-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #111827;
+    background-color: white;
+    min-height: 120px;
+    resize: vertical;
+    box-sizing: border-box;
+    display: block;
+}
+
+.btn-save {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.20s;
+    background-color: #059669;
+    border: 1px solid #059669;
+    color: white;
+}
+
+.btn-save:hover { background-color: #047857; }
+.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-cancel {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.20s;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.btn-cancel:hover { background-color: #f3f4f6; }
+
+/* --- Tablas (Listado Licitaciones style) --- */
+.table-container {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    overflow-x: auto;
+}
+
+.table-container.no-padding {
+    padding: 0;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.header-row h2 { margin: 0; font-size: 1.5rem; }
+
+/* Sobrescribir estilos de tabla globales previos si es necesario */
+table.data-table, .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+}
+
+table.data-table th, .table-container th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+table.data-table td, .table-container td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #111827;
+    font-size: 0.875rem;
+}
+
+/* Badges comunes */
+.badge-info {
+    background-color: #e1effe;
+    color: #1e429f;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: #def7ec;
+    color: #03543f;
+}
+
+/* Custom Modals/Overlays globales */
+.custom-modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+    z-index: 1050;
+    backdrop-filter: blur(2px);
+}
+.custom-modal-content {
+    background: white; padding: 2rem; border-radius: 8px; width: 800px; max-width: 95%;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+

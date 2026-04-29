@@ -123,6 +123,39 @@ export class AdminClientesComponent implements OnInit {
     this.productos = [];
     this.newAdminUsername = '';
     this.newAdminPassword = '';
+    this.isEditingCliente = false;
+  }
+
+  // Edición de detalles del cliente
+  isEditingCliente = false;
+  isSavingClientDetails = false;
+
+  toggleEditCliente(): void {
+    this.isEditingCliente = !this.isEditingCliente;
+  }
+
+  saveClienteDetails(): void {
+    if (!this.selectedCliente) return;
+    this.isSavingClientDetails = true;
+    const updateData = {
+      nombre: this.selectedCliente.nombre,
+      rut: this.selectedCliente.rut,
+      activo: this.selectedCliente.activo
+    };
+    this.adminService.updateCliente(this.selectedCliente.id, updateData).subscribe({
+      next: (res) => {
+        if (res.success) {
+           this.isEditingCliente = false;
+           this.loadClientes(); // Reload list to reflect changes
+        }
+        this.isSavingClientDetails = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isSavingClientDetails = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // Creación de usuario inicial para cliente existente

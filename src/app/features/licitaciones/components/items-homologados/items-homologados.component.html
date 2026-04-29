@@ -1,24 +1,26 @@
-<div class="items-container">
-    <div class="items-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <span>4.1 Ítems Homologados</span>
-        <button class="btn-primary" (click)="saveSelections()" [disabled]="loading() || saving()"
+<div class="card mt-20">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="header-content">
+            <span>4.1 Ítems Homologados</span>
+        </div>
+        <button class="btn-save" (click)="saveSelections()" [disabled]="loading() || saving()"
             *ngIf="homologaciones().length > 0">
             {{ saving() ? 'Guardando...' : 'Guardar Selecciones' }}
         </button>
     </div>
 
-    <div class="items-card">
-        <div *ngIf="loading()" class="loading-spinner">
+    <div class="card-body">
+        <div *ngIf="loading()" class="loading-state">
             Cargando ítems homologados...
         </div>
 
-        <div *ngIf="error()" class="error-message">
+        <div *ngIf="error()" class="error-state">
             {{ error() }}
         </div>
 
         <div *ngIf="!loading() && !error()">
-            <div *ngIf="homologaciones().length > 0; else emptyState">
-                <table class="items-table">
+            <div *ngIf="homologaciones().length > 0; else emptyState" class="table-container no-padding">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th colspan="3" class="section-header solicited-header">Ítems Solicitados (Extraídos)</th>
@@ -45,7 +47,7 @@
                     <tbody>
                         <ng-container *ngFor="let item of paginatedHomologaciones(); let itemIndex = index">
                             <ng-container *ngIf="item.candidatos && item.candidatos.length > 0; else noCandidatos">
-                                <tr *ngFor="let candidato of item.candidatos; let isFirst = first">
+                                <tr *ngFor="let candidato of item.candidatos; let isFirst = first; let isLast = last" [style.border-bottom]="isLast ? '2px solid #6b7280' : ''">
                                     <!-- Columnas del Ítem Solicitado (con rowspan para agrupar) -->
                                     <!-- ngIf applies when inside the loop to determine grouping layout -->
                                     <td *ngIf="isFirst" [attr.rowspan]="item.candidatos.length">{{ (currentPage() - 1) *
@@ -88,7 +90,7 @@
                             </ng-container>
 
                             <ng-template #noCandidatos>
-                                <tr class="no-match-row">
+                                <tr class="no-match-row" style="border-bottom: 2px solid #6b7280;">
                                     <!-- Ítem solicitado -->
                                     <td>{{ (currentPage() - 1) * pageSize() + itemIndex + 1 }}</td>
                                     <td><strong>{{ item.nombre_item || item.item_key || '' }}</strong></td>
@@ -117,21 +119,19 @@
                     </select>
                 </div>
                 <div class="pagination-controls" style="display: flex; align-items: center; gap: 10px;">
-                    <button class="btn-pagination" (click)="changePage(currentPage() - 1)"
-                        [disabled]="currentPage() === 1" [ngStyle]="{'opacity': currentPage() === 1 ? '0.5' : '1'}"
-                        style="padding: 4px 12px; background-color: #fff; border: 1px solid #d1d5db; border-radius: 4px; color: #495057; cursor: pointer;">Anterior</button>
+                    <button class="btn-cancel" (click)="changePage(currentPage() - 1)"
+                        [disabled]="currentPage() === 1" [ngStyle]="{'opacity': currentPage() === 1 ? '0.5' : '1'}">Anterior</button>
                     <span style="font-weight: 500;">Página {{ currentPage() }} de {{ totalPages() }}</span>
-                    <button class="btn-pagination" (click)="changePage(currentPage() + 1)"
+                    <button class="btn-cancel" (click)="changePage(currentPage() + 1)"
                         [disabled]="currentPage() === totalPages()"
-                        [ngStyle]="{'opacity': currentPage() === totalPages() ? '0.5' : '1'}"
-                        style="padding: 4px 12px; background-color: #fff; border: 1px solid #d1d5db; border-radius: 4px; color: #495057; cursor: pointer;">Siguiente</button>
+                        [ngStyle]="{'opacity': currentPage() === totalPages() ? '0.5' : '1'}">Siguiente</button>
                 </div>
             </div>
 
             <ng-template #emptyState>
-                <div class="empty-state-card">
+                <div class="no-data">
                     <p>No hay ítems homologados detectados para esta licitación.</p>
-                    <p class="footer-note">Asegúrese de que el proceso de homologación haya sido completado en el
+                    <p style="font-size: 0.85rem; color: #9ca3af;">Asegúrese de que el proceso de homologación haya sido completado en el
                         backend o que el catálogo posea coincidencias para este rubro.</p>
                 </div>
             </ng-template>

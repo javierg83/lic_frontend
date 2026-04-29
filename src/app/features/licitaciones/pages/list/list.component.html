@@ -4,7 +4,7 @@
         <div style="display: flex; gap: 1rem; align-items: center;">
             <input 
                 type="text" 
-                class="search-input" 
+                class="filter-input" style="width: 250px;"
                 placeholder="Buscar por nombre, ID, estado..." 
                 [ngModel]="searchTerm()" 
                 (ngModelChange)="searchTerm.set($event)">
@@ -173,11 +173,11 @@
 </div>
 
 <!-- Custom Confirm Modal -->
-<div class="modal-backdrop" *ngIf="confirmModal != null">
-    <div class="modal-box">
+<div class="custom-modal-overlay" *ngIf="confirmModal != null">
+    <div class="custom-modal-content" style="max-width: 400px; text-align: center;">
         <h3 style="margin-top: 0; color: #111827; font-size: 1.25rem;">Confirmar Acción</h3>
         <p style="color: #4b5563; margin: 1rem 0; line-height: 1.5;">{{ confirmModal.message }}</p>
-        <div class="modal-actions">
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
             <button class="btn-cancel" (click)="confirmModal.onCancel()">Cancelar</button>
             <button class="btn-delete" style="padding: 0.6rem 1.25rem; background-color: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;" (click)="confirmModal.onConfirm()">
                 Eliminar Definitivamente

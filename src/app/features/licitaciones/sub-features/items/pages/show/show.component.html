@@ -1,6 +1,8 @@
-<div class="items-container">
-    <div class="items-header">
-        4. Ítems Solicitados
+<div class="card mt-20">
+    <div class="card-header">
+        <div class="header-content">
+            <span>4. Ítems Solicitados</span>
+        </div>
     </div>
 
     <!-- Notification Alert -->
@@ -8,17 +10,18 @@
         {{ notification().message }}
     </div>
 
-    <div class="items-card">
-        <div *ngIf="loading()" class="loading-spinner">
+    <div class="card-body">
+        <div *ngIf="loading()" class="loading-state">
             Cargando ítems...
         </div>
 
-        <div *ngIf="error()" class="error-message">
+        <div *ngIf="error()" class="error-state">
             {{ error() }}
         </div>
 
         <div *ngIf="!loading() && !error()">
-            <table class="items-table">
+            <div class="table-container no-padding">
+                <table class="data-table">
                 <thead>
                     <tr>
                         <th class="col-num">N°</th>
@@ -83,22 +86,23 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
+                </table>
+            </div>
 
-            <div class="pagination-footer">
-                <div class="items-per-page">
+            <div class="pagination-footer mt-15" style="margin-top: 15px; display: flex; justify-content: flex-end; align-items: center; gap: 15px; font-size: 0.85rem;">
+                <div class="items-per-page" style="display: flex; align-items: center; gap: 10px;">
                     Ítems por página:
-                    <select (change)="onChangePageSize($event)" [value]="pageSize()">
+                    <select (change)="onChangePageSize($event)" [value]="pageSize()" style="padding: 5px; border: 1px solid #ced4da; border-radius: 4px;">
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
                     </select>
                 </div>
-                <div class="pagination-controls">
-                    <button class="btn-pagination" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+                <div class="pagination-controls" style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn-cancel" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1" [ngStyle]="{'opacity': currentPage() === 1 ? '0.5' : '1'}">Anterior</button>
                     <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
-                    <button class="btn-pagination" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+                    <button class="btn-cancel" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()" [ngStyle]="{'opacity': currentPage() === totalPages() ? '0.5' : '1'}">Siguiente</button>
                 </div>
             </div>
         </div>

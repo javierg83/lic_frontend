@@ -44,6 +44,10 @@ export class AdminClientesService {
     return this.http.post(`${this.apiUrl}/`, body);
   }
 
+  updateCliente(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
+
   getClienteDetail(clienteId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${clienteId}`);
   }

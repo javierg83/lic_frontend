@@ -35,7 +35,11 @@
             <div class="card-body">
                 <div class="grid-container">
                     <div class="field">
-                        <label>ID Licitación / Código</label>
+                        <label>ID Interno (BD)</label>
+                        <div class="value">{{ licitacion()?.id || 'No asignado' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Código Externo</label>
                         <div *ngIf="!isEditing()" class="value">{{ licitacion()?.codigo || 'No asignado' }}</div>
                         <input *ngIf="isEditing()" [(ngModel)]="editForm().codigo" class="edit-input">
                     </div>
@@ -153,8 +157,8 @@
                     No hay registros de auditoría disponibles para esta licitación.
                 </div>
 
-                <div *ngIf="auditoria().length > 0" class="audit-table-container">
-                    <table class="audit-table">
+                <div *ngIf="auditoria().length > 0" class="table-container no-padding">
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Concepto</th>
@@ -254,8 +258,8 @@
                     </div>
 
                     <!-- Breakdown Table -->
-                    <div class="audit-table-container">
-                        <table class="audit-table">
+                    <div class="table-container no-padding">
+                        <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>Acción / Etapa</th>

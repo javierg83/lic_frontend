@@ -24,58 +24,6 @@
     color: #4b5563;
 }
 
-.card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.card-header {
-    background-color: #2563eb;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.field label {
-    display: block;
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
-}
-
-.value {
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
-    padding: 0.5rem 0.75rem;
-    color: #1f2937;
-    font-size: 0.875rem;
-    min-height: 2.25rem;
-    display: flex;
-    align-items: center;
-}
-
-.description-section label {
-    display: block;
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-bottom: 0.5rem;
-}
 
 .description-box {
     background-color: #f9fafb;
@@ -124,18 +72,6 @@
     border: 1px solid #fecaca;
 }
 
-@media (max-width: 1024px) {
-    .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    .grid-container {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Edit & Notification Styles */
 .header-content {
     display: flex;
@@ -161,31 +97,6 @@
     border-color: white;
 }
 
-.edit-input {
-    width: 100%;
-    padding: 0.4rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    color: #111827;
-    background-color: white;
-    box-sizing: border-box;
-}
-
-.edit-textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    color: #111827;
-    background-color: white;
-    min-height: 120px;
-    resize: vertical;
-    box-sizing: border-box;
-    display: block;
-}
-
 .action-buttons-inline {
     display: flex;
     justify-content: flex-end;
@@ -193,37 +104,6 @@
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid #f3f4f6;
-}
-
-.btn-save,
-.btn-cancel {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.20s;
-}
-
-.btn-save {
-    background-color: #059669;
-    border: 1px solid #059669;
-    color: white;
-}
-
-.btn-save:hover {
-    background-color: #047857;
-}
-
-.btn-save:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.btn-cancel {
-    background-color: white;
-    border: 1px solid #d1d5db;
-    color: #374151;
 }
 
 .notification-bar {
@@ -355,42 +235,6 @@
     text-align: center;
     color: #6b7280;
     font-style: italic;
-}
-
-/* Styles for Initial Documents Table */
-.data-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-top: 10px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.data-table th, .data-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.data-table th {
-    background-color: #f9fafb;
-    color: #4b5563;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-}
-
-.data-table tbody tr:hover {
-    background-color: #f9fafb;
-}
-
-.file-name {
-    color: #111827;
-    font-size: 0.875rem;
 }
 
 /* Status Badges */

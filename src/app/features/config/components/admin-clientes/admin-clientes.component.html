@@ -10,20 +10,22 @@
 
   <!-- Formulario de Creación -->
   @if (showCreateForm) {
-    <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInDown">
-      <div class="card-body p-4">
-        <h5 class="fw-bold mb-3">Registrar Nuevo Cliente</h5>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label small text-muted">Nombre de la Empresa</label>
-            <input type="text" class="form-control" [(ngModel)]="newCliente.nombre" placeholder="Ej: TechSoluciones Ltda">
+    <div class="card">
+      <div class="card-header" style="background-color: #f8f9fa; color: #111827; border-bottom: 1px solid #e5e7eb;">
+        <span>Registrar Nuevo Cliente</span>
+      </div>
+      <div class="card-body">
+        <div class="grid-container">
+          <div class="field" style="grid-column: span 2;">
+            <label>Nombre de la Empresa</label>
+            <input type="text" class="edit-input" [(ngModel)]="newCliente.nombre" placeholder="Ej: TechSoluciones Ltda">
           </div>
-          <div class="col-md-3">
-            <label class="form-label small text-muted">RUT</label>
-            <input type="text" class="form-control" [(ngModel)]="newCliente.rut" placeholder="76.xxx.xxx-x">
+          <div class="field">
+            <label>RUT</label>
+            <input type="text" class="edit-input" [(ngModel)]="newCliente.rut" placeholder="76.xxx.xxx-x">
           </div>
-          <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-success w-100" [disabled]="isSaving || !newCliente.nombre || !newCliente.rut" (click)="saveCliente()">
+          <div class="field" style="display: flex; align-items: flex-end;">
+            <button class="btn-save" style="width: 100%;" [disabled]="isSaving || !newCliente.nombre || !newCliente.rut" (click)="saveCliente()">
               @if (isSaving) {
                 <span class="spinner-border spinner-border-sm me-2"></span>
               }
@@ -33,14 +35,15 @@
         </div>
         
         <!-- Credenciales Iniciales -->
-        <div class="row g-3 mt-2">
-          <div class="col-md-6">
-            <label class="form-label small text-muted">Usuario Admin (Opcional)</label>
-            <input type="text" class="form-control" [(ngModel)]="newCliente.admin_username_input" placeholder="admin_empresa">
+        <h4 style="font-size: 0.85rem; color: #4b5563; margin-top: 1rem; margin-bottom: 1rem;">Credenciales Iniciales</h4>
+        <div class="grid-container">
+          <div class="field" style="grid-column: span 2;">
+            <label>Usuario Admin (Opcional)</label>
+            <input type="text" class="edit-input" [(ngModel)]="newCliente.admin_username_input" placeholder="admin_empresa">
           </div>
-          <div class="col-md-6">
-            <label class="form-label small text-muted">Contraseña (Opcional)</label>
-            <input type="password" class="form-control" [(ngModel)]="newCliente.admin_password_input" placeholder="********">
+          <div class="field" style="grid-column: span 2;">
+            <label>Contraseña (Opcional)</label>
+            <input type="password" class="edit-input" [(ngModel)]="newCliente.admin_password_input" placeholder="********">
           </div>
         </div>
       </div>
@@ -48,20 +51,19 @@
   }
 
   <!-- Listado de Clientes -->
-  <div class="card shadow-sm border-0 overflow-hidden">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="bg-light">
-          <tr>
-            <th class="ps-4">Empresa</th>
-            <th>RUT</th>
-            <th>Umbral</th>
-            <th>Estado</th>
-            <th>Creado</th>
-            <th class="text-end pe-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
+  <div class="table-container no-padding">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="ps-4">Empresa</th>
+          <th>RUT</th>
+          <th>Umbral</th>
+          <th>Estado</th>
+          <th>Creado</th>
+          <th class="text-end pe-4">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
           @if (isLoading) {
             <tr>
               <td colspan="5" class="text-center py-5">
@@ -100,9 +102,8 @@
               </tr>
             }
           }
-        </tbody>
-      </table>
-    </div>
+      </tbody>
+    </table>
   </div>
 
   <!-- Modal Detalle Parámetros (Simple overlay) -->
@@ -111,15 +112,52 @@
       <div class="custom-modal-content animate__animated animate__zoomIn">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h4 class="mb-0 fw-bold">Configuración: {{ selectedCliente.nombre }}</h4>
-            <div class="text-muted small">
+            <div class="d-flex align-items-center gap-2">
+              <h4 class="mb-0 fw-bold">Configuración: {{ selectedCliente.nombre }}</h4>
+              <button class="btn btn-sm btn-outline-secondary" (click)="toggleEditCliente()" title="Editar Cliente">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+            <div class="text-muted small mt-1">
               <i class="bi bi-box-seam me-1"></i> Catálogo: 
               <span class="badge bg-info-soft text-info ms-1">{{ selectedCliente.total_productos || 0 }} productos</span>
             </div>
           </div>
           <button class="btn-close" (click)="cerrarDetalle()"></button>
         </div>
-        
+
+        @if (isEditingCliente) {
+          <div class="card mb-4 border-primary">
+            <div class="card-body bg-light">
+              <h6 class="text-primary fw-bold mb-3"><i class="bi bi-pencil-square me-2"></i>Editar Datos del Cliente</h6>
+              <div class="row g-3">
+                <div class="col-md-5">
+                  <label class="form-label small text-muted">Nombre de la Empresa</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="selectedCliente.nombre">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label small text-muted">RUT</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="selectedCliente.rut">
+                </div>
+                <div class="col-md-2 d-flex align-items-end mb-1">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="switchActivo" [(ngModel)]="selectedCliente.activo">
+                    <label class="form-check-label small" for="switchActivo">Activo</label>
+                  </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button class="btn btn-primary btn-sm w-100" (click)="saveClienteDetails()" [disabled]="isSavingClientDetails">
+                    @if (isSavingClientDetails) {
+                      <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Guardar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
         <div class="custom-modal-body" style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
           <!-- SECCIÓN CREDENCIALES -->
           <div class="mb-4 p-3 bg-light rounded border">
@@ -218,43 +256,41 @@
             <h6 class="text-primary text-uppercase small fw-bold mb-3">
               <i class="bi bi-list-ul me-2"></i>Listado de Catálogo
             </h6>
-            <div class="card border shadow-none overflow-hidden">
-              <div class="table-responsive" style="max-height: 400px;">
-                <table class="table table-sm table-hover mb-0" style="font-size: 0.85rem;">
-                  <thead class="bg-light sticky-top">
+            <div class="table-container no-padding" style="max-height: 400px; overflow-y: auto;">
+              <table class="data-table" style="font-size: 0.85rem;">
+                <thead class="bg-light sticky-top">
+                  <tr>
+                    <th class="ps-3">Código</th>
+                    <th>Nombre Producto</th>
+                    <th>Precio Ref.</th>
+                    <th class="pe-3">Descripción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if (isLoadingProductos) {
                     <tr>
-                      <th class="ps-3">Código</th>
-                      <th>Nombre Producto</th>
-                      <th>Precio Ref.</th>
-                      <th class="pe-3">Descripción</th>
+                      <td colspan="4" class="text-center py-4">
+                        <span class="spinner-border spinner-border-sm text-primary"></span>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    @if (isLoadingProductos) {
+                  } @else {
+                    @for (prod of productos; track prod.id) {
                       <tr>
-                        <td colspan="4" class="text-center py-4">
-                          <span class="spinner-border spinner-border-sm text-primary"></span>
+                        <td class="ps-3"><code class="text-primary">{{ prod.codigo || '-' }}</code></td>
+                        <td class="fw-bold">{{ prod.nombre_producto }}</td>
+                        <td>{{ prod.precio_referencial | currency:'CLP':'$':'1.0-0' }}</td>
+                        <td class="text-muted pe-3">
+                          <small>{{ prod.descripcion || '-' }}</small>
                         </td>
                       </tr>
-                    } @else {
-                      @for (prod of productos; track prod.id) {
-                        <tr>
-                          <td class="ps-3"><code class="text-primary">{{ prod.codigo || '-' }}</code></td>
-                          <td class="fw-bold">{{ prod.nombre_producto }}</td>
-                          <td>{{ prod.precio_referencial | currency:'CLP':'$':'1.0-0' }}</td>
-                          <td class="text-muted pe-3">
-                            <small>{{ prod.descripcion || '-' }}</small>
-                          </td>
-                        </tr>
-                      } @empty {
-                        <tr>
-                          <td colspan="4" class="text-center py-4 text-muted">No hay productos cargados en el catálogo.</td>
-                        </tr>
-                      }
+                    } @empty {
+                      <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No hay productos cargados en el catálogo.</td>
+                      </tr>
                     }
-                  </tbody>
-                </table>
-              </div>
+                  }
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
