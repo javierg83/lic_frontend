@@ -120,9 +120,9 @@ export class AdminClientesComponent implements OnInit {
 
   cerrarDetalle(): void {
     this.selectedCliente = null;
-    this.productos = [];
-    this.newAdminUsername = '';
-    this.newAdminPassword = '';
+    this.showUserForm = false;
+    this.editingUser = null;
+    this.newUser = { username: '', password: '', nombre_usuario: '', rol: 'cliente' };
     this.isEditingCliente = false;
   }
 
@@ -158,35 +158,93 @@ export class AdminClientesComponent implements OnInit {
     });
   }
 
-  // Creación de usuario inicial para cliente existente
-  newAdminUsername = '';
-  newAdminPassword = '';
+  // --- GESTIÓN DE USUARIOS ---
+  showUserForm = false;
   isSavingUser = false;
+  editingUser: any = null;
+  newUser: any = { username: '', password: '', nombre_usuario: '', rol: 'cliente' };
 
-  crearAdminUser(): void {
-    if (!this.selectedCliente || !this.newAdminUsername || !this.newAdminPassword) return;
+  toggleUserForm(user?: any): void {
+    if (user) {
+      this.editingUser = user;
+      this.newUser = { ...user, password: '' }; // Password vacío al editar a menos que lo cambie
+      this.showUserForm = true;
+    } else {
+      this.editingUser = null;
+      this.newUser = { username: '', password: '', nombre_usuario: '', rol: 'cliente' };
+      this.showUserForm = !this.showUserForm;
+    }
+  }
 
+  saveUser(): void {
+    if (!this.selectedCliente) return;
+    
     this.isSavingUser = true;
-    this.adminService.createAdminUser(this.selectedCliente.id, {
-      username: this.newAdminUsername,
-      password: this.newAdminPassword
-    }).subscribe({
-      next: (res) => {
-        if (res.success) {
-          alert('Usuario creado correctamente');
-          // Actualizar vista
-          if (this.selectedCliente) {
-            this.selectedCliente.admin_username = this.newAdminUsername;
+    if (this.editingUser) {
+      // Actualizar usuario existente
+      const updateData: any = {
+        nombre_usuario: this.newUser.nombre_usuario,
+        rol: this.newUser.rol
+      };
+      if (this.newUser.password) {
+        updateData.password = this.newUser.password;
+      }
+
+      this.adminService.updateUser(this.editingUser.id, updateData).subscribe({
+        next: (res) => {
+          if (res.success) {
+            // Actualizar la lista en memoria
+            const index = this.selectedCliente!.usuarios!.findIndex(u => u.id === this.editingUser.id);
+            if (index !== -1) {
+              this.selectedCliente!.usuarios![index] = res.data;
+            }
+            this.showUserForm = false;
+            this.editingUser = null;
           }
-          this.newAdminUsername = '';
-          this.newAdminPassword = '';
+          this.isSavingUser = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.isSavingUser = false;
+          this.cdr.detectChanges();
         }
+      });
+    } else {
+      // Crear nuevo usuario
+      if (!this.newUser.username || !this.newUser.password || !this.newUser.nombre_usuario) {
         this.isSavingUser = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.isSavingUser = false;
-        this.cdr.detectChanges();
+        return;
+      }
+
+      this.adminService.createAdminUser(this.selectedCliente.id, this.newUser).subscribe({
+        next: (res) => {
+          if (res.success) {
+            if (!this.selectedCliente!.usuarios) {
+              this.selectedCliente!.usuarios = [];
+            }
+            this.selectedCliente!.usuarios.push(res.data);
+            this.showUserForm = false;
+          }
+          this.isSavingUser = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.isSavingUser = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  deleteUser(user: any): void {
+    if (!confirm(`¿Estás seguro de eliminar al usuario ${user.username}?`)) return;
+
+    this.adminService.deleteUser(user.id).subscribe({
+      next: (res) => {
+        if (res.success && this.selectedCliente && this.selectedCliente.usuarios) {
+          this.selectedCliente.usuarios = this.selectedCliente.usuarios.filter(u => u.id !== user.id);
+          this.cdr.detectChanges();
+        }
       }
     });
   }

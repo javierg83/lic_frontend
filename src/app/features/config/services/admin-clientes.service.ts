@@ -16,6 +16,7 @@ export interface Cliente {
   alerta_homologacion_activa?: boolean;
   correo_contacto?: string;
   total_productos?: number;
+  usuarios?: any[];
   // Para envío en creación
   admin_username_input?: string;
   admin_password_input?: string;
@@ -58,6 +59,14 @@ export class AdminClientesService {
 
   createAdminUser(clienteId: string, user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/${clienteId}/usuarios`, user);
+  }
+
+  updateUser(userId: number, user: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/usuarios/${userId}`, user);
+  }
+
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/usuarios/${userId}`);
   }
 
   updateConfiguracion(clienteId: string, config: any): Observable<any> {
