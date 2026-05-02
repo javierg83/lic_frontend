@@ -47,6 +47,12 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadChildren: () => import('./features/config/config.routes').then(m => m.CONFIG_ROUTES)
   },
+  {
+    path: 'admin/monitoring',
+    component: MainLayoutComponent,
+    canMatch: [authGuard],
+    loadChildren: () => import('./features/monitoring/monitoring.routes').then(m => m.MONITORING_ROUTES)
+  },
 
   { path: '**', redirectTo: 'login' }
 

@@ -24,6 +24,10 @@ export class NavbarComponent {
     return this.auth.getNombreEmpresa() || 'Licitaciones IA';
   }
 
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+
   logout() {
     this.auth.logout();
   }

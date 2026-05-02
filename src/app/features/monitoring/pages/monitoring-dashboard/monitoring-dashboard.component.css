@@ -1,0 +1,48 @@
+.monitoring-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.monitoring-card:hover {
+    transform: translateY(-5px);
+}
+
+.bg-purple {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.usage-progress {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.table-row:last-child {
+    border-bottom: none !important;
+}
+
+.progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+.bg-orange {
+    background-color: #fd7e14;
+}
+
+.general-overview-card {
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1c1e 0%, #2d3436 100%) !important;
+  border: none;
+}
+
+.bg-primary-light {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-info-light {
+  background-color: rgba(13, 202, 240, 0.1);
+}

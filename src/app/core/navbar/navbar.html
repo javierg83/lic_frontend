@@ -22,6 +22,9 @@
       <li>
         <a routerLink="/config" routerLinkActive="active">Configuración</a>
       </li>
+      <li *ngIf="isAdmin()">
+        <a routerLink="/admin/monitoring" routerLinkActive="active">Monitoreo</a>
+      </li>
     </ul>
 
     <!-- DERECHA -->
