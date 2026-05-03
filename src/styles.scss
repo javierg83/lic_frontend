@@ -657,3 +657,28 @@ table.data-table td, .table-container td {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+// ── LicitaMatch Design Tokens ──────────────────────────────────────────────
+:root {
+  // Paleta teal (acción principal landing)
+  --lm-teal-50:   #E1F5EE;
+  --lm-teal-200:  #5DCAA5;
+  --lm-teal-400:  #1D9E75;
+  --lm-teal-600:  #0F6E56;
+  --lm-teal-light: #9FE1CB;
+
+  // Neutros landing
+  --lm-bg-page:    #fafaf8;
+  --lm-bg-surface: #ffffff;
+  --lm-bg-subtle:  #f3f2ec;
+  --lm-text-primary:   #1a1a18;
+  --lm-text-secondary: #5f5e5a;
+  --lm-text-muted:     #999890;
+  --lm-border:         rgba(0, 0, 0, 0.10);
+  --lm-border-med:     rgba(0, 0, 0, 0.18);
+
+  // Radios
+  --lm-radius-sm: 8px;
+  --lm-radius-md: 12px;
+  --lm-radius-lg: 16px;
+}
+

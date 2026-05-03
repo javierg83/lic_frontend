@@ -1,0 +1,35 @@
+<div class="public-layout">
+
+  <!-- NAV -->
+  <nav class="lm-nav">
+    <div class="lm-nav__inner">
+      <a routerLink="/" class="lm-nav__logo">
+        IM<span> Licitaciones</span>
+      </a>
+      <ul class="lm-nav__links">
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#roi">Calculadora</a></li>
+        <li><a href="#planes">Precios</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a routerLink="/auth/login" class="lm-btn lm-btn--primary lm-btn--sm">
+        Ingresar al sistema
+      </a>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO DE LA RUTA HIJA (LandingComponent) -->
+  <main class="lm-main">
+    <router-outlet />
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="lm-footer">
+    <div class="lm-footer__inner">
+      <span class="lm-footer__logo">IM<span> Licitaciones</span></span>
+      <p>© {{ currentYear }} IM Licitaciones. Todos los derechos reservados.</p>
+      <a routerLink="/auth/login" class="lm-footer__link">Iniciar sesión</a>
+    </div>
+  </footer>
+
+</div>

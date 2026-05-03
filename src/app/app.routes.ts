@@ -4,19 +4,39 @@ import { Login } from './core/auth_user/pages/login/login';
 import { authGuard } from './core/guards/auth-guard';
 import { AuthLayoutComponent } from './layout/auth-layout';
 import { MainLayoutComponent } from './layout/main-layout';
+import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { DEMO_ROUTES } from './features/demo/demo.routes';
 import { MAIN_ROUTES } from './features/main/main.routes';
 
 export const routes: Routes = [
 
+  // ── RUTAS PÚBLICAS (Landing) ──────────────────────────────────────────
   {
     path: '',
+    component: PublicLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/landing/landing.component').then(m => m.LandingComponent)
+      }
+    ]
+  },
+
+  // ── AUTH (login) ──────────────────────────────────────────────────────
+  {
+    path: 'auth',
     component: AuthLayoutComponent,
     children: [
       { path: 'login', component: Login },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
+
+  // Redirección de compatibilidad para el login antiguo
+  { path: 'login', redirectTo: 'auth/login' },
+
+  // ── DASHBOARD Y SISTEMA (Protegido) ───────────────────────────────────
   {
     path: 'main',
     component: MainLayoutComponent,
@@ -54,6 +74,6 @@ export const routes: Routes = [
     loadChildren: () => import('./features/monitoring/monitoring.routes').then(m => m.MONITORING_ROUTES)
   },
 
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: '' }
 
 ];
