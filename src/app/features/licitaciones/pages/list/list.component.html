@@ -124,7 +124,7 @@
                 <td>{{ item.nombre }}</td>
                 <td>
                     <ng-container *ngIf="item.presupuesto; else noPresupuesto">
-                        {{ item.moneda ? item.moneda + ' ' : '' }}{{ item.presupuesto | number:'1.2-2' }}
+                        {{ item.moneda ? item.moneda + ' ' : '' }}{{ item.presupuesto | number:'1.0-0' }}
                     </ng-container>
                     <ng-template #noPresupuesto>
                         <span class="text-muted">No especificado</span>

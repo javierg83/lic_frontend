@@ -6,7 +6,7 @@
         <div class="grid-container">
             <div class="field">
                 <label>Presupuesto máximo</label>
-                <div class="value-box">{{ datos()?.presupuesto_referencial || 'No especificado' }}</div>
+                <div class="value-box">{{ datos()?.presupuesto_referencial ? (datos()?.presupuesto_referencial | number:'1.0-0') : 'No especificado' }}</div>
             </div>
             <div class="field">
                 <label>Moneda de la oferta</label>

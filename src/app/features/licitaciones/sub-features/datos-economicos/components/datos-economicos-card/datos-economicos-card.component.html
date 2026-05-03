@@ -18,7 +18,7 @@
             <div class="field">
                 <label>Presupuesto máximo</label>
                 <div *ngIf="!isEditing()" class="value-box">
-                    {{ datos()?.presupuesto_referencial || 'No especificado' | number }}
+                    {{ datos()?.presupuesto_referencial ? (datos()?.presupuesto_referencial | number:'1.0-0') : 'No especificado' }}
                 </div>
                 <input *ngIf="isEditing()" type="number" [(ngModel)]="editForm().presupuesto_referencial"
                     class="edit-input">
