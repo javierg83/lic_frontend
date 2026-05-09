@@ -73,6 +73,12 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadChildren: () => import('./features/monitoring/monitoring.routes').then(m => m.MONITORING_ROUTES)
   },
+  {
+    path: 'admin/mercado-publico',
+    component: MainLayoutComponent,
+    canMatch: [authGuard],
+    loadChildren: () => import('./features/admin/mercado-publico/mercado-publico-module').then(m => m.MercadoPublicoModule)
+  },
 
   { path: '**', redirectTo: '' }
 

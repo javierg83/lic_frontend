@@ -1,0 +1,107 @@
+<div class="dashboard-container">
+  <div class="header-section">
+    <h1 class="page-title">Mercado Público Admin</h1>
+    <p class="page-subtitle">Panel de control e integración de fuentes</p>
+  </div>
+
+  <div class="row">
+    <!-- Panel de Descarga -->
+    <div class="col-lg-5 mb-4">
+      <div class="card premium-card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-4"><i class="bi bi-cloud-download text-primary me-2"></i>Nueva Extracción</h5>
+          
+          <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ successMessage }}
+            <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+          </div>
+          
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+            <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label class="form-label">Fecha Desde</label>
+              <input type="date" class="form-control" [(ngModel)]="fechaDesde">
+            </div>
+            
+            <div class="col-md-6 form-group mb-3">
+              <label class="form-label">Fecha Hasta</label>
+              <input type="date" class="form-control" [(ngModel)]="fechaHasta">
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6 form-group">
+              <label class="form-label">Límite de Oportunidades (Opcional)</label>
+              <input type="number" class="form-control" placeholder="Ej: 5 para pruebas" [(ngModel)]="limite">
+              <small class="text-muted">Dejar vacío para todo el día.</small>
+            </div>
+            
+            <div class="col-md-6 form-group">
+              <label class="form-label">Filtrar por Región (Opcional)</label>
+              <select class="form-select" [(ngModel)]="region">
+                <option value="">Todas las regiones</option>
+                <option value="Tarapacá">Tarapacá</option>
+                <option value="Antofagasta">Antofagasta</option>
+                <option value="Atacama">Atacama</option>
+                <option value="Coquimbo">Coquimbo</option>
+                <option value="Valparaíso">Valparaíso</option>
+                <option value="Región Metropolitana de Santiago">Metropolitana de Santiago</option>
+                <option value="Libertador General Bernardo O'Higgins">Libertador Gral. B. O'Higgins</option>
+                <option value="Maule">Maule</option>
+                <option value="Ñuble">Ñuble</option>
+                <option value="Biobío">Biobío</option>
+                <option value="La Araucanía">La Araucanía</option>
+                <option value="Los Ríos">Los Ríos</option>
+                <option value="Los Lagos">Los Lagos</option>
+                <option value="Aysén del General Carlos Ibáñez del Campo">Aysén del Gral. C. Ibáñez del Campo</option>
+                <option value="Magallanes y de la Antártica Chilena">Magallanes y Antártica Chilena</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-check form-switch mb-4 custom-switch">
+            <input class="form-check-input" type="checkbox" id="descargarAdjuntos" [(ngModel)]="descargarAdjuntos">
+            <label class="form-check-label" for="descargarAdjuntos">Descargar documentos PDF adjuntos automáticamente</label>
+          </div>
+
+          <button class="btn btn-primary w-100 btn-lg btn-download" (click)="iniciarDescarga()" [disabled]="loading">
+            <span *ngIf="!loading"><i class="bi bi-play-circle me-2"></i> Iniciar Descarga</span>
+            <span *ngIf="loading">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Enviando a Redis...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de Accesos Rápidos -->
+    <div class="col-lg-7 mb-4">
+      <div class="row h-100">
+        <div class="col-md-6 mb-4">
+          <div class="card access-card premium-card h-100" routerLink="/admin/mercado-publico/staging">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+              <div class="icon-circle mb-3"><i class="bi bi-inbox text-success"></i></div>
+              <h5 class="fw-bold">Bandeja Staging</h5>
+              <p class="text-muted small">Revisa las licitaciones crudas antes de transferirlas al sistema principal.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card access-card premium-card h-100 disabled-card">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+              <div class="icon-circle mb-3"><i class="bi bi-clock-history text-secondary"></i></div>
+              <h5 class="fw-bold">Historial Runs</h5>
+              <p class="text-muted small">Próximamente. Revisa el historial de extracciones automáticas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

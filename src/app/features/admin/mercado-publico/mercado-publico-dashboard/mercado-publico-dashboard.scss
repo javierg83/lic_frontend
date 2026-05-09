@@ -1,0 +1,121 @@
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+  }
+  .page-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+}
+
+.premium-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.card-title {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 0.75rem 1rem;
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.custom-switch {
+  .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    margin-top: 0.1em;
+    cursor: pointer;
+    &:checked {
+      background-color: #10b981;
+      border-color: #10b981;
+    }
+  }
+  .form-check-label {
+    margin-left: 0.75rem;
+    color: #475569;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+
+.btn-download {
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.access-card {
+  cursor: pointer;
+  &:hover:not(.disabled-card) {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+    
+    .icon-circle {
+      transform: scale(1.1);
+      background: #f0fdf4;
+    }
+  }
+
+  &.disabled-card {
+    cursor: not-allowed;
+    background: #f8fafc;
+    opacity: 0.7;
+  }
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

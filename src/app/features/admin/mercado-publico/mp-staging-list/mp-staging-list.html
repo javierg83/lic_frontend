@@ -1,0 +1,106 @@
+<div class="mp-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Bandeja Staging</h1>
+      <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Total: {{ totalItems }})</p>
+    </div>
+    <button class="btn btn-outline-primary" (click)="loadData()">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Cargando oportunidades...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div class="card premium-card" *ngIf="!loading && !error">
+    <div class="table-responsive">
+      <table class="table premium-table">
+        <thead>
+          <tr>
+            <th>Código MP</th>
+            <th>Nombre / Título</th>
+            <th>Fechas (Descarga / Cierre)</th>
+            <th>Región</th>
+            <th>Ítems</th>
+            <th>Docs</th>
+            <th>Estado Staging</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let opp of paginatedOpportunities" [class.is-transferred]="opp.transferida">
+            <td><span class="code-badge">{{ opp.codigo_externo }}</span></td>
+            <td>
+              <div class="title-text" [title]="opp.nombre">{{ opp.nombre || 'Sin título' }}</div>
+              <small class="text-muted">{{ opp.estado_mp || 'Desconocido' }}</small>
+            </td>
+            <td>
+              <div class="date-group">
+                <div title="Fecha en la que el sistema descargó este registro"><i class="bi bi-cloud-arrow-down"></i> {{ opp.fecha_descarga | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div title="Fecha de cierre en Mercado Público"><i class="bi bi-clock-history"></i> {{ opp.fecha_cierre | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            </td>
+            <td>{{ opp.region || '-' }}</td>
+            <td>
+              <span class="badge bg-secondary rounded-pill">{{ opp.cantidad_items || 0 }}</span>
+            </td>
+            <td>
+              <span class="doc-count" [class.has-docs]="opp.tiene_documentos">
+                <i class="bi bi-file-earmark-pdf"></i> {{ opp.documentos_descargados || 0 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getEstadoClass(opp.estado_staging)">
+                {{ (opp.estado_staging || 'NUEVA').replace('_', ' ') }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-primary action-btn" [routerLink]="['/admin/mercado-publico/staging', opp.id]">
+                <i class="bi bi-eye"></i> Revisar
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="opportunities.length === 0">
+            <td colspan="8" class="text-center empty-state">
+              <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+              No hay licitaciones en la bandeja staging. <br>
+              Ejecuta una descarga desde el Dashboard.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Paginación -->
+    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-top p-3" *ngIf="totalItems > 0">
+      <div class="text-muted small">
+        Mostrando {{ (currentPage - 1) * pageSize + 1 }} a {{ Math.min(currentPage * pageSize, totalItems) }} de {{ totalItems }} registros
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 1">
+          <option [ngValue]="10">10 por página</option>
+          <option [ngValue]="25">25 por página</option>
+          <option [ngValue]="50">50 por página</option>
+          <option [ngValue]="100">100 por página</option>
+        </select>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 1" (click)="prevPage()">
+            <i class="bi bi-chevron-left"></i> Anterior
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" disabled>
+            Página {{ currentPage }} de {{ totalPages }}
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === totalPages" (click)="nextPage()">
+            Siguiente <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
