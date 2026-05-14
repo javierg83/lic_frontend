@@ -35,13 +35,12 @@
 
           <div class="row mb-4">
             <div class="col-md-6 form-group">
-              <label class="form-label">Límite de Oportunidades (Opcional)</label>
-              <input type="number" class="form-control" placeholder="Ej: 5 para pruebas" [(ngModel)]="limite">
-              <small class="text-muted">Dejar vacío para todo el día.</small>
+              <label class="form-label">Límite (Opcional)</label>
+              <input type="number" class="form-control" placeholder="Ej: 5" [(ngModel)]="limite">
             </div>
             
             <div class="col-md-6 form-group">
-              <label class="form-label">Filtrar por Región (Opcional)</label>
+              <label class="form-label">Filtrar por Región</label>
               <select class="form-select" [(ngModel)]="region">
                 <option value="">Todas las regiones</option>
                 <option value="Tarapacá">Tarapacá</option>
@@ -61,33 +60,83 @@
                 <option value="Magallanes y de la Antártica Chilena">Magallanes y Antártica Chilena</option>
               </select>
             </div>
+            
+            <div class="col-md-12 form-group mt-3">
+              <label class="form-label">Ciudad / Comuna (Opcional)</label>
+              <input type="text" class="form-control" placeholder="Ej: Santiago, Concepción..." [(ngModel)]="comuna">
+            </div>
+
+            <div class="col-md-12 form-group mt-3">
+              <label class="form-label">Palabras Clave (Opcional)</label>
+              <input type="text" class="form-control" placeholder="Ej: software, limpieza..." [(ngModel)]="palabrasClave">
+              <small class="text-muted">Busca en título y descripción. Separar por comas.</small>
+            </div>
           </div>
 
           <div class="form-check form-switch mb-4 custom-switch">
             <input class="form-check-input" type="checkbox" id="descargarAdjuntos" [(ngModel)]="descargarAdjuntos">
-            <label class="form-check-label" for="descargarAdjuntos">Descargar documentos PDF adjuntos automáticamente</label>
+            <label class="form-check-label" for="descargarAdjuntos">Descargar documentos PDF adjuntos</label>
           </div>
 
           <button class="btn btn-primary w-100 btn-lg btn-download" (click)="iniciarDescarga()" [disabled]="loading">
             <span *ngIf="!loading"><i class="bi bi-play-circle me-2"></i> Iniciar Descarga</span>
             <span *ngIf="loading">
               <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Enviando a Redis...
+              Enviando...
             </span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Panel de Accesos Rápidos -->
+    <!-- Panel de Accesos Rápidos y Estado -->
     <div class="col-lg-7 mb-4">
-      <div class="row h-100">
+      <div class="card premium-card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4"><i class="bi bi-activity text-info me-2"></i>Ejecuciones Recientes</h5>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Hora</th>
+                  <th>Desde/Hasta</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let run of recentRuns">
+                  <td class="small">{{ run.created_at | date:'HH:mm:ss' }}</td>
+                  <td class="small">{{ run.fecha_desde | date:'dd/MM' }} al {{ run.fecha_hasta | date:'dd/MM' }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-success': run.estado === 'COMPLETADO',
+                      'bg-warning': run.estado === 'EN_PROCESO',
+                      'bg-danger': run.estado === 'CANCELADO' || run.estado === 'ERROR'
+                    }">{{ run.estado }}</span>
+                  </td>
+                  <td>
+                    <button *ngIf="run.estado === 'EN_PROCESO'" class="btn btn-sm btn-outline-danger" (click)="cancelarRun(run.id)">
+                      <i class="bi bi-x-circle"></i> Parar
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="recentRuns.length === 0">
+                  <td colspan="4" class="text-center text-muted py-3">No hay ejecuciones recientes.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-6 mb-4">
           <div class="card access-card premium-card h-100" routerLink="/admin/mercado-publico/staging">
             <div class="card-body text-center d-flex flex-column justify-content-center">
               <div class="icon-circle mb-3"><i class="bi bi-inbox text-success"></i></div>
               <h5 class="fw-bold">Bandeja Staging</h5>
-              <p class="text-muted small">Revisa las licitaciones crudas antes de transferirlas al sistema principal.</p>
+              <p class="text-muted small">Revisa las licitaciones crudas antes de transferirlas.</p>
             </div>
           </div>
         </div>
@@ -96,8 +145,8 @@
           <div class="card access-card premium-card h-100 disabled-card">
             <div class="card-body text-center d-flex flex-column justify-content-center">
               <div class="icon-circle mb-3"><i class="bi bi-clock-history text-secondary"></i></div>
-              <h5 class="fw-bold">Historial Runs</h5>
-              <p class="text-muted small">Próximamente. Revisa el historial de extracciones automáticas.</p>
+              <h5 class="fw-bold">Historial Completo</h5>
+              <p class="text-muted small">Próximamente. Registro histórico de todas las extracciones.</p>
             </div>
           </div>
         </div>

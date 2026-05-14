@@ -4,14 +4,22 @@
       <h1 class="page-title">Bandeja Staging</h1>
       <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Total: {{ totalItems }})</p>
     </div>
-    <button class="btn btn-outline-primary" (click)="loadData()">
-      <i class="bi bi-arrow-clockwise"></i> Actualizar
-    </button>
+    <div class="d-flex gap-2">
+      <button *ngIf="selectedIds.size > 0" class="btn btn-danger" (click)="deleteSelected()">
+        <i class="bi bi-trash"></i> Borrar Seleccionados ({{ selectedIds.size }})
+      </button>
+      <button class="btn btn-outline-danger" (click)="clearAll()">
+        <i class="bi bi-eraser"></i> Limpiar Todo
+      </button>
+      <button class="btn btn-outline-primary" (click)="loadData()">
+        <i class="bi bi-arrow-clockwise"></i> Actualizar
+      </button>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading-state">
     <div class="spinner-border text-primary" role="status"></div>
-    <p>Cargando oportunidades...</p>
+    <p>Procesando...</p>
   </div>
 
   <div *ngIf="error" class="alert alert-danger">
@@ -23,6 +31,9 @@
       <table class="table premium-table">
         <thead>
           <tr>
+            <th style="width: 40px;">
+              <input type="checkbox" class="form-check-input" [checked]="isAllSelected()" (change)="toggleAll($event)">
+            </th>
             <th>Código MP</th>
             <th>Nombre / Título</th>
             <th>Fechas (Descarga / Cierre)</th>
@@ -34,7 +45,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let opp of paginatedOpportunities" [class.is-transferred]="opp.transferida">
+          <tr *ngFor="let opp of paginatedOpportunities" 
+              [class.is-transferred]="opp.transferida"
+              [class.table-active]="selectedIds.has(opp.id)">
+            <td>
+              <input type="checkbox" class="form-check-input" 
+                     [checked]="selectedIds.has(opp.id)" 
+                     (change)="toggleSelection(opp.id)">
+            </td>
             <td><span class="code-badge">{{ opp.codigo_externo }}</span></td>
             <td>
               <div class="title-text" [title]="opp.nombre">{{ opp.nombre || 'Sin título' }}</div>
@@ -67,7 +85,7 @@
             </td>
           </tr>
           <tr *ngIf="opportunities.length === 0">
-            <td colspan="8" class="text-center empty-state">
+            <td colspan="9" class="text-center empty-state">
               <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
               No hay licitaciones en la bandeja staging. <br>
               Ejecuta una descarga desde el Dashboard.

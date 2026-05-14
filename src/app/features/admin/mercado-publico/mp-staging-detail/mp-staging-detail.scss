@@ -288,9 +288,32 @@
       .btn-icon {
         color: var(--primary-color, #4f46e5);
         text-decoration: none;
+        font-size: 18px;
         
         &:hover {
           color: var(--primary-dark, #4338ca);
+        }
+      }
+
+      .btn-retry {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        padding: 4px;
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s, color 0.2s;
+
+        &:hover {
+          color: #dc2626;
+          transform: rotate(45deg);
+        }
+
+        i {
+          line-height: 1;
         }
       }
 

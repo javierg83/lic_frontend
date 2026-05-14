@@ -15,6 +15,7 @@ export interface MpStagingItem {
   estado_staging: string;
   tiene_documentos: boolean;
   documentos_descargados: number;
+  documentos_error: number;
   cantidad_items: number;
   transferida: boolean;
 }
@@ -79,6 +80,14 @@ export class MercadoPublicoService {
     return this.http.post(`${this.API_URL}/descargas/run`, payload);
   }
 
+  getDownloadRuns(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/descargas/runs`);
+  }
+
+  cancelDownloadRun(runId: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/descargas/runs/${runId}/cancel`, {});
+  }
+
   validarLicitacion(id: string): Observable<any> {
     return this.http.post(`${this.API_URL}/staging/${id}/validar`, {});
   }
@@ -97,5 +106,13 @@ export class MercadoPublicoService {
 
   scrapeDocumentos(id: string): Observable<any> {
     return this.http.post(`${this.API_URL}/staging/${id}/scrape-documentos`, {});
+  }
+
+  deleteBulkStaging(ids: string[]): Observable<any> {
+    return this.http.post(`${this.API_URL}/staging/delete-bulk`, ids);
+  }
+
+  clearAllStaging(): Observable<any> {
+    return this.http.post(`${this.API_URL}/staging/clear-all`, {});
   }
 }

@@ -22,6 +22,7 @@ export class MpStagingListComponent implements OnInit {
   totalItems = 0;
   
   Math = Math; // Expose Math to template
+  selectedIds: Set<string> = new Set<string>();
 
   constructor(private mpService: MercadoPublicoService, private cdr: ChangeDetectorRef) {}
 
@@ -32,6 +33,7 @@ export class MpStagingListComponent implements OnInit {
   loadData() {
     this.loading = true;
     this.error = '';
+    this.selectedIds.clear();
     this.cdr.detectChanges();
     
     this.mpService.getStagingList().subscribe({
@@ -48,6 +50,68 @@ export class MpStagingListComponent implements OnInit {
         console.error("Error en HTTP GET staging:", err);
         this.loading = false;
         this.cdr.detectChanges(); // FORZAR RENDERIZADO
+      }
+    });
+  }
+
+  // Selección
+  toggleSelection(id: string) {
+    if (this.selectedIds.has(id)) {
+      this.selectedIds.delete(id);
+    } else {
+      this.selectedIds.add(id);
+    }
+  }
+
+  toggleAll(event: any) {
+    const checked = event.target.checked;
+    if (checked) {
+      this.paginatedOpportunities.forEach(opp => this.selectedIds.add(opp.id));
+    } else {
+      this.paginatedOpportunities.forEach(opp => this.selectedIds.delete(opp.id));
+    }
+  }
+
+  isAllSelected(): boolean {
+    const pageItems = this.paginatedOpportunities;
+    if (pageItems.length === 0) return false;
+    return pageItems.every(opp => this.selectedIds.has(opp.id));
+  }
+
+  deleteSelected() {
+    if (this.selectedIds.size === 0) return;
+    
+    const count = this.selectedIds.size;
+    if (!confirm(`¿Estás seguro de que deseas eliminar ${count} registros de staging? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    const idsArray = Array.from(this.selectedIds);
+    this.loading = true;
+    this.mpService.deleteBulkStaging(idsArray).subscribe({
+      next: () => {
+        this.loadData();
+      },
+      error: (err) => {
+        this.error = 'Error al eliminar registros: ' + (err.error?.detail || err.message);
+        this.loading = false;
+      }
+    });
+  }
+
+  clearAll() {
+    if (!confirm('¿Estás seguro de que deseas LIMPIAR TODA la bandeja de staging? Se borrarán todos los registros y el historial de descargas.')) {
+      return;
+    }
+
+    this.loading = true;
+    this.mpService.clearAllStaging().subscribe({
+      next: () => {
+        this.loadData();
+      },
+      error: (err) => {
+        this.error = 'Error al limpiar staging: ' + (err.error?.detail || err.message);
+        this.loading = false;
       }
     });
   }
