@@ -16,6 +16,7 @@ export class MercadoPublicoDashboard implements OnInit {
   fechaHasta = new Date().toISOString().split('T')[0];
   limite = 5;
   descargarAdjuntos = true;
+  tipoExtraccion: 'licitaciones' | 'compras_agiles' = 'licitaciones';
   region = '';
   comuna = '';
   palabrasClave = '';
@@ -50,7 +51,8 @@ export class MercadoPublicoDashboard implements OnInit {
       fecha_hasta: this.fechaHasta,
       estados: ["Publicada"],
       limite: this.limite > 0 ? this.limite : null,
-      descargar_adjuntos: this.descargarAdjuntos
+      descargar_adjuntos: this.tipoExtraccion === 'licitaciones' ? this.descargarAdjuntos : false,
+      modo: this.tipoExtraccion === 'compras_agiles' ? 'scraping_compra_agil' : 'licitaciones'
     };
     
     if (this.region) {

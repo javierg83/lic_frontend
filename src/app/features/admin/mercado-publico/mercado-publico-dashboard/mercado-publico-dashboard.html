@@ -22,6 +22,19 @@
           </div>
 
           <div class="row">
+            <div class="col-md-12 form-group mb-3">
+              <label class="form-label fw-bold">Tipo de Extracción</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="tipoExtraccion" id="btnLicitaciones" autocomplete="off" [(ngModel)]="tipoExtraccion" value="licitaciones">
+                <label class="btn btn-outline-primary" for="btnLicitaciones"><i class="bi bi-bank me-2"></i>Licitaciones</label>
+
+                <input type="radio" class="btn-check" name="tipoExtraccion" id="btnComprasAgiles" autocomplete="off" [(ngModel)]="tipoExtraccion" value="compras_agiles">
+                <label class="btn btn-outline-primary" for="btnComprasAgiles"><i class="bi bi-cart-check me-2"></i>Compras Ágiles</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-md-6 form-group mb-3">
               <label class="form-label">Fecha Desde</label>
               <input type="date" class="form-control" [(ngModel)]="fechaDesde">
@@ -73,9 +86,13 @@
             </div>
           </div>
 
-          <div class="form-check form-switch mb-4 custom-switch">
+          <div class="form-check form-switch mb-4 custom-switch" *ngIf="tipoExtraccion === 'licitaciones'">
             <input class="form-check-input" type="checkbox" id="descargarAdjuntos" [(ngModel)]="descargarAdjuntos">
             <label class="form-check-label" for="descargarAdjuntos">Descargar documentos PDF adjuntos</label>
+          </div>
+
+          <div class="alert alert-info py-2 small" *ngIf="tipoExtraccion === 'compras_agiles'">
+            <i class="bi bi-info-circle me-1"></i> Las Compras Ágiles solo extraerán la metadata básica. La descarga profunda se realiza individualmente desde la bandeja de Staging.
           </div>
 
           <button class="btn btn-primary w-100 btn-lg btn-download" (click)="iniciarDescarga()" [disabled]="loading">

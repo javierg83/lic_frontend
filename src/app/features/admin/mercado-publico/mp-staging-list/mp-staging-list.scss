@@ -49,6 +49,21 @@
       letter-spacing: 0.5px;
       padding: 1rem 1.5rem;
       border-bottom: 2px solid #e2e8f0;
+
+      &[style*="cursor: pointer"] {
+        user-select: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        
+        &:hover {
+          background-color: #e2e8f0;
+          color: #0f172a;
+        }
+
+        i {
+          margin-left: 0.35rem;
+          font-size: 0.8rem;
+        }
+      }
     }
   }
 

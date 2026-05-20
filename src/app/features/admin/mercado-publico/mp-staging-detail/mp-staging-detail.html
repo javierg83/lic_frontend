@@ -39,10 +39,10 @@
         General
       </button>
       <button class="tab-btn" [class.active]="activeTab === 'documentos'" (click)="setTab('documentos')">
-        Documentos <span class="badge" *ngIf="documentos?.length">{{ documentos.length }}</span>
+        Documentos <span class="badge" *ngIf="documentos.length > 0">{{ documentos.length }}</span>
       </button>
       <button class="tab-btn" [class.active]="activeTab === 'items'" (click)="setTab('items')">
-        Ítems <span class="badge" *ngIf="items?.length">{{ items.length }}</span>
+        Ítems <span class="badge" *ngIf="items.length > 0">{{ items.length }}</span>
       </button>
       <button class="tab-btn" [class.active]="activeTab === 'eventos'" (click)="setTab('eventos')">
         Eventos

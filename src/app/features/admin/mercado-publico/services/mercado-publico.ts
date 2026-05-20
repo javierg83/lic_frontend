@@ -20,6 +20,29 @@ export interface MpStagingItem {
   transferida: boolean;
 }
 
+export interface CaStagingItem {
+  id: string;
+  codigo_compra_agil: string;
+  titulo: string;
+  organismo: string;
+  estado_staging: string;
+  fecha_publicacion?: string;
+  fecha_cierre?: string;
+  region?: string;
+  monto_estimado?: number;
+  transferida: boolean;
+  fecha_descarga?: string;
+  macro_categoria?: string;
+  subcategoria?: string;
+  estado_clasificacion?: string;
+  ai_model_used?: string;
+  ai_tokens_input?: number;
+  ai_tokens_output?: number;
+  ai_costo_usd?: number;
+  ai_costo_clp?: number;
+  bulk_transfer_run_id?: string;
+}
+
 export interface MpDocumento {
   id: string;
   nombre: string;
@@ -114,5 +137,41 @@ export class MercadoPublicoService {
 
   clearAllStaging(): Observable<any> {
     return this.http.post(`${this.API_URL}/staging/clear-all`, {});
+  }
+
+  // ==========================================
+  // COMPRAS AGILES STAGING
+  // ==========================================
+
+  getCaCategorias(): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/compras-agiles/categorias`);
+  }
+
+  getCaStagingList(params: any = {}): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/compras-agiles/staging`, { params });
+  }
+
+  getCaStagingById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/compras-agiles/staging/${id}`);
+  }
+
+  transferirCompraAgil(id: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/compras-agiles/staging/${id}/transferir`, {});
+  }
+
+  transferirBulkCompraAgil(ids: string[]): Observable<any> {
+    return this.http.post(`${this.API_URL}/compras-agiles/staging/transfer-bulk`, ids);
+  }
+
+  descartarCompraAgil(id: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/compras-agiles/staging/${id}/descartar`, {});
+  }
+
+  deleteBulkCaStaging(ids: string[]): Observable<any> {
+    return this.http.post(`${this.API_URL}/compras-agiles/staging/delete-bulk`, ids);
+  }
+
+  clearAllCaStaging(): Observable<any> {
+    return this.http.post(`${this.API_URL}/compras-agiles/staging/clear-all`, {});
   }
 }

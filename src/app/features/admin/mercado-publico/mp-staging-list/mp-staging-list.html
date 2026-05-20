@@ -2,10 +2,13 @@
   <div class="header-section">
     <div>
       <h1 class="page-title">Bandeja Staging</h1>
-      <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Total: {{ totalItems }})</p>
+      <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Mostrando {{ filteredOpportunities.length }} de {{ activeTab === 'licitaciones' ? opportunities.length : caOpportunities.length }} totales)</p>
     </div>
     <div class="d-flex gap-2">
-      <button *ngIf="selectedIds.size > 0" class="btn btn-danger" (click)="deleteSelected()">
+      <button *ngIf="activeTab === 'compras_agiles'" class="btn btn-success" [disabled]="selectedIds.size === 0" (click)="transferSelectedCa()">
+        <i class="bi bi-play-circle"></i> Procesar Seleccionados ({{ selectedIds.size }})
+      </button>
+      <button class="btn btn-danger" [disabled]="selectedIds.size === 0" (click)="deleteSelected()">
         <i class="bi bi-trash"></i> Borrar Seleccionados ({{ selectedIds.size }})
       </button>
       <button class="btn btn-outline-danger" (click)="clearAll()">
@@ -14,6 +17,98 @@
       <button class="btn btn-outline-primary" (click)="loadData()">
         <i class="bi bi-arrow-clockwise"></i> Actualizar
       </button>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs premium-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'licitaciones'" (click)="setTab('licitaciones')" style="cursor:pointer">
+        <i class="bi bi-bank"></i> Licitaciones Públicas
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'compras_agiles'" (click)="setTab('compras_agiles')" style="cursor:pointer">
+        <i class="bi bi-cart-check"></i> Compras Ágiles
+      </a>
+    </li>
+  </ul>
+
+  <!-- Barra de Filtros Inteligentes -->
+  <div class="filter-toolbar card premium-card mb-4 p-3 bg-light border-0 shadow-sm">
+    <!-- Fila 1: Filtros Comunes y Categorías -->
+    <div class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Buscar por código/título</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar..." [(ngModel)]="searchText" (keyup.enter)="onSearch()">
+          <button class="btn btn-primary" (click)="onSearch()">Buscar</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Estado Staging</label>
+        <select class="form-select" [(ngModel)]="selectedEstado" (change)="onEstadoChange()">
+          <option value="">Todos los Estados</option>
+          <ng-container *ngIf="activeTab === 'licitaciones'">
+            <option value="DESCARGA_PENDIENTE">DESCARGA PENDIENTE</option>
+            <option value="REQUIERE_REVISION">REQUIERE REVISION</option>
+            <option value="VALIDADA_STAGING">VALIDADA STAGING</option>
+            <option value="ERROR_DOCUMENTOS">ERROR DOCUMENTOS</option>
+            <option value="TRANSFERIDA_AL_SISTEMA">TRANSFERIDA AL SISTEMA</option>
+            <option value="DESCARTADA">DESCARTADA</option>
+          </ng-container>
+          <ng-container *ngIf="activeTab === 'compras_agiles'">
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="EN_COLA_PROCESAMIENTO">EN COLA PROCESAMIENTO</option>
+            <option value="TRANSFERIDO">TRANSFERIDO</option>
+            <option value="ERROR_TRANSFERENCIA">ERROR TRANSFERENCIA</option>
+            <option value="DESCARTADO">DESCARTADO</option>
+          </ng-container>
+        </select>
+      </div>
+
+      <!-- Filtros de Categorías para Compras Ágiles -->
+      <ng-container *ngIf="activeTab === 'compras_agiles'">
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-muted mb-1">Macro-Categoría</label>
+          <select class="form-select" [(ngModel)]="selectedMacro" (change)="onMacroChange()">
+            <option value="">Todas las Macro-Categorías</option>
+            <option *ngFor="let macro of macroOptions" [value]="macro">{{ macro }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-muted mb-1">Subcategoría</label>
+          <select class="form-select" [(ngModel)]="selectedSub" (change)="onSubChange()" [disabled]="!selectedMacro || subOptions.length === 0">
+            <option value="">Todas las Subcategorías</option>
+            <option *ngFor="let sub of subOptions" [value]="sub">{{ sub }}</option>
+          </select>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Fila 2: Filtros de Fecha y Limpieza -->
+    <div class="row g-3 align-items-end mt-2">
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Filtrar Fecha por</label>
+        <select class="form-select" [(ngModel)]="filterFechaTipo" (change)="onDateFilterChange()">
+          <option value="fecha_descarga">Fecha de Descarga</option>
+          <option value="fecha_publicacion">Fecha de Publicación</option>
+          <option value="fecha_cierre">Fecha de Cierre</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Fecha Desde</label>
+        <input type="date" class="form-control" [(ngModel)]="filterFechaDesde" (change)="onDateFilterChange()">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Fecha Hasta</label>
+        <input type="date" class="form-control" [(ngModel)]="filterFechaHasta" (change)="onDateFilterChange()">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+          <i class="bi bi-x-circle"></i> Limpiar Filtros
+        </button>
+      </div>
     </div>
   </div>
 
@@ -34,13 +129,28 @@
             <th style="width: 40px;">
               <input type="checkbox" class="form-check-input" [checked]="isAllSelected()" (change)="toggleAll($event)">
             </th>
-            <th>Código MP</th>
-            <th>Nombre / Título</th>
-            <th>Fechas (Descarga / Cierre)</th>
-            <th>Región</th>
-            <th>Ítems</th>
-            <th>Docs</th>
-            <th>Estado Staging</th>
+            <th style="cursor: pointer;" (click)="setSort('codigo_externo')">
+              Código MP <i class="bi" [ngClass]="getSortIcon('codigo_externo')"></i>
+            </th>
+            <th style="cursor: pointer;" (click)="setSort('nombre')">
+              Nombre / Título <i class="bi" [ngClass]="getSortIcon('nombre')"></i>
+            </th>
+            <th style="cursor: pointer;" (click)="setSort('fecha_descarga')">
+              Fecha Descarga <i class="bi" [ngClass]="getSortIcon('fecha_descarga')"></i>
+            </th>
+            <th style="cursor: pointer;" (click)="setSort('fecha_cierre')">
+              Fechas MP (Pub. / Cierre) <i class="bi" [ngClass]="getSortIcon('fecha_cierre')"></i>
+            </th>
+            <th style="cursor: pointer;" (click)="setSort('region')">
+              Región <i class="bi" [ngClass]="getSortIcon('region')"></i>
+            </th>
+            <th *ngIf="activeTab === 'licitaciones'">Ítems</th>
+            <th *ngIf="activeTab === 'licitaciones'">Docs</th>
+            <th *ngIf="activeTab === 'compras_agiles'">Monto Estimado</th>
+            <th *ngIf="activeTab === 'compras_agiles'">Auditoría IA (Tokens / Costo)</th>
+            <th style="cursor: pointer;" (click)="setSort('estado_staging')">
+              Estado Staging <i class="bi" [ngClass]="getSortIcon('estado_staging')"></i>
+            </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
@@ -53,25 +163,53 @@
                      [checked]="selectedIds.has(opp.id)" 
                      (change)="toggleSelection(opp.id)">
             </td>
-            <td><span class="code-badge">{{ opp.codigo_externo }}</span></td>
+            <td><span class="code-badge">{{ opp.codigo_externo || opp.codigo_compra_agil }}</span></td>
             <td>
-              <div class="title-text" [title]="opp.nombre">{{ opp.nombre || 'Sin título' }}</div>
-              <small class="text-muted">{{ opp.estado_mp || 'Desconocido' }}</small>
+              <div class="title-text" [title]="opp.nombre || opp.titulo">{{ opp.nombre || opp.titulo || 'Sin título' }}</div>
+              <div *ngIf="activeTab === 'compras_agiles' && opp.macro_categoria" class="mt-1 mb-1">
+                <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
+                <span *ngIf="opp.subcategoria" class="badge bg-secondary">{{ opp.subcategoria }}</span>
+              </div>
+              <small class="text-muted">{{ opp.estado_mp || opp.organismo || 'Desconocido' }}</small>
+            </td>
+            <td>
+              <span *ngIf="opp.fecha_descarga; else noDate">
+                <i class="bi bi-cloud-arrow-down text-muted"></i> {{ opp.fecha_descarga | date:'dd/MM/yyyy HH:mm' }}
+              </span>
+              <ng-template #noDate>-</ng-template>
             </td>
             <td>
               <div class="date-group">
-                <div title="Fecha en la que el sistema descargó este registro"><i class="bi bi-cloud-arrow-down"></i> {{ opp.fecha_descarga | date:'dd/MM/yyyy HH:mm' }}</div>
-                <div title="Fecha de cierre en Mercado Público"><i class="bi bi-clock-history"></i> {{ opp.fecha_cierre | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div *ngIf="opp.fecha_publicacion" title="Fecha de publicación en Mercado Público">
+                  <i class="bi bi-calendar-event text-muted"></i> <small class="text-muted me-1">Pub:</small> {{ opp.fecha_publicacion | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                <div *ngIf="opp.fecha_cierre" title="Fecha de cierre en Mercado Público">
+                  <i class="bi bi-clock-history text-muted"></i> <small class="text-muted me-1">Cierre:</small> {{ opp.fecha_cierre | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                <span *ngIf="!opp.fecha_publicacion && !opp.fecha_cierre">-</span>
               </div>
             </td>
             <td>{{ opp.region || '-' }}</td>
-            <td>
+            <td *ngIf="activeTab === 'licitaciones'">
               <span class="badge bg-secondary rounded-pill">{{ opp.cantidad_items || 0 }}</span>
             </td>
-            <td>
+            <td *ngIf="activeTab === 'licitaciones'">
               <span class="doc-count" [class.has-docs]="opp.tiene_documentos">
                 <i class="bi bi-file-earmark-pdf"></i> {{ opp.documentos_descargados || 0 }}
               </span>
+            </td>
+            <td *ngIf="activeTab === 'compras_agiles'">
+              <strong>{{ (opp.monto_estimado | currency:'CLP':'symbol-narrow':'1.0-0') || 'N/A' }}</strong>
+            </td>
+            <td *ngIf="activeTab === 'compras_agiles'">
+              <div *ngIf="opp.ai_model_used; else noAi">
+                <span class="badge bg-dark text-white mb-1"><i class="bi bi-cpu"></i> {{ opp.ai_model_used }}</span><br>
+                <small class="text-muted d-block">In: {{ opp.ai_tokens_input | number }} | Out: {{ opp.ai_tokens_output | number }}</small>
+                <strong class="text-success" [title]="'Costo estimado: USD ' + (opp.ai_costo_usd | number:'1.2-6')">
+                  ${{ opp.ai_costo_clp | number:'1.0-2' }} CLP
+                </strong>
+              </div>
+              <ng-template #noAi><span class="text-muted small">Sin auditoría</span></ng-template>
             </td>
             <td>
               <span class="status-badge" [ngClass]="getEstadoClass(opp.estado_staging)">
@@ -79,16 +217,21 @@
               </span>
             </td>
             <td class="text-end">
-              <button class="btn btn-sm btn-primary action-btn" [routerLink]="['/admin/mercado-publico/staging', opp.id]">
-                <i class="bi bi-eye"></i> Revisar
-              </button>
+              <div class="d-flex justify-content-end gap-2">
+                <button *ngIf="activeTab === 'licitaciones'" class="btn btn-sm btn-primary action-btn" [routerLink]="['/admin/mercado-publico/staging', opp.id]">
+                  <i class="bi bi-eye"></i> Revisar
+                </button>
+                <button *ngIf="activeTab === 'compras_agiles' && !opp.transferida" class="btn btn-sm btn-success action-btn" (click)="transferCa(opp.id)">
+                  <i class="bi bi-box-arrow-in-right"></i> Procesar
+                </button>
+              </div>
             </td>
           </tr>
-          <tr *ngIf="opportunities.length === 0">
-            <td colspan="9" class="text-center empty-state">
+          <tr *ngIf="paginatedOpportunities.length === 0">
+            <td colspan="10" class="text-center empty-state">
               <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
-              No hay licitaciones en la bandeja staging. <br>
-              Ejecuta una descarga desde el Dashboard.
+              No hay registros en la bandeja staging de {{ activeTab === 'licitaciones' ? 'Licitaciones' : 'Compras Ágiles' }}. <br>
+              Ejecuta una búsqueda desde el Dashboard o ajusta tus filtros.
             </td>
           </tr>
         </tbody>
@@ -96,9 +239,9 @@
     </div>
     
     <!-- Paginación -->
-    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-top p-3" *ngIf="totalItems > 0">
+    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-top p-3" *ngIf="filteredOpportunities.length > 0">
       <div class="text-muted small">
-        Mostrando {{ (currentPage - 1) * pageSize + 1 }} a {{ Math.min(currentPage * pageSize, totalItems) }} de {{ totalItems }} registros
+        Mostrando {{ (currentPage - 1) * pageSize + 1 }} a {{ Math.min(currentPage * pageSize, filteredOpportunities.length) }} de {{ filteredOpportunities.length }} registros
       </div>
       <div class="d-flex align-items-center gap-3">
         <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 1">
