@@ -116,6 +116,7 @@
               <thead class="table-light">
                 <tr>
                   <th>Hora</th>
+                  <th>Tipo</th>
                   <th>Desde/Hasta</th>
                   <th>Estado</th>
                   <th>Acción</th>
@@ -124,6 +125,18 @@
               <tbody>
                 <tr *ngFor="let run of recentRuns">
                   <td class="small">{{ run.created_at | date:'HH:mm:ss' }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-primary': run.tipo_fuente?.toLowerCase() === 'licitaciones',
+                      'bg-success': run.tipo_fuente === 'scraping_compra_agil'
+                    }">
+                      <i class="bi" [ngClass]="{
+                        'bi-bank me-1': run.tipo_fuente?.toLowerCase() === 'licitaciones',
+                        'bi-cart-check me-1': run.tipo_fuente === 'scraping_compra_agil'
+                      }"></i>
+                      {{ run.tipo_fuente?.toLowerCase() === 'licitaciones' ? 'Licitación' : 'Compra Ágil' }}
+                    </span>
+                  </td>
                   <td class="small">{{ run.fecha_desde | date:'dd/MM' }} al {{ run.fecha_hasta | date:'dd/MM' }}</td>
                   <td>
                     <span class="badge" [ngClass]="{
@@ -139,7 +152,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="recentRuns.length === 0">
-                  <td colspan="4" class="text-center text-muted py-3">No hay ejecuciones recientes.</td>
+                  <td colspan="5" class="text-center text-muted py-3">No hay ejecuciones recientes.</td>
                 </tr>
               </tbody>
             </table>

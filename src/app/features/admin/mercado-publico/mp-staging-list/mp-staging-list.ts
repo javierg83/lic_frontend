@@ -358,6 +358,30 @@ export class MpStagingListComponent implements OnInit {
     return 'badge-primary'; // DEFAULT
   }
 
+  transferSelectedLicitaciones() {
+    if (this.selectedIds.size === 0) return;
+    
+    const count = this.selectedIds.size;
+    if (!confirm(`¿Estás seguro de que deseas transferir las ${count} licitaciones seleccionadas al sistema principal?`)) {
+      return;
+    }
+
+    const idsArray = Array.from(this.selectedIds);
+    this.loading = true;
+    
+    this.mpService.transferirBulkLicitacion(idsArray).subscribe({
+      next: (res) => {
+        alert(res.mensaje || `Se han transferido ${count} licitaciones exitosamente.`);
+        this.loadData();
+      },
+      error: (err) => {
+        this.error = 'Error al transferir licitaciones: ' + (err.error?.detail || err.message);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   // Compras Ágiles Actions
   transferCa(id: string) {
     if (!confirm('¿Estás seguro de que deseas transferir esta Compra Ágil para su descarga profunda y procesamiento?')) {

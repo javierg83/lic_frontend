@@ -135,6 +135,10 @@ export class MercadoPublicoService {
     return this.http.post(`${this.API_URL}/staging/delete-bulk`, ids);
   }
 
+  transferirBulkLicitacion(ids: string[]): Observable<any> {
+    return this.http.post(`${this.API_URL}/staging/transfer-bulk`, ids);
+  }
+
   clearAllStaging(): Observable<any> {
     return this.http.post(`${this.API_URL}/staging/clear-all`, {});
   }

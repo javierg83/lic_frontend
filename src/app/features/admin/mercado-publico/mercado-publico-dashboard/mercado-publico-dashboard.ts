@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +25,7 @@ export class MercadoPublicoDashboard implements OnInit {
   errorMessage = '';
   recentRuns: any[] = [];
 
-  constructor(private mpService: MercadoPublicoService) {}
+  constructor(private mpService: MercadoPublicoService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadRecentRuns();
@@ -37,6 +37,7 @@ export class MercadoPublicoDashboard implements OnInit {
     this.mpService.getDownloadRuns().subscribe({
       next: (runs) => {
         this.recentRuns = runs.slice(0, 5); // Solo las últimas 5
+        this.cdr.detectChanges();
       }
     });
   }

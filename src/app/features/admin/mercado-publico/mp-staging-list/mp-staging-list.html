@@ -8,6 +8,9 @@
       <button *ngIf="activeTab === 'compras_agiles'" class="btn btn-success" [disabled]="selectedIds.size === 0" (click)="transferSelectedCa()">
         <i class="bi bi-play-circle"></i> Procesar Seleccionados ({{ selectedIds.size }})
       </button>
+      <button *ngIf="activeTab === 'licitaciones'" class="btn btn-success" [disabled]="selectedIds.size === 0" (click)="transferSelectedLicitaciones()">
+        <i class="bi bi-box-arrow-in-right"></i> Transferir Seleccionados ({{ selectedIds.size }})
+      </button>
       <button class="btn btn-danger" [disabled]="selectedIds.size === 0" (click)="deleteSelected()">
         <i class="bi bi-trash"></i> Borrar Seleccionados ({{ selectedIds.size }})
       </button>
