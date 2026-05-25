@@ -1,0 +1,128 @@
+.wizard-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, #f8f9fa 0%, #e9ecef 100%);
+  width: 100%;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  width: 100%;
+}
+
+.steps-progress {
+  height: 50px;
+}
+
+.step-node {
+  width: 60px;
+}
+
+.step-circle {
+  font-size: 14px;
+  border-width: 2px;
+  z-index: 2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.step-label {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.progress-bar-line {
+  z-index: 1;
+}
+
+.plan-card {
+  border: 2px solid #dee2e6;
+  background: #fff;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.rubro-card {
+  background: #fff;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid #dee2e6;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.bg-light-gray {
+  background-color: #f8f9fa !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subcat-list {
+  scrollbar-width: thin;
+  scrollbar-color: #ced4da #f8f9fa;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #ced4da;
+    border-radius: 6px;
+  }
+}
+
+.subcat-item {
+  background: #fff;
+}
+
+.decision-btn {
+  user-select: none;
+  min-width: 100px;
+  color: #495057;
+  background-color: #fff;
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.summary-box {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}

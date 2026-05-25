@@ -1,0 +1,278 @@
+<div class="wizard-container py-5">
+  <div class="card glass-card shadow-lg mx-auto" style="max-width: 800px;">
+    <!-- Encabezado del Wizard -->
+    <div class="card-header bg-transparent border-0 pt-4 px-4 text-center">
+      <h1 class="fw-bold h2 text-dark">Bienvenido a IM Licitaciones</h1>
+      <p class="text-secondary mb-0">Configura tu perfil comercial para tu trial de 3 días sin restricciones</p>
+    </div>
+
+    <!-- Indicador de Pasos -->
+    <div class="px-4 pt-4">
+      <div class="steps-progress d-flex justify-content-between position-relative mb-4">
+        <div class="progress-bar-line position-absolute top-50 start-0 end-0 translate-y-middle bg-light" style="height: 4px; z-index: 1;">
+          <div class="bg-dark h-100 transition-all" [style.width.%]="((pasoActual() - 1) / 5) * 100"></div>
+        </div>
+        
+        <div *ngFor="let step of [1,2,3,4,5,6]" class="step-node position-relative d-flex flex-column align-items-center" style="z-index: 2;">
+          <div class="step-circle rounded-circle d-flex align-items-center justify-content-center fw-bold transition-all"
+               [ngClass]="{
+                 'bg-dark text-white': pasoActual() === step,
+                 'bg-success text-white': pasoActual() > step,
+                 'bg-light text-secondary border': pasoActual() < step
+               }"
+               style="width: 36px; height: 36px;">
+            <span *ngIf="pasoActual() <= step">{{ step }}</span>
+            <span *ngIf="pasoActual() > step">✓</span>
+          </div>
+          <span class="step-label d-none d-md-block small mt-2 fw-medium text-secondary"
+                [ngClass]="{'text-dark fw-bold': pasoActual() === step}">
+            {{ step === 1 ? 'Cuenta' : step === 2 ? 'Rubros' : step === 3 ? 'Refinamiento' : step === 4 ? 'Regiones' : step === 5 ? 'Filtros' : 'Confirmar' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuerpo del Wizard -->
+    <div class="card-body p-4 pt-2">
+      @if (errorMsg()) {
+        <div class="alert alert-danger py-2 px-3 mb-4 border-0 small text-center rounded-3">
+          {{ errorMsg() }}
+        </div>
+      }
+      @if (successMsg()) {
+        <div class="alert alert-success py-2 px-3 mb-4 border-0 small text-center rounded-3">
+          {{ successMsg() }}
+        </div>
+      }
+
+      <!-- PASO 1: PLAN Y DATOS BÁSICOS -->
+      <div *ngIf="pasoActual() === 1" class="fade-in">
+        <h3 class="fw-bold h5 mb-3 text-dark">1. Selecciona tu Plan y crea tu cuenta</h3>
+        
+        <!-- Tarjetas de Plan -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="plan-card p-3 border rounded-3 text-center cursor-pointer transition-all"
+                 [ngClass]="{'border-dark bg-light-gray shadow-sm': planSeleccionado === 'basico'}"
+                 (click)="seleccionarPlan('basico')">
+              <div class="fw-bold text-secondary text-uppercase small mb-1">Plan Básico</div>
+              <div class="fs-4 fw-bold text-dark">$49.990<span class="fs-6 fw-normal text-secondary">/mes</span></div>
+              <div class="small text-muted mt-2">Para empresas pequeñas con 1 catálogo</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="plan-card p-3 border rounded-3 text-center cursor-pointer transition-all position-relative"
+                 [ngClass]="{'border-dark bg-light-gray shadow-sm': planSeleccionado === 'profesional'}"
+                 (click)="seleccionarPlan('profesional')">
+              <span class="badge bg-dark position-absolute top-0 start-50 translate-middle text-uppercase px-2 rounded-pill small">Popular</span>
+              <div class="fw-bold text-secondary text-uppercase small mb-1 mt-1">Plan Profesional</div>
+              <div class="fs-4 fw-bold text-dark">$99.990<span class="fs-6 fw-normal text-secondary">/mes</span></div>
+              <div class="small text-muted mt-2">Para medianas empresas. Alertas y soporte IA</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="plan-card p-3 border rounded-3 text-center cursor-pointer transition-all"
+                 [ngClass]="{'border-dark bg-light-gray shadow-sm': planSeleccionado === 'premium'}"
+                 (click)="seleccionarPlan('premium')">
+              <div class="fw-bold text-secondary text-uppercase small mb-1">Plan Premium</div>
+              <div class="fs-4 fw-bold text-dark">$189.990<span class="fs-6 fw-normal text-secondary">/mes</span></div>
+              <div class="small text-muted mt-2">Para corporaciones. Procesamiento ilimitado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inputs de Cuenta -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre de la Empresa</label>
+            <input type="text" [(ngModel)]="empresaNombre" class="form-control rounded-3" placeholder="Ej: TechSoluciones SpA" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">RUT de la Empresa</label>
+            <input type="text" [(ngModel)]="empresaRut" class="form-control rounded-3" placeholder="Ej: 76.543.210-K" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre del Contacto</label>
+            <input type="text" [(ngModel)]="contactoNombre" class="form-control rounded-3" placeholder="Ej: Juan Pérez" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Celular del Contacto</label>
+            <input type="tel" [(ngModel)]="contactoTelefono" class="form-control rounded-3" placeholder="Ej: +56912345678" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Correo Electrónico (Será tu usuario)</label>
+            <input type="email" [(ngModel)]="contactoEmail" class="form-control rounded-3" placeholder="juan.perez@empresa.cl" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Contraseña para el Sistema</label>
+            <input type="password" [(ngModel)]="password" class="form-control rounded-3" placeholder="Mínimo 6 caracteres" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 2: RUBROS -->
+      <div *ngIf="pasoActual() === 2" class="fade-in">
+        <h3 class="fw-bold h5 mb-2 text-dark">2. Selecciona tus Rubros Principales</h3>
+        <p class="text-secondary small mb-4">Selecciona los sectores amplios donde opera tu empresa. En el siguiente paso podrás refinarlos.</p>
+        
+        <div class="row g-3">
+          <div class="col-md-6" *ngFor="let rubro of rubros()">
+            <div class="rubro-card p-3 border rounded-3 cursor-pointer d-flex align-items-start gap-3 transition-all"
+                 [ngClass]="{'border-dark bg-light-gray': rubro.selected}"
+                 (click)="seleccionarRubro(rubro)">
+              <input type="checkbox" [checked]="rubro.selected" class="form-check-input mt-1" (click)="$event.stopPropagation(); seleccionarRubro(rubro)">
+              <div>
+                <div class="fw-bold text-dark mb-1">{{ rubro.nombre }}</div>
+                <div class="small text-secondary">{{ rubro.descripcion }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 3: REFINAMIENTO POR EJEMPLOS -->
+      <div *ngIf="pasoActual() === 3" class="fade-in">
+        <h3 class="fw-bold h5 mb-2 text-dark">3. Refinamiento del Perfil Comercial</h3>
+        <p class="text-secondary small mb-4">Ayuda a la IA a entender mejor tu negocio marcando cuáles de estas subcategorías realmente te interesan o quieres excluir.</p>
+        
+        <div class="subcat-list" style="max-height: 400px; overflow-y: auto;">
+          <div *ngFor="let sub of subcategoriasSeleccionadas()" class="subcat-item p-3 border rounded-3 mb-3">
+            <div class="d-md-flex align-items-center justify-content-between gap-3">
+              <div class="mb-3 mb-md-0 flex-grow-1">
+                <span class="badge bg-secondary mb-1">Subcategoría</span>
+                <h4 class="h6 fw-bold text-dark mb-1">{{ sub.nombre }}</h4>
+                <div class="small text-muted mb-2"><em>Ejemplo de Oportunidad:</em> "{{ sub.ejemplo }}"</div>
+              </div>
+              <div class="decision-group d-flex gap-2">
+                <label class="decision-btn flex-fill text-center px-2 py-2 border rounded cursor-pointer small transition-all"
+                       [ngClass]="{'bg-success text-white border-success': sub.selected === 'INTERESA'}">
+                  <input type="radio" [name]="sub.codigo" value="INTERESA" [(ngModel)]="sub.selected" class="d-none">
+                  Me interesa
+                </label>
+                <label class="decision-btn flex-fill text-center px-2 py-2 border rounded cursor-pointer small transition-all"
+                       [ngClass]="{'bg-warning text-dark border-warning': sub.selected === 'QUIZAS'}">
+                  <input type="radio" [name]="sub.codigo" value="QUIZAS" [(ngModel)]="sub.selected" class="d-none">
+                  Quizás
+                </label>
+                <label class="decision-btn flex-fill text-center px-2 py-2 border rounded cursor-pointer small transition-all"
+                       [ngClass]="{'bg-danger text-white border-danger': sub.selected === 'NO_INTERESA'}">
+                  <input type="radio" [name]="sub.codigo" value="NO_INTERESA" [(ngModel)]="sub.selected" class="d-none">
+                  No me interesa
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="subcategoriasSeleccionadas().length === 0" class="text-center py-5 text-secondary">
+            No has seleccionado ningún rubro en el paso anterior. Por favor regresa.
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 4: REGIONES -->
+      <div *ngIf="pasoActual() === 4" class="fade-in">
+        <h3 class="fw-bold h5 mb-2 text-dark">4. ¿Dónde quieres participar?</h3>
+        <p class="text-secondary small mb-4">Selecciona las regiones de Chile donde tu empresa tiene capacidad comercial y logística para despachar u operar.</p>
+        
+        <div class="d-flex align-items-center mb-3 p-3 bg-light rounded-3">
+          <input type="checkbox" id="todoChile" [checked]="todoChile" (change)="toggleTodoChile()" class="form-check-input me-2">
+          <label for="todoChile" class="fw-bold text-dark mb-0 cursor-pointer">Seleccionar Todo Chile</label>
+        </div>
+
+        <div class="row g-2 overflow-auto" style="max-height: 300px;">
+          <div class="col-md-6" *ngFor="let reg of regiones()">
+            <div class="form-check p-2 border rounded-3 px-3 d-flex align-items-center gap-2">
+              <input type="checkbox" [id]="reg.codigo" [(ngModel)]="reg.selected" (change)="onRegionChange()" class="form-check-input mt-0">
+              <label [for]="reg.codigo" class="form-check-label text-dark cursor-pointer small">{{ reg.nombre }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 5: FILTROS Y KEYWORDS -->
+      <div *ngIf="pasoActual() === 5" class="fade-in">
+        <h3 class="fw-bold h5 mb-2 text-dark">5. Filtros de Montos y Palabras Clave</h3>
+        <p class="text-secondary small mb-4">Refina tus búsquedas excluyendo o buscando términos específicos, y filtrando por tamaño de licitación.</p>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Monto Mínimo (CLP)</label>
+            <input type="number" [(ngModel)]="montoMinimo" class="form-control rounded-3" placeholder="0" min="0" />
+            <div class="form-text">Ignorar licitaciones de monto menor a este valor.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Monto Máximo (CLP - Opcional)</label>
+            <input type="number" [(ngModel)]="montoMaximo" class="form-control rounded-3" placeholder="Sin límite" />
+            <div class="form-text">Dejar vacío si no tienes límite de capacidad.</div>
+          </div>
+          
+          <div class="col-12 mt-3">
+            <label class="form-label fw-semibold">Palabras Clave Positivas</label>
+            <textarea [(ngModel)]="palabrasClaveInput" rows="2" class="form-control rounded-3" placeholder="Ej: resinas, notebooks, fotocopiadoras, guantes, fibra óptica"></textarea>
+            <div class="form-text">Términos específicos que quieres asegurar que hagan match. Separados por comas.</div>
+          </div>
+          
+          <div class="col-12 mt-3">
+            <label class="form-label fw-semibold">Palabras Clave Excluidas (Negativas)</label>
+            <textarea [(ngModel)]="palabrasExcluidasInput" rows="2" class="form-control rounded-3" placeholder="Ej: mantención preventiva, servicios profesionales, arriendo de oficinas"></textarea>
+            <div class="form-text">Licitaciones con estas palabras en el título o descripción se descartarán. Separadas por comas.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 6: CONFIRMAR Y CREAR -->
+      <div *ngIf="pasoActual() === 6" class="fade-in text-center py-3">
+        <h3 class="fw-bold h4 mb-3 text-dark">🏁 ¡Todo listo para comenzar!</h3>
+        <p class="text-secondary px-md-5 mb-4">
+          Hemos creado tu perfil comercial personalizado. Al confirmar, tu cuenta quedará operativa inmediatamente con **3 días libres de uso completo** para que explores las oportunidades que la IA ha recolectado para ti.
+        </p>
+
+        <div class="summary-box border rounded-3 p-4 text-start mx-auto mb-4 bg-light" style="max-width: 600px;">
+          <h4 class="h6 fw-bold text-dark border-bottom pb-2 mb-3">Resumen de tu cuenta</h4>
+          <div class="row g-2 small text-secondary">
+            <div class="col-sm-4 fw-bold">Empresa:</div>
+            <div class="col-sm-8 text-dark">{{ empresaNombre }} (RUT: {{ empresaRut }})</div>
+            <div class="col-sm-4 fw-bold">Contacto:</div>
+            <div class="col-sm-8 text-dark">{{ contactoNombre }} ({{ contactoEmail }})</div>
+            <div class="col-sm-4 fw-bold">Plan:</div>
+            <div class="col-sm-8 text-dark text-capitalize">{{ planSeleccionado }}</div>
+            <div class="col-sm-4 fw-bold">Monto Mínimo:</div>
+            <div class="col-sm-8 text-dark">{{ montoMinimo | number }} CLP</div>
+          </div>
+        </div>
+
+        <div class="form-check justify-content-center d-flex align-items-center mb-4">
+          <input type="checkbox" id="aceptoTerminos" [(ngModel)]="terminosAceptados" class="form-check-input me-2">
+          <label for="aceptoTerminos" class="form-check-label small cursor-pointer text-dark">
+            Acepto los términos y condiciones de uso e inicio del periodo de trial
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pie del Wizard (Navegación) -->
+    <div class="card-footer bg-transparent border-0 d-flex justify-content-between p-4 pt-0">
+      <button class="btn btn-outline-secondary px-4 py-2 rounded-3 d-flex align-items-center gap-2"
+              (click)="anteriorPaso()"
+              [disabled]="pasoActual() === 1 || loading()">
+        ← Volver
+      </button>
+
+      <button *ngIf="pasoActual() < 6" 
+              class="btn btn-dark px-4 py-2 rounded-3 d-flex align-items-center gap-2"
+              (click)="siguientePaso()">
+        Continuar →
+      </button>
+
+      <button *ngIf="pasoActual() === 6" 
+              class="btn btn-dark px-4 py-2 rounded-3 d-flex align-items-center justify-content-center gap-2"
+              [disabled]="loading() || !terminosAceptados"
+              (click)="enviarOnboarding()">
+        @if (loading()) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        }
+        {{ loading() ? 'Creando cuenta...' : 'Iniciar período de 3 días' }}
+      </button>
+    </div>
+  </div>
+</div>

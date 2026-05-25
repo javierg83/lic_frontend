@@ -33,6 +33,18 @@ export const routes: Routes = [
     ],
   },
 
+  {
+    path: 'onboarding',
+    component: AuthLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/onboarding/wizard.component').then(m => m.WizardComponent)
+      }
+    ]
+  },
+
   // Redirección de compatibilidad para el login antiguo
   { path: 'login', redirectTo: 'auth/login' },
 
