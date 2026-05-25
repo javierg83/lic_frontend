@@ -13,6 +13,7 @@ import { MercadoPublicoService, MpStagingItem, CaStagingItem } from '../services
 })
 export class MpStagingListComponent implements OnInit {
   activeTab: 'licitaciones' | 'compras_agiles' = 'licitaciones';
+  viewMode: 'table' | 'cards' = 'table';
 
   opportunities: MpStagingItem[] = [];
   caOpportunities: CaStagingItem[] = [];
@@ -134,6 +135,11 @@ export class MpStagingListComponent implements OnInit {
       this.activeTab = tab;
       this.loadData();
     }
+  }
+
+  setViewMode(mode: 'table' | 'cards') {
+    this.viewMode = mode;
+    this.cdr.detectChanges();
   }
 
 

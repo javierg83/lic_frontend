@@ -74,6 +74,160 @@ import { FormsModule } from '@angular/forms';
       background-color: #fee2e2 !important;
       border-radius: 4px;
     }
+    
+    /* Grid de tarjetas responsivas */
+    .opportunities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 1024px) {
+      .opportunities-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .opportunities-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Estilos de tarjeta premium */
+    .opportunity-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 250px;
+    }
+    .opportunity-card:hover {
+      transform: translateY(-4px);
+      border-color: #9ca3af;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .opportunity-card.selected {
+      border-color: #10b981;
+      background-color: #f0fdf4;
+    }
+    .card-select-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+    }
+    .card-select-overlay input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-right: 24px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0.5rem 0 1rem 0;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-transform: none;
+    }
+    .card-body-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      background: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+    .metric-label {
+      color: #6b7280;
+    }
+    .metric-val {
+      color: #111827;
+    }
+    .card-details-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 0.75rem;
+      margin-bottom: 1rem;
+      color: #6b7280;
+    }
+    .details-left {
+      display: flex;
+      gap: 12px;
+    }
+    .card-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .btn-delete-card {
+      background: none;
+      border: 1px solid #fecaca;
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .btn-delete-card:hover {
+      background: #fee2e2;
+    }
+    
+    /* Toggle switch styles */
+    .view-toggle-group {
+      display: inline-flex;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: white;
+    }
+    .view-toggle-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .view-toggle-btn.active {
+      background-color: #f3f4f6;
+      color: #111827;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
   `]
 })
 export class LicitacionListComponent implements OnInit {
@@ -88,6 +242,7 @@ export class LicitacionListComponent implements OnInit {
   }
 
   // Filtering and Sorting state
+  public viewMode = signal<'table' | 'cards'>('table');
   public searchTerm = signal('');
   public sortColumn = signal<string>('fecha_carga');
   public sortDirection = signal<'asc' | 'desc'>('desc');
@@ -170,6 +325,10 @@ export class LicitacionListComponent implements OnInit {
     const list = this.licitacionService.list()?.licitaciones || [];
     return [...new Set(list.map(item => item.nombre))].sort();
   });
+
+  public setViewMode(mode: 'table' | 'cards'): void {
+    this.viewMode.set(mode);
+  }
 
   public updateColumnFilter(column: string, value: string): void {
     this.columnFilters.update(prev => ({ ...prev, [column]: value }));

@@ -4,7 +4,17 @@
       <h1 class="page-title">Bandeja Staging</h1>
       <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Mostrando {{ filteredOpportunities.length }} de {{ activeTab === 'licitaciones' ? opportunities.length : caOpportunities.length }} totales)</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center">
+      <!-- View Toggle Group -->
+      <div class="view-toggle-group me-2">
+        <button class="view-toggle-btn" [class.active]="viewMode === 'table'" (click)="setViewMode('table')" title="Vista Tabla">
+          <i class="bi bi-list-task"></i> Tabla
+        </button>
+        <button class="view-toggle-btn" [class.active]="viewMode === 'cards'" (click)="setViewMode('cards')" title="Vista Tarjetas">
+          <i class="bi bi-grid-3x3-gap-fill"></i> Tarjetas
+        </button>
+      </div>
+
       <button *ngIf="activeTab === 'compras_agiles'" class="btn btn-success" [disabled]="selectedIds.size === 0" (click)="transferSelectedCa()">
         <i class="bi bi-play-circle"></i> Procesar Seleccionados ({{ selectedIds.size }})
       </button>
@@ -125,7 +135,7 @@
   </div>
 
   <div class="card premium-card" *ngIf="!loading && !error">
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="viewMode === 'table'">
       <table class="table premium-table">
         <thead>
           <tr>
@@ -239,6 +249,108 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Vista de Tarjetas Responsivas para Staging -->
+    <div class="opportunities-grid p-3" *ngIf="viewMode === 'cards'">
+      <div class="opportunity-card" *ngFor="let opp of paginatedOpportunities"
+           [class.is-transferred]="opp.transferida"
+           [class.selected]="selectedIds.has(opp.id)">
+        <!-- Checkbox de selección -->
+        <div class="card-select-overlay">
+          <input type="checkbox" class="form-check-input"
+                 [checked]="selectedIds.has(opp.id)"
+                 (change)="toggleSelection(opp.id)">
+        </div>
+
+        <div>
+          <!-- Cabecera de tarjeta: Código y Tab-specific info -->
+          <div class="card-top">
+            <span class="code-badge">{{ opp.codigo_externo || opp.codigo_compra_agil }}</span>
+            <span class="status-badge" [ngClass]="getEstadoClass(opp.estado_staging)">
+              {{ (opp.estado_staging || 'NUEVA').replace('_', ' ') }}
+            </span>
+          </div>
+
+          <!-- Título -->
+          <h3 class="card-title" [title]="opp.nombre || opp.titulo">
+            {{ opp.nombre || opp.titulo || 'Sin título' }}
+          </h3>
+
+          <!-- Macro-Categorías para Compra Ágil -->
+          <div *ngIf="activeTab === 'compras_agiles' && opp.macro_categoria" class="mb-2">
+            <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
+            <span *ngIf="opp.subcategoria" class="badge bg-secondary">{{ opp.subcategoria }}</span>
+          </div>
+
+          <div class="text-muted small mb-2">
+            <i class="bi bi-building"></i> {{ opp.estado_mp || opp.organismo || 'Desconocido' }}
+          </div>
+
+          <!-- Métricas -->
+          <div class="card-body-metrics">
+            <!-- Licitaciones metrics -->
+            <ng-container *ngIf="activeTab === 'licitaciones'">
+              <div class="metric-row">
+                <span class="metric-label">Ítems:</span>
+                <span class="metric-val fw-bold">{{ opp.cantidad_items || 0 }}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Documentos:</span>
+                <span class="metric-val">
+                  <i class="bi bi-file-earmark-pdf"></i> {{ opp.documentos_descargados || 0 }}
+                </span>
+              </div>
+            </ng-container>
+
+            <!-- Compras Ágiles metrics -->
+            <ng-container *ngIf="activeTab === 'compras_agiles'">
+              <div class="metric-row">
+                <span class="metric-label">Monto Estimado:</span>
+                <strong class="metric-val text-success">
+                  {{ (opp.monto_estimado | currency:'CLP':'symbol-narrow':'1.0-0') || 'N/A' }}
+                </strong>
+              </div>
+              <div class="metric-row" *ngIf="opp.ai_model_used">
+                <span class="metric-label">Auditoría IA:</span>
+                <span class="metric-val fw-bold text-primary">
+                  ${{ opp.ai_costo_clp | number:'1.0-2' }} CLP
+                </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div>
+          <!-- Fechas -->
+          <div class="card-details-footer">
+            <div class="date-group text-muted small" style="display: flex; flex-direction: column; gap: 2px;">
+              <div *ngIf="opp.fecha_descarga">
+                <i class="bi bi-cloud-arrow-down"></i> Descarga: {{ opp.fecha_descarga | date:'dd/MM/yyyy' }}
+              </div>
+              <div *ngIf="opp.fecha_cierre">
+                <i class="bi bi-clock-history"></i> Cierre: {{ opp.fecha_cierre | date:'dd/MM/yyyy' }}
+              </div>
+            </div>
+            <div class="text-muted small">
+              {{ opp.region || '-' }}
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="card-actions-row">
+            <button *ngIf="activeTab === 'licitaciones'" class="btn btn-sm btn-primary action-btn w-100" [routerLink]="['/admin/mercado-publico/staging', opp.id]">
+              <i class="bi bi-eye"></i> Revisar
+            </button>
+            <button *ngIf="activeTab === 'compras_agiles' && !opp.transferida" class="btn btn-sm btn-success action-btn w-100" (click)="transferCa(opp.id)">
+              <i class="bi bi-box-arrow-in-right"></i> Procesar
+            </button>
+            <span *ngIf="activeTab === 'compras_agiles' && opp.transferida" class="text-muted text-center w-100 small py-1">
+              <i class="bi bi-check-circle-fill text-success"></i> Procesado
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <!-- Paginación -->
