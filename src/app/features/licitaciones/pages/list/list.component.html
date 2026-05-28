@@ -91,8 +91,14 @@
                 <th class="sort-header" (click)="toggleSort('estado')">
                     Estado {{ getSortIcon('estado') }}
                 </th>
+                <th class="sort-header" (click)="toggleSort('fecha_publicacion')">
+                    F. Publicación {{ getSortIcon('fecha_publicacion') }}
+                </th>
+                <th class="sort-header" (click)="toggleSort('fecha_cierre')">
+                    F. Cierre {{ getSortIcon('fecha_cierre') }}
+                </th>
                 <th class="sort-header" (click)="toggleSort('fecha_carga')">
-                    Fecha {{ getSortIcon('fecha_carga') }}
+                    F. Descarga {{ getSortIcon('fecha_carga') }}
                 </th>
                 <th>Acciones</th>
             </tr>
@@ -126,6 +132,8 @@
                 </td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -134,11 +142,11 @@
                     <input type="checkbox" [checked]="selectedIds.has(item.id)" (change)="toggleSelection(item.id)">
                 </td>
                 <td>
-                    <span class="badge badge-info" [title]="item.tipo_licitacion || 'LICITACION_PUBLICA'">
-                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
+                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA') + (item.subcategoria ? ' - ' + item.subcategoria : '')">
+                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? ('Compra Ágil' + (item.subcategoria ? ' - ' + item.subcategoria : '')) : 'Licitación' }}
                     </span>
                 </td>
-                <td>{{ item.nombre }}</td>
+                <td>{{ cleanNombre(item.nombre) }}</td>
                 <td>
                     <ng-container *ngIf="item.presupuesto; else noPresupuesto">
                         {{ item.moneda ? item.moneda + ' ' : '' }}{{ item.presupuesto | number:'1.0-0' }}
@@ -158,6 +166,18 @@
                 <td>{{ item.cantidad_homologados || 0 }}</td>
                 <td>
                     <span class="status-badge">{{ item.estado }}</span>
+                </td>
+                <td>
+                    <span *ngIf="item.fecha_publicacion; else sinFechaPub">
+                        {{ item.fecha_publicacion | date:'dd/MM/yyyy' }}
+                    </span>
+                    <ng-template #sinFechaPub><span class="text-muted">-</span></ng-template>
+                </td>
+                <td>
+                    <span *ngIf="item.fecha_cierre; else sinFechaCie" style="color: #dc2626; font-weight: 500;">
+                        {{ item.fecha_cierre | date:'dd/MM/yyyy' }}
+                    </span>
+                    <ng-template #sinFechaCie><span class="text-muted">-</span></ng-template>
                 </td>
                 <td>{{ item.fecha_carga | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>
@@ -195,14 +215,21 @@
             <div>
                 <!-- Top info: tipo y estado -->
                 <div class="card-top">
-                    <span class="badge badge-info" [title]="item.tipo_licitacion || 'LICITACION_PUBLICA'">
-                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
+                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA') + (item.subcategoria ? ' - ' + item.subcategoria : '')">
+                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? ('Compra Ágil' + (item.subcategoria ? ' - ' + item.subcategoria : '')) : 'Licitación' }}
                     </span>
                     <span class="status-badge">{{ item.estado }}</span>
                 </div>
 
                 <!-- Título -->
-                <h3 class="card-title" [title]="item.nombre">{{ item.nombre }}</h3>
+                <h3 class="card-title" [title]="cleanNombre(item.nombre) + (item.titulo ? ' - ' + item.titulo : '')">
+                    {{ cleanNombre(item.nombre) }}{{ item.titulo ? ' - ' + item.titulo : '' }}
+                </h3>
+
+                <!-- Descripción -->
+                <p *ngIf="item.descripcion" class="card-description" [title]="item.descripcion">
+                    {{ item.descripcion }}
+                </p>
 
                 <!-- Métricas -->
                 <div class="card-body-metrics">
@@ -232,10 +259,18 @@
                 <div class="card-details-footer">
                     <div class="details-left">
                         <span><i class="bi bi-box"></i> Ítems: <strong>{{ item.cantidad_items || 0 }}</strong></span>
-                        <span><i class="bi bi-people"></i> Cand: <strong>{{ item.cantidad_con_candidatos || 0 }}</strong></span>
+                        <span><i class="bi bi-people"></i> Candidatos: <strong>{{ item.cantidad_con_candidatos || 0 }}</strong></span>
                     </div>
-                    <div class="details-right" title="Fecha de carga">
-                        {{ item.fecha_carga | date:'dd/MM/yyyy' }}
+                    <div class="details-right" style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; line-height: 1.2;">
+                        <span *ngIf="item.fecha_publicacion" title="Fecha de publicación" style="font-size: 0.75rem;">
+                            Pub: {{ item.fecha_publicacion | date:'dd/MM/yyyy' }}
+                        </span>
+                        <span *ngIf="item.fecha_cierre" title="Fecha de cierre" style="font-size: 0.75rem; color: #dc2626; font-weight: 500;">
+                            Cierre: {{ item.fecha_cierre | date:'dd/MM/yyyy' }}
+                        </span>
+                        <span title="Fecha de descarga" style="font-size: 0.75rem; color: #9ca3af;">
+                            Desc: {{ item.fecha_carga | date:'dd/MM/yyyy' }}
+                        </span>
                     </div>
                 </div>
 

@@ -33,6 +33,11 @@ export interface LicitacionListItem {
     alerta_homologacion?: boolean;
     umbral_homologacion?: number;
     tipo_licitacion?: string;
+    fecha_publicacion?: string;
+    fecha_cierre?: string;
+    subcategoria?: string;
+    titulo?: string;
+    descripcion?: string;
 }
 
 export interface LicitacionListResponse {

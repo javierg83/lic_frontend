@@ -96,7 +96,7 @@ import { FormsModule } from '@angular/forms';
     
     /* Estilos de tarjeta premium */
     .opportunity-card {
-      background: #ffffff;
+      background: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: 1.25rem;
@@ -147,12 +147,23 @@ import { FormsModule } from '@angular/forms';
       overflow: hidden;
       text-transform: none;
     }
+    .card-description {
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin: -0.5rem 0 1rem 0;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .card-body-metrics {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
       margin-bottom: 1rem;
-      background: #f9fafb;
+      background: #ffffff;
       padding: 0.75rem;
       border-radius: 8px;
     }
@@ -279,7 +290,7 @@ export class LicitacionListComponent implements OnInit {
     const term = this.searchTerm().toLowerCase();
     if (term) {
       list = list.filter(item => 
-        item.nombre.toLowerCase().includes(term) ||
+        this.cleanNombre(item.nombre).toLowerCase().includes(term) ||
         (item.id_interno?.toString() || '').includes(term) ||
         item.estado.toLowerCase().includes(term) ||
         (item.tipo_licitacion || 'LICITACION').toLowerCase().includes(term)
@@ -296,7 +307,7 @@ export class LicitacionListComponent implements OnInit {
     }
     if (filters.nombre) {
       const n = filters.nombre.toLowerCase();
-      list = list.filter(item => item.nombre.toLowerCase().includes(n));
+      list = list.filter(item => this.cleanNombre(item.nombre).toLowerCase().includes(n));
     }
     if (filters.estado) {
       list = list.filter(item => item.estado === filters.estado);
@@ -320,10 +331,18 @@ export class LicitacionListComponent implements OnInit {
     });
   });
 
+  // Clean prefix from name
+  public cleanNombre(nombre: string): string {
+    if (!nombre) return '';
+    return nombre
+      .replace(/^(compra\s+á?gil)\s+/i, '')
+      .replace(/^(licitaci?ó?n\s+(p[úu]blica\s+)?|licitaci?ó?n)\s+/i, '');
+  }
+
   // Unique names for datalist
   public uniqueNames = computed(() => {
     const list = this.licitacionService.list()?.licitaciones || [];
-    return [...new Set(list.map(item => item.nombre))].sort();
+    return [...new Set(list.map(item => this.cleanNombre(item.nombre)))].sort();
   });
 
   public setViewMode(mode: 'table' | 'cards'): void {
