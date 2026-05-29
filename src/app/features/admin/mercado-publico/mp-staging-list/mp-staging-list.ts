@@ -356,11 +356,14 @@ export class MpStagingListComponent implements OnInit {
 
   getEstadoClass(estado: string): string {
     if (!estado) return 'badge-primary';
-    if (estado === 'VALIDADA_STAGING' || estado === 'TRANSFERIDO') return 'badge-success';
-    if (estado === 'REQUIERE_REVISION' || estado === 'DESCARGA_PENDIENTE') return 'badge-warning';
-    if (estado === 'ERROR_DOCUMENTOS' || estado === 'DESCARTADA' || estado === 'DESCARTADO' || estado === 'ERROR_TRANSFERENCIA') return 'badge-danger';
-    if (estado === 'LIBERADA_PARA_PROCESAMIENTO' || estado === 'EN_COLA_PROCESAMIENTO') return 'badge-info';
-    if (estado === 'TRANSFERIDA_AL_SISTEMA') return 'badge-dark';
+    const statusUpper = estado.toUpperCase();
+    if (statusUpper === 'VALIDADO' || statusUpper === 'VALIDADA_STAGING') return 'badge-success';
+    if (statusUpper === 'DETALLE_DESCARGADO' || statusUpper === 'DESCARGA_PENDIENTE' || statusUpper === 'PENDIENTE') return 'badge-primary';
+    if (statusUpper === 'DOCUMENTOS_DESCARGADOS') return 'badge-info';
+    if (statusUpper === 'CON_ERRORES' || statusUpper === 'ERROR_DOCUMENTOS' || statusUpper === 'ERROR_TRANSFERENCIA') return 'badge-danger';
+    if (statusUpper === 'EN_COLA_PROCESAMIENTO' || statusUpper === 'LIBERADA_PARA_PROCESAMIENTO') return 'badge-info';
+    if (statusUpper === 'TRANSFERIDO' || statusUpper === 'TRANSFERIDA_AL_SISTEMA') return 'badge-dark';
+    if (statusUpper === 'DESCARTADO' || statusUpper === 'DESCARTADA') return 'badge-danger';
     return 'badge-primary'; // DEFAULT
   }
 

@@ -197,15 +197,32 @@
               background: #fef3c7;
               color: #b45309;
             }
-            &.staging-descargada {
+            &.staging-detalle_descargado {
               background: #e0e7ff;
               color: #4338ca;
             }
-            &.staging-transferida {
+            &.staging-documentos_descargados {
+              background: #e0f2fe;
+              color: #0369a1;
+            }
+            &.staging-validado {
               background: #dcfce3;
               color: #166534;
             }
-            &.staging-error {
+            &.staging-con_errores {
+              background: #fee2e2;
+              color: #b91c1c;
+            }
+            &.staging-en_cola_procesamiento {
+              background: #fef3c7;
+              color: #b45309;
+            }
+            &.staging-transferido {
+              background: #f1f5f9;
+              color: #475569;
+              border: 1px dashed #cbd5e1;
+            }
+            &.staging-descartado {
               background: #fee2e2;
               color: #b91c1c;
             }

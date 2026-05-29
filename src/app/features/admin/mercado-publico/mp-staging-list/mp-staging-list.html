@@ -63,15 +63,16 @@
         <select class="form-select" [(ngModel)]="selectedEstado" (change)="onEstadoChange()">
           <option value="">Todos los Estados</option>
           <ng-container *ngIf="activeTab === 'licitaciones'">
-            <option value="DESCARGA_PENDIENTE">DESCARGA PENDIENTE</option>
-            <option value="REQUIERE_REVISION">REQUIERE REVISION</option>
-            <option value="VALIDADA_STAGING">VALIDADA STAGING</option>
-            <option value="ERROR_DOCUMENTOS">ERROR DOCUMENTOS</option>
-            <option value="TRANSFERIDA_AL_SISTEMA">TRANSFERIDA AL SISTEMA</option>
-            <option value="DESCARTADA">DESCARTADA</option>
+            <option value="DETALLE_DESCARGADO">DETALLE DESCARGADO</option>
+            <option value="DOCUMENTOS_DESCARGADOS">DOCUMENTOS DESCARGADOS</option>
+            <option value="VALIDADO">VALIDADO</option>
+            <option value="CON_ERRORES">CON ERRORES</option>
+            <option value="EN_COLA_PROCESAMIENTO">EN COLA PROCESAMIENTO</option>
+            <option value="TRANSFERIDO">TRANSFERIDO</option>
+            <option value="DESCARTADO">DESCARTADO</option>
           </ng-container>
           <ng-container *ngIf="activeTab === 'compras_agiles'">
-            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="DESCARGA_PENDIENTE">DESCARGA PENDIENTE</option>
             <option value="EN_COLA_PROCESAMIENTO">EN COLA PROCESAMIENTO</option>
             <option value="TRANSFERIDO">TRANSFERIDO</option>
             <option value="ERROR_TRANSFERENCIA">ERROR TRANSFERENCIA</option>
