@@ -1,7 +1,7 @@
 <div class="table-container">
     <div class="header-row">
         <h2>Listado de Licitaciones</h2>
-        <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; width: 100%;">
             <!-- View Toggle Group -->
             <div class="view-toggle-group">
                 <button class="view-toggle-btn" [class.active]="viewMode() === 'table'" (click)="setViewMode('table')" title="Vista Tabla">
@@ -21,7 +21,7 @@
             </div>
             <input 
                 type="text" 
-                class="filter-input" style="width: 250px;"
+                class="filter-input" style="flex: 1 1 200px; min-width: 150px; max-width: 100%;"
                 placeholder="Buscar por nombre, ID, estado..." 
                 [ngModel]="searchTerm()" 
                 (ngModelChange)="searchTerm.set($event)">

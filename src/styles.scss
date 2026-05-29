@@ -587,6 +587,10 @@ select:focus {
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     overflow-x: auto;
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 }
 
 .table-container.no-padding {
@@ -598,6 +602,8 @@ select:focus {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 .header-row h2 { margin: 0; font-size: 1.5rem; }
 

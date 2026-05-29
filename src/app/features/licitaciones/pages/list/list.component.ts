@@ -82,15 +82,18 @@ import { FormsModule } from '@angular/forms';
       gap: 1.5rem;
       margin-top: 1rem;
       margin-bottom: 2rem;
+      width: 100%;
+      box-sizing: border-box;
     }
     @media (max-width: 1024px) {
       .opportunities-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       .opportunities-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
       }
     }
     
@@ -107,6 +110,9 @@ import { FormsModule } from '@angular/forms';
       flex-direction: column;
       justify-content: space-between;
       min-height: 250px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
     }
     .opportunity-card:hover {
       transform: translateY(-4px);
@@ -134,6 +140,8 @@ import { FormsModule } from '@angular/forms';
       align-items: center;
       margin-bottom: 0.75rem;
       padding-right: 24px;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .card-title {
       font-size: 1rem;
@@ -166,6 +174,7 @@ import { FormsModule } from '@angular/forms';
       background: #ffffff;
       padding: 0.75rem;
       border-radius: 8px;
+      box-sizing: border-box;
     }
     .metric-row {
       display: flex;
@@ -187,10 +196,19 @@ import { FormsModule } from '@angular/forms';
       padding-top: 0.75rem;
       margin-bottom: 1rem;
       color: #6b7280;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    @media (max-width: 480px) {
+      .card-details-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
     .details-left {
       display: flex;
       gap: 12px;
+      flex-wrap: wrap;
     }
     .card-actions-row {
       display: flex;
