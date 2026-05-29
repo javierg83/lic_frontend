@@ -1,42 +1,54 @@
 <!-- navbar.component.html -->
 <nav class="navbar navbar-main">
-  <div class="container d-flex justify-content-between align-items-center">
+  <div class="container navbar-container">
     <!-- IZQUIERDA -->
     <div class="navbar-left">
-      <a routerLink="/" class="logo">
+      <a routerLink="/" class="logo" (click)="closeMenu()">
         <span>Licitaciones IA</span>
       </a>
     </div>
 
-    <!-- CENTRO -->
-    <ul class="navbar-center mb-0">
-      <li>
-        <a routerLink="/main" routerLinkActive="active">Home</a>
-      </li>
-      <li>
-        <a routerLink="/licitaciones/list" routerLinkActive="active">Licitaciones</a>
-      </li>
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      </li>
-      <li>
-        <a routerLink="/config" routerLinkActive="active">Configuración</a>
-      </li>
-      <li *ngIf="isAdmin()">
-        <a routerLink="/admin/monitoring" routerLinkActive="active">Monitoreo</a>
-      </li>
-      <li *ngIf="isAdmin()">
-        <a routerLink="/admin/mercado-publico" routerLinkActive="active">Mercado Público</a>
-      </li>
-    </ul>
+    <!-- BOTÓN HAMBURGUESA (MÓVIL) -->
+    <button class="navbar-toggle-btn" (click)="toggleMenu()" aria-label="Toggle navigation">
+      <svg class="hamburger-icon" [class.open]="isMenuOpen" viewBox="0 0 24 24" width="24" height="24">
+        <line x1="3" y1="6" x2="21" y2="6" class="line-top" />
+        <line x1="3" y1="12" x2="21" y2="12" class="line-middle" />
+        <line x1="3" y1="18" x2="21" y2="18" class="line-bottom" />
+      </svg>
+    </button>
 
-    <!-- DERECHA -->
-    <div class="navbar-right d-flex align-items-center">
-      <div class="user-info me-3">
-        <span class="user-name">{{ userName }}</span>
-        <span class="company-name">{{ companyName }}</span>
+    <!-- MENÚ COLAPSABLE -->
+    <div class="navbar-collapse" [class.open]="isMenuOpen">
+      <!-- CENTRO -->
+      <ul class="navbar-center mb-0">
+        <li>
+          <a routerLink="/main" routerLinkActive="active" (click)="closeMenu()">Home</a>
+        </li>
+        <li>
+          <a routerLink="/licitaciones/list" routerLinkActive="active" (click)="closeMenu()">Licitaciones</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+        </li>
+        <li>
+          <a routerLink="/config" routerLinkActive="active" (click)="closeMenu()">Configuración</a>
+        </li>
+        <li *ngIf="isAdmin()">
+          <a routerLink="/admin/monitoring" routerLinkActive="active" (click)="closeMenu()">Monitoreo</a>
+        </li>
+        <li *ngIf="isAdmin()">
+          <a routerLink="/admin/mercado-publico" routerLinkActive="active" (click)="closeMenu()">Mercado Público</a>
+        </li>
+      </ul>
+
+      <!-- DERECHA -->
+      <div class="navbar-right">
+        <div class="user-info">
+          <span class="user-name">{{ userName }}</span>
+          <span class="company-name">{{ companyName }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout(); closeMenu()">Logout</button>
       </div>
-      <button class="btn-logout" (click)="logout()">Logout</button>
     </div>
   </div>
 </nav>

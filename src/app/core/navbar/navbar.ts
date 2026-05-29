@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth';
   templateUrl: './navbar.html'
 })
 export class NavbarComponent {
+  public isMenuOpen = false;
 
   constructor(
     private router: Router,
@@ -26,6 +27,14 @@ export class NavbarComponent {
 
   isAdmin(): boolean {
     return this.auth.isAdmin();
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 
   logout() {
