@@ -78,21 +78,15 @@ import { FormsModule } from '@angular/forms';
     /* Grid de tarjetas responsivas */
     .opportunities-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
       margin-top: 1rem;
       margin-bottom: 2rem;
       width: 100%;
       box-sizing: border-box;
     }
-    @media (max-width: 1024px) {
-      .opportunities-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
     @media (max-width: 768px) {
       .opportunities-grid {
-        grid-template-columns: 1fr;
         gap: 1rem;
       }
     }
