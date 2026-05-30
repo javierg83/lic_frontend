@@ -4,7 +4,7 @@
       <h1 class="page-title">Bandeja Staging</h1>
       <p class="page-subtitle">Oportunidades crudas descargadas desde Mercado Público (Mostrando {{ filteredOpportunities.length }} de {{ activeTab === 'licitaciones' ? opportunities.length : caOpportunities.length }} totales)</p>
     </div>
-    <div class="d-flex gap-2 align-items-center">
+    <div class="d-flex gap-2 align-items-center flex-wrap">
       <!-- View Toggle Group -->
       <div class="view-toggle-group me-2">
         <button class="view-toggle-btn" [class.active]="viewMode === 'table'" (click)="setViewMode('table')" title="Vista Tabla">
@@ -355,11 +355,11 @@
     </div>
     
     <!-- Paginación -->
-    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-top p-3" *ngIf="filteredOpportunities.length > 0">
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3 bg-white border-top p-3" *ngIf="filteredOpportunities.length > 0">
       <div class="text-muted small">
         Mostrando {{ (currentPage - 1) * pageSize + 1 }} a {{ Math.min(currentPage * pageSize, filteredOpportunities.length) }} de {{ filteredOpportunities.length }} registros
       </div>
-      <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center flex-wrap gap-2">
         <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 1">
           <option [ngValue]="10">10 por página</option>
           <option [ngValue]="25">25 por página</option>
