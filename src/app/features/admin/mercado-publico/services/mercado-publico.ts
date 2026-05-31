@@ -38,6 +38,8 @@ export interface CaStagingItem {
   fecha_descarga?: string;
   macro_categoria?: string;
   subcategoria?: string;
+  subcategoria_1?: string;
+  subcategoria_2?: string;
   estado_clasificacion?: string;
   ai_model_used?: string;
   ai_tokens_input?: number;
