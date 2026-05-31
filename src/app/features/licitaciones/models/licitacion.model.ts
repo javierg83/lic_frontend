@@ -36,6 +36,9 @@ export interface LicitacionListItem {
     fecha_publicacion?: string;
     fecha_cierre?: string;
     subcategoria?: string;
+    macro_categoria?: string;
+    subcategoria_1?: string;
+    subcategoria_2?: string;
     titulo?: string;
     descripcion?: string;
 }
@@ -65,6 +68,9 @@ export interface LicitacionShowResponse {
     estado_publicacion?: string;
     tipo_licitacion?: string;
     fecha_carga: string;
+    macro_categoria?: string;
+    subcategoria_1?: string;
+    subcategoria_2?: string;
     archivos: ArchivoShow[];
 }
 

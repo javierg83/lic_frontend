@@ -18,6 +18,10 @@ export interface MpStagingItem {
   documentos_error: number;
   cantidad_items: number;
   transferida: boolean;
+  macro_categoria?: string;
+  subcategoria_1?: string;
+  subcategoria_2?: string;
+  estado_clasificacion?: string;
 }
 
 export interface CaStagingItem {

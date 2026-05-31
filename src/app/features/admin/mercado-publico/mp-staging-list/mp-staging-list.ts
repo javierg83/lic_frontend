@@ -276,6 +276,16 @@ export class MpStagingListComponent implements OnInit {
       filtered = filtered.filter(opp => opp.estado_staging === this.selectedEstado);
     }
 
+    // Filtro por Macro-Categoría para Licitaciones (Compras Ágiles se filtra en backend)
+    if (this.activeTab === 'licitaciones' && this.selectedMacro) {
+      filtered = filtered.filter(opp => opp.macro_categoria === this.selectedMacro);
+    }
+
+    // Filtro por Subcategoría para Licitaciones (compara subcategoria_1 o subcategoria_2)
+    if (this.activeTab === 'licitaciones' && this.selectedSub) {
+      filtered = filtered.filter(opp => opp.subcategoria_1 === this.selectedSub || opp.subcategoria_2 === this.selectedSub);
+    }
+
     // Filtro por rango de fechas
     if (this.filterFechaDesde || this.filterFechaHasta) {
       const desde = this.filterFechaDesde ? new Date(this.filterFechaDesde + 'T00:00:00') : null;

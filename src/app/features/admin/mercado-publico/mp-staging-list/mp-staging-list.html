@@ -81,23 +81,21 @@
         </select>
       </div>
 
-      <!-- Filtros de Categorías para Compras Ágiles -->
-      <ng-container *ngIf="activeTab === 'compras_agiles'">
-        <div class="col-md-3">
-          <label class="form-label small fw-bold text-muted mb-1">Macro-Categoría</label>
-          <select class="form-select" [(ngModel)]="selectedMacro" (change)="onMacroChange()">
-            <option value="">Todas las Macro-Categorías</option>
-            <option *ngFor="let macro of macroOptions" [value]="macro">{{ macro }}</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label small fw-bold text-muted mb-1">Subcategoría</label>
-          <select class="form-select" [(ngModel)]="selectedSub" (change)="onSubChange()" [disabled]="!selectedMacro || subOptions.length === 0">
-            <option value="">Todas las Subcategorías</option>
-            <option *ngFor="let sub of subOptions" [value]="sub">{{ sub }}</option>
-          </select>
-        </div>
-      </ng-container>
+      <!-- Filtros de Categorías -->
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Macro-Categoría</label>
+        <select class="form-select" [(ngModel)]="selectedMacro" (change)="onMacroChange()">
+          <option value="">Todas las Macro-Categorías</option>
+          <option *ngFor="let macro of macroOptions" [value]="macro">{{ macro }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">Subcategoría</label>
+        <select class="form-select" [(ngModel)]="selectedSub" (change)="onSubChange()" [disabled]="!selectedMacro || subOptions.length === 0">
+          <option value="">Todas las Subcategorías</option>
+          <option *ngFor="let sub of subOptions" [value]="sub">{{ sub }}</option>
+        </select>
+      </div>
     </div>
 
     <!-- Fila 2: Filtros de Fecha y Limpieza -->
@@ -183,6 +181,11 @@
               <div *ngIf="activeTab === 'compras_agiles' && opp.macro_categoria" class="mt-1 mb-1">
                 <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
                 <span *ngIf="opp.subcategoria" class="badge bg-secondary">{{ opp.subcategoria }}</span>
+              </div>
+              <div *ngIf="activeTab === 'licitaciones' && opp.macro_categoria" class="mt-1 mb-1">
+                <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
+                <span *ngIf="opp.subcategoria_1" class="badge bg-secondary me-1">{{ opp.subcategoria_1 }}</span>
+                <span *ngIf="opp.subcategoria_2" class="badge bg-secondary">{{ opp.subcategoria_2 }}</span>
               </div>
               <small class="text-muted">{{ opp.estado_mp || opp.organismo || 'Desconocido' }}</small>
             </td>
@@ -282,6 +285,13 @@
           <div *ngIf="activeTab === 'compras_agiles' && opp.macro_categoria" class="mb-2">
             <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
             <span *ngIf="opp.subcategoria" class="badge bg-secondary">{{ opp.subcategoria }}</span>
+          </div>
+
+          <!-- Macro-Categorías para Licitaciones Públicas -->
+          <div *ngIf="activeTab === 'licitaciones' && opp.macro_categoria" class="mb-2">
+            <span class="badge bg-info text-dark me-1"><i class="bi bi-robot"></i> {{ opp.macro_categoria }}</span>
+            <span *ngIf="opp.subcategoria_1" class="badge bg-secondary me-1">{{ opp.subcategoria_1 }}</span>
+            <span *ngIf="opp.subcategoria_2" class="badge bg-secondary">{{ opp.subcategoria_2 }}</span>
           </div>
 
           <div class="text-muted small mb-2">
