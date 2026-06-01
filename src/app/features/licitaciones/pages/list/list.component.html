@@ -25,6 +25,15 @@
                 placeholder="Buscar por nombre, ID, estado..." 
                 [ngModel]="searchTerm()" 
                 (ngModelChange)="searchTerm.set($event)">
+
+            <!-- Advanced Filters Toggle -->
+            <button class="view-toggle-btn" [class.active]="filtersExpanded()" (click)="filtersExpanded.set(!filtersExpanded())" title="Filtros Avanzados" style="padding: 0.6rem 1rem; border: 1px solid #d1d5db; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem; background-color: white;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.124.318l-3.96 4.58a1.5 1.5 0 0 0-.316.892v4.253a.5.5 0 0 1-.224.418l-4 2.5A.5.5 0 0 1 5 16v-6.253a1.5 1.5 0 0 0-.316-.892L.724 3.818A.5.5 0 0 1 1 3.5v-2zM2 2v1.248l3.96 4.58a2.5 2.5 0 0 1 .528 1.488V13.8l2.8-1.75V9.316a2.5 2.5 0 0 1 .528-1.488l3.96-4.58V2H2z"/>
+                </svg>
+                <span>Filtros</span>
+                <span *ngIf="hasActiveAdvancedFilters()" class="badge bg-primary text-white" style="background-color: #3b82f6; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; color: white;">Activo</span>
+            </button>
             
             <button *ngIf="isAdmin() && selectedIds.size > 0" class="btn-delete" (click)="onBulkDelete()" [disabled]="deletingBulk" style="padding: 0.6rem 1.25rem; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s;">
                 <svg *ngIf="!deletingBulk" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -41,6 +50,80 @@
             <a *ngIf="isAdmin()" routerLink="/licitaciones/new" class="btn-new">
                 Nueva Licitación
             </a>
+        </div>
+    </div>
+
+    <!-- Panel de Filtros Avanzados -->
+    <div *ngIf="filtersExpanded()" class="advanced-filters-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+            <h4 style="margin: 0; color: #374151; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.124.318l-3.96 4.58a1.5 1.5 0 0 0-.316.892v4.253a.5.5 0 0 1-.224.418l-4 2.5A.5.5 0 0 1 5 16v-6.253a1.5 1.5 0 0 0-.316-.892L.724 3.818A.5.5 0 0 1 1 3.5v-2z"/>
+                </svg>
+                Filtros Avanzados
+            </h4>
+            <button *ngIf="hasActiveAdvancedFilters()" class="btn-cancel" (click)="clearAdvancedFilters()" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: 4px;">
+                Limpiar Filtros
+            </button>
+        </div>
+
+        <div class="filters-grid">
+            <!-- Presupuesto -->
+            <div class="filter-group">
+                <label>Monto / Presupuesto</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" placeholder="Min" class="filter-input" [ngModel]="advancedFilters().montoMin" (ngModelChange)="updateAdvancedFilter('montoMin', $event)" style="font-size: 0.8rem; padding: 0.4rem;">
+                    <span style="color: #9ca3af; font-size: 0.8rem;">-</span>
+                    <input type="number" placeholder="Max" class="filter-input" [ngModel]="advancedFilters().montoMax" (ngModelChange)="updateAdvancedFilter('montoMax', $event)" style="font-size: 0.8rem; padding: 0.4rem;">
+                </div>
+            </div>
+
+            <!-- Cobertura -->
+            <div class="filter-group">
+                <label>% Coincidencia Mínimo ({{ advancedFilters().coberturaMin ?? 0 }}%)</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="range" min="0" max="100" class="filter-input" [ngModel]="advancedFilters().coberturaMin ?? 0" (ngModelChange)="updateAdvancedFilter('coberturaMin', $event)" style="flex: 1; padding: 0;">
+                </div>
+            </div>
+
+            <!-- Cantidad de Ítems -->
+            <div class="filter-group">
+                <label>Cantidad de Ítems</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" placeholder="Min" class="filter-input" [ngModel]="advancedFilters().itemsMin" (ngModelChange)="updateAdvancedFilter('itemsMin', $event)" style="font-size: 0.8rem; padding: 0.4rem;">
+                    <span style="color: #9ca3af; font-size: 0.8rem;">-</span>
+                    <input type="number" placeholder="Max" class="filter-input" [ngModel]="advancedFilters().itemsMax" (ngModelChange)="updateAdvancedFilter('itemsMax', $event)" style="font-size: 0.8rem; padding: 0.4rem;">
+                </div>
+            </div>
+
+            <!-- Categoría -->
+            <div class="filter-group">
+                <label>Macro-Categoría</label>
+                <select class="filter-select" [ngModel]="advancedFilters().macroCategoria" (ngModelChange)="updateAdvancedFilter('macroCategoria', $event)" style="font-size: 0.8rem; padding: 0.4rem;">
+                    <option value="">Todas</option>
+                    <option *ngFor="let cat of uniqueMacroCategorias()" [value]="cat">{{ cat }}</option>
+                </select>
+            </div>
+
+            <!-- Fecha Publicación -->
+            <div class="filter-group">
+                <label>F. Publicación (Desde / Hasta)</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    <input type="date" class="filter-input" [ngModel]="advancedFilters().fechaPublicacionDesde" (ngModelChange)="updateAdvancedFilter('fechaPublicacionDesde', $event)" style="font-size: 0.8rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+                    <span style="color: #9ca3af; font-size: 0.8rem;">-</span>
+                    <input type="date" class="filter-input" [ngModel]="advancedFilters().fechaPublicacionHasta" (ngModelChange)="updateAdvancedFilter('fechaPublicacionHasta', $event)" style="font-size: 0.8rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+                </div>
+            </div>
+
+            <!-- Fecha Cierre -->
+            <div class="filter-group">
+                <label>F. Cierre (Desde / Hasta)</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    <input type="date" class="filter-input" [ngModel]="advancedFilters().fechaCierreDesde" (ngModelChange)="updateAdvancedFilter('fechaCierreDesde', $event)" style="font-size: 0.8rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+                    <span style="color: #9ca3af; font-size: 0.8rem;">-</span>
+                    <input type="date" class="filter-input" [ngModel]="advancedFilters().fechaCierreHasta" (ngModelChange)="updateAdvancedFilter('fechaCierreHasta', $event)" style="font-size: 0.8rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+                </div>
+            </div>
         </div>
     </div>
 

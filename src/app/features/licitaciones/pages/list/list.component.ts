@@ -251,6 +251,40 @@ import { FormsModule } from '@angular/forms';
       color: #111827;
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
     }
+    
+    /* Responsive Advanced Filters CSS */
+    .advanced-filters-panel {
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      animation: filterFadeIn 0.2s ease-out;
+    }
+    @keyframes filterFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    @media (max-width: 640px) {
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #6b7280;
+    }
   `]
 })
 export class LicitacionListComponent implements OnInit {
@@ -276,6 +310,62 @@ export class LicitacionListComponent implements OnInit {
     nombre: '',
     estado: ''
   });
+
+  // Advanced Filters State
+  public filtersExpanded = signal(false);
+  public advancedFilters = signal({
+    montoMin: null as number | null,
+    montoMax: null as number | null,
+    coberturaMin: null as number | null,
+    itemsMin: null as number | null,
+    itemsMax: null as number | null,
+    fechaPublicacionDesde: null as string | null,
+    fechaPublicacionHasta: null as string | null,
+    fechaCierreDesde: null as string | null,
+    fechaCierreHasta: null as string | null,
+    macroCategoria: ''
+  });
+
+  public hasActiveAdvancedFilters = computed(() => {
+    const f = this.advancedFilters();
+    return f.montoMin !== null || 
+           f.montoMax !== null || 
+           f.coberturaMin !== null || 
+           f.itemsMin !== null || 
+           f.itemsMax !== null || 
+           f.fechaPublicacionDesde !== null || 
+           f.fechaPublicacionHasta !== null || 
+           f.fechaCierreDesde !== null || 
+           f.fechaCierreHasta !== null || 
+           f.macroCategoria !== '';
+  });
+
+  public uniqueMacroCategorias = computed(() => {
+    const list = this.licitacionService.list()?.licitaciones || [];
+    return [...new Set(list.map(item => item.macro_categoria).filter(Boolean))].sort();
+  });
+
+  public clearAdvancedFilters(): void {
+    this.advancedFilters.set({
+      montoMin: null,
+      montoMax: null,
+      coberturaMin: null,
+      itemsMin: null,
+      itemsMax: null,
+      fechaPublicacionDesde: null,
+      fechaPublicacionHasta: null,
+      fechaCierreDesde: null,
+      fechaCierreHasta: null,
+      macroCategoria: ''
+    });
+  }
+
+  public updateAdvancedFilter(field: string, value: any): void {
+    this.advancedFilters.update(prev => ({
+      ...prev,
+      [field]: value === '' ? null : value
+    }));
+  }
 
   public readonly estados = [
     'PENDIENTE', 'PROCESANDO_DOCUMENTOS', 'DOCUMENTOS_PROCESADOS', 
@@ -323,6 +413,43 @@ export class LicitacionListComponent implements OnInit {
     }
     if (filters.estado) {
       list = list.filter(item => item.estado === filters.estado);
+    }
+
+    // Advanced Filters
+    const adv = this.advancedFilters();
+    if (adv.montoMin !== null && adv.montoMin !== undefined) {
+      list = list.filter(item => (item.presupuesto ?? 0) >= adv.montoMin!);
+    }
+    if (adv.montoMax !== null && adv.montoMax !== undefined) {
+      list = list.filter(item => (item.presupuesto ?? 0) <= adv.montoMax!);
+    }
+    if (adv.coberturaMin !== null && adv.coberturaMin !== undefined) {
+      list = list.filter(item => (item.porcentaje_cobertura ?? 0) >= adv.coberturaMin!);
+    }
+    if (adv.itemsMin !== null && adv.itemsMin !== undefined) {
+      list = list.filter(item => (item.cantidad_items ?? 0) >= adv.itemsMin!);
+    }
+    if (adv.itemsMax !== null && adv.itemsMax !== undefined) {
+      list = list.filter(item => (item.cantidad_items ?? 0) <= adv.itemsMax!);
+    }
+    if (adv.fechaPublicacionDesde) {
+      const desde = new Date(adv.fechaPublicacionDesde + 'T00:00:00').getTime();
+      list = list.filter(item => item.fecha_publicacion ? new Date(item.fecha_publicacion).getTime() >= desde : false);
+    }
+    if (adv.fechaPublicacionHasta) {
+      const hasta = new Date(adv.fechaPublicacionHasta + 'T23:59:59').getTime();
+      list = list.filter(item => item.fecha_publicacion ? new Date(item.fecha_publicacion).getTime() <= hasta : false);
+    }
+    if (adv.fechaCierreDesde) {
+      const desde = new Date(adv.fechaCierreDesde + 'T00:00:00').getTime();
+      list = list.filter(item => item.fecha_cierre ? new Date(item.fecha_cierre).getTime() >= desde : false);
+    }
+    if (adv.fechaCierreHasta) {
+      const hasta = new Date(adv.fechaCierreHasta + 'T23:59:59').getTime();
+      list = list.filter(item => item.fecha_cierre ? new Date(item.fecha_cierre).getTime() <= hasta : false);
+    }
+    if (adv.macroCategoria) {
+      list = list.filter(item => item.macro_categoria === adv.macroCategoria);
     }
 
     // Sort
