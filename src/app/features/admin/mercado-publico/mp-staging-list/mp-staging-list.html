@@ -46,21 +46,36 @@
     </li>
   </ul>
 
-  <!-- Barra de Filtros Inteligentes -->
-  <div class="filter-toolbar card premium-card mb-4 p-3 bg-light border-0 shadow-sm">
-    <!-- Fila 1: Filtros Comunes y Categorías -->
-    <div class="row g-3 align-items-end">
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Buscar por código/título</label>
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-          <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar..." [(ngModel)]="searchText" (keyup.enter)="onSearch()">
-          <button class="btn btn-primary" (click)="onSearch()">Buscar</button>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Estado Staging</label>
-        <select class="form-select" [(ngModel)]="selectedEstado" (change)="onEstadoChange()">
+  <!-- Barra de Búsqueda y Botón de Filtros -->
+  <div class="d-flex gap-3 align-items-center mb-4 flex-wrap">
+    <div class="input-group" style="flex: 1 1 300px; max-width: 100%;">
+      <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+      <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar por código, nombre u organismo..." [(ngModel)]="searchText" (keyup.enter)="onSearch()">
+      <button class="btn btn-primary" (click)="onSearch()">Buscar</button>
+    </div>
+    <button class="view-toggle-btn" [class.active]="filtersExpanded" (click)="filtersExpanded = !filtersExpanded" title="Filtros Avanzados" style="padding: 0.6rem 1.25rem; border: 1px solid #cbd5e1; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; background-color: white; height: 38px;">
+      <i class="bi bi-funnel"></i>
+      <span>Filtros</span>
+      <span *ngIf="hasActiveFilters()" class="badge bg-primary text-white" style="padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; color: white;">Activo</span>
+    </button>
+  </div>
+
+  <!-- Panel de Filtros Avanzados Staging -->
+  <div *ngIf="filtersExpanded" class="advanced-filters-panel mb-4">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">
+      <h4 style="margin: 0; color: #334155; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+        <i class="bi bi-funnel-fill text-primary"></i> Filtros Avanzados
+      </h4>
+      <button *ngIf="hasActiveFilters()" class="btn btn-sm btn-outline-secondary" (click)="clearFilters()" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: 4px;">
+        Limpiar Filtros
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <!-- Estado Staging -->
+      <div class="filter-group">
+        <label>Estado Staging</label>
+        <select class="form-select" [(ngModel)]="selectedEstado" (change)="onEstadoChange()" style="font-size: 0.85rem; padding: 0.4rem;">
           <option value="">Todos los Estados</option>
           <ng-container *ngIf="activeTab === 'licitaciones'">
             <option value="DETALLE_DESCARGADO">DETALLE DESCARGADO</option>
@@ -81,45 +96,42 @@
         </select>
       </div>
 
-      <!-- Filtros de Categorías -->
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Macro-Categoría</label>
-        <select class="form-select" [(ngModel)]="selectedMacro" (change)="onMacroChange()">
+      <!-- Macro-Categoría -->
+      <div class="filter-group">
+        <label>Macro-Categoría</label>
+        <select class="form-select" [(ngModel)]="selectedMacro" (change)="onMacroChange()" style="font-size: 0.85rem; padding: 0.4rem;">
           <option value="">Todas las Macro-Categorías</option>
           <option *ngFor="let macro of macroOptions" [value]="macro">{{ macro }}</option>
         </select>
       </div>
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Subcategoría</label>
-        <select class="form-select" [(ngModel)]="selectedSub" (change)="onSubChange()" [disabled]="!selectedMacro || subOptions.length === 0">
+
+      <!-- Subcategoría -->
+      <div class="filter-group">
+        <label>Subcategoría</label>
+        <select class="form-select" [(ngModel)]="selectedSub" (change)="onSubChange()" [disabled]="!selectedMacro || subOptions.length === 0" style="font-size: 0.85rem; padding: 0.4rem;">
           <option value="">Todas las Subcategorías</option>
           <option *ngFor="let sub of subOptions" [value]="sub">{{ sub }}</option>
         </select>
       </div>
-    </div>
 
-    <!-- Fila 2: Filtros de Fecha y Limpieza -->
-    <div class="row g-3 align-items-end mt-2">
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Filtrar Fecha por</label>
-        <select class="form-select" [(ngModel)]="filterFechaTipo" (change)="onDateFilterChange()">
+      <!-- Filtrar Fecha por -->
+      <div class="filter-group">
+        <label>Filtrar Fecha por</label>
+        <select class="form-select" [(ngModel)]="filterFechaTipo" (change)="onDateFilterChange()" style="font-size: 0.85rem; padding: 0.4rem;">
           <option value="fecha_descarga">Fecha de Descarga</option>
           <option value="fecha_publicacion">Fecha de Publicación</option>
           <option value="fecha_cierre">Fecha de Cierre</option>
         </select>
       </div>
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Fecha Desde</label>
-        <input type="date" class="form-control" [(ngModel)]="filterFechaDesde" (change)="onDateFilterChange()">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label small fw-bold text-muted mb-1">Fecha Hasta</label>
-        <input type="date" class="form-control" [(ngModel)]="filterFechaHasta" (change)="onDateFilterChange()">
-      </div>
-      <div class="col-md-3">
-        <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
-          <i class="bi bi-x-circle"></i> Limpiar Filtros
-        </button>
+
+      <!-- Fecha Desde / Hasta -->
+      <div class="filter-group">
+        <label>Fecha Rango (Desde / Hasta)</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <input type="date" class="form-control" [(ngModel)]="filterFechaDesde" (change)="onDateFilterChange()" style="font-size: 0.85rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+          <span style="color: #94a3b8;">-</span>
+          <input type="date" class="form-control" [(ngModel)]="filterFechaHasta" (change)="onDateFilterChange()" style="font-size: 0.85rem; padding: 0.35rem; flex: 1; min-width: 100px;">
+        </div>
       </div>
     </div>
   </div>

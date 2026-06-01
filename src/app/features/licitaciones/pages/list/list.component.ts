@@ -323,7 +323,9 @@ export class LicitacionListComponent implements OnInit {
     fechaPublicacionHasta: null as string | null,
     fechaCierreDesde: null as string | null,
     fechaCierreHasta: null as string | null,
-    macroCategoria: ''
+    macroCategoria: '',
+    subcategoria_1: '',
+    subcategoria_2: ''
   });
 
   public hasActiveAdvancedFilters = computed(() => {
@@ -337,12 +339,35 @@ export class LicitacionListComponent implements OnInit {
            f.fechaPublicacionHasta !== null || 
            f.fechaCierreDesde !== null || 
            f.fechaCierreHasta !== null || 
-           f.macroCategoria !== '';
+           f.macroCategoria !== '' ||
+           f.subcategoria_1 !== '' ||
+           f.subcategoria_2 !== '';
   });
 
   public uniqueMacroCategorias = computed(() => {
     const list = this.licitacionService.list()?.licitaciones || [];
     return [...new Set(list.map(item => item.macro_categoria).filter(Boolean))].sort();
+  });
+
+  public uniqueSubcategorias1 = computed(() => {
+    const list = this.licitacionService.list()?.licitaciones || [];
+    const macro = this.advancedFilters().macroCategoria;
+    return [...new Set(list
+      .filter(item => !macro || item.macro_categoria === macro)
+      .map(item => item.subcategoria_1)
+      .filter(Boolean)
+    )].sort();
+  });
+
+  public uniqueSubcategorias2 = computed(() => {
+    const list = this.licitacionService.list()?.licitaciones || [];
+    const sub1 = this.advancedFilters().subcategoria_1;
+    const macro = this.advancedFilters().macroCategoria;
+    return [...new Set(list
+      .filter(item => (!macro || item.macro_categoria === macro) && (!sub1 || item.subcategoria_1 === sub1))
+      .map(item => item.subcategoria_2)
+      .filter(Boolean)
+    )].sort();
   });
 
   public clearAdvancedFilters(): void {
@@ -356,15 +381,26 @@ export class LicitacionListComponent implements OnInit {
       fechaPublicacionHasta: null,
       fechaCierreDesde: null,
       fechaCierreHasta: null,
-      macroCategoria: ''
+      macroCategoria: '',
+      subcategoria_1: '',
+      subcategoria_2: ''
     });
   }
 
   public updateAdvancedFilter(field: string, value: any): void {
-    this.advancedFilters.update(prev => ({
-      ...prev,
-      [field]: value === '' ? null : value
-    }));
+    this.advancedFilters.update(prev => {
+      const updated = { ...prev, [field]: value === '' ? null : value };
+      
+      // Reset dependent filters if parent changes
+      if (field === 'macroCategoria') {
+        updated.subcategoria_1 = '';
+        updated.subcategoria_2 = '';
+      } else if (field === 'subcategoria_1') {
+        updated.subcategoria_2 = '';
+      }
+      
+      return updated as any;
+    });
   }
 
   public readonly estados = [
@@ -450,6 +486,12 @@ export class LicitacionListComponent implements OnInit {
     }
     if (adv.macroCategoria) {
       list = list.filter(item => item.macro_categoria === adv.macroCategoria);
+    }
+    if (adv.subcategoria_1) {
+      list = list.filter(item => item.subcategoria_1 === adv.subcategoria_1);
+    }
+    if (adv.subcategoria_2) {
+      list = list.filter(item => item.subcategoria_2 === adv.subcategoria_2);
     }
 
     // Sort

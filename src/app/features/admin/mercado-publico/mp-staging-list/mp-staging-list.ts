@@ -29,6 +29,7 @@ export class MpStagingListComponent implements OnInit {
   selectedIds: Set<string> = new Set<string>();
   
   // Filtros
+  filtersExpanded = false;
   searchText = '';
   selectedEstado = '';
   filterFechaDesde = '';
@@ -41,6 +42,15 @@ export class MpStagingListComponent implements OnInit {
   categoriasTree: any = {};
   macroOptions: string[] = [];
   subOptions: string[] = [];
+
+  hasActiveFilters(): boolean {
+    return !!this.searchText || 
+           !!this.selectedEstado || 
+           !!this.selectedMacro || 
+           !!this.selectedSub || 
+           !!this.filterFechaDesde || 
+           !!this.filterFechaHasta;
+  }
 
   // Ordenamiento
   sortField = 'fecha_descarga';

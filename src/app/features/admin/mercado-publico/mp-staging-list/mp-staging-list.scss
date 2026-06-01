@@ -380,3 +380,38 @@
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 }
+
+/* Responsive Advanced Filters CSS */
+.advanced-filters-panel {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  animation: filterFadeIn 0.2s ease-out;
+}
+@keyframes filterFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+@media (max-width: 640px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.filter-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+}
