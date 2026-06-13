@@ -21,7 +21,9 @@ export interface LicitacionListItem {
     id: string;
     id_interno?: number;
     nombre: string;
+    codigo_licitacion?: string;
     estado: string;
+    estado_publicacion?: string;
     fecha_carga: string;
     presupuesto?: number;
     moneda?: string;

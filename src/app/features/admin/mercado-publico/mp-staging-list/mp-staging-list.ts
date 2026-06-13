@@ -43,6 +43,11 @@ export class MpStagingListComponent implements OnInit {
   macroOptions: string[] = [];
   subOptions: string[] = [];
 
+  // Cuadratura / Reconciliación
+  reconciliationRuns: any[] = [];
+  reconciliationDays: number | null = 30;
+  reconciliationLoading = false;
+
   hasActiveFilters(): boolean {
     return !!this.searchText || 
            !!this.selectedEstado || 
@@ -61,6 +66,7 @@ export class MpStagingListComponent implements OnInit {
   ngOnInit(): void {
     this.loadCategorias();
     this.loadData();
+    this.loadReconciliationRuns();
   }
 
   loadCategorias() {
@@ -448,6 +454,48 @@ export class MpStagingListComponent implements OnInit {
       error: (err) => {
         this.error = 'Error al procesar compras ágiles: ' + (err.error?.detail || err.message);
         this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Métodos Cuadratura
+  loadReconciliationRuns() {
+    this.mpService.getReconciliationRuns().subscribe({
+      next: (data) => {
+        this.reconciliationRuns = data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error cargando historial de cuadratura', err)
+    });
+  }
+
+  runReconciliation() {
+    const label = this.reconciliationDays ? `${this.reconciliationDays} días` : 'todo el historial';
+    if (!confirm(`¿Estás seguro de que deseas iniciar la cuadratura de estados para ${label}? Este proceso consultará la API de Mercado Público.`)) {
+      return;
+    }
+    
+    this.reconciliationLoading = true;
+    this.cdr.detectChanges();
+    
+    this.mpService.triggerReconciliation(this.reconciliationDays).subscribe({
+      next: (res) => {
+        alert(res.mensaje || 'Proceso de cuadratura encolado exitosamente.');
+        this.reconciliationLoading = false;
+        this.loadReconciliationRuns();
+        
+        // Auto-actualizar historial cada 5s por 1 minuto
+        let attempts = 0;
+        const interval = setInterval(() => {
+          this.loadReconciliationRuns();
+          attempts++;
+          if (attempts > 12) clearInterval(interval);
+        }, 5000);
+      },
+      error: (err) => {
+        alert('Error al iniciar cuadratura: ' + (err.error?.detail || err.message));
+        this.reconciliationLoading = false;
         this.cdr.detectChanges();
       }
     });

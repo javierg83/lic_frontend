@@ -199,7 +199,10 @@
                 <span *ngIf="opp.subcategoria_1" class="badge bg-secondary me-1">{{ opp.subcategoria_1 }}</span>
                 <span *ngIf="opp.subcategoria_2" class="badge bg-secondary">{{ opp.subcategoria_2 }}</span>
               </div>
-              <small class="text-muted">{{ opp.estado_mp || opp.organismo || 'Desconocido' }}</small>
+              <small class="text-muted">
+                <span *ngIf="opp.estado_mp" class="badge bg-secondary text-dark me-1" style="background-color: #f1f5f9; color: #475569;">{{ opp.estado_mp }}</span>
+                {{ opp.organismo || 'Desconocido' }}
+              </small>
             </td>
             <td>
               <span *ngIf="opp.fecha_descarga; else noDate">
@@ -306,8 +309,10 @@
             <span *ngIf="opp.subcategoria_2" class="badge bg-secondary">{{ opp.subcategoria_2 }}</span>
           </div>
 
-          <div class="text-muted small mb-2">
-            <i class="bi bi-building"></i> {{ opp.estado_mp || opp.organismo || 'Desconocido' }}
+          <div class="text-muted small mb-2" style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+            <i class="bi bi-building"></i>
+            <span *ngIf="opp.estado_mp" class="badge bg-secondary text-dark" style="background-color: #f1f5f9; color: #475569; font-size: 0.75rem;">{{ opp.estado_mp }}</span>
+            <span>{{ opp.organismo || 'Desconocido' }}</span>
           </div>
 
           <!-- Métricas -->
@@ -400,6 +405,91 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Sección de Cuadratura de Estados (Reconciliation Engine) -->
+  <div class="card premium-card mt-5 mb-4 p-4">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="margin: 0; color: #1e293b; font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="bi bi-arrow-repeat text-primary"></i> Cuadratura y Conciliación de Estados
+        </h2>
+        <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.85rem;">Sincroniza el estado actual de Mercado Público para licitaciones locales no-terminales</p>
+      </div>
+      
+      <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+        <label style="font-size: 0.85rem; color: #475569; font-weight: 500; margin-bottom: 0;">Rango de revisión:</label>
+        <select class="form-select form-select-sm" style="width: auto; min-width: 150px; height: 38px; border-radius: 6px;" [(ngModel)]="reconciliationDays">
+          <option [ngValue]="30">Últimos 30 días</option>
+          <option [ngValue]="60">Últimos 60 días</option>
+          <option [ngValue]="90">Últimos 90 días</option>
+          <option [ngValue]="null">Todo el Historial</option>
+        </select>
+        <button class="btn btn-primary" [disabled]="reconciliationLoading" (click)="runReconciliation()" style="height: 38px; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+          <i class="bi" [ngClass]="reconciliationLoading ? 'bi-hourglass-split' : 'bi-play-fill'"></i>
+          {{ reconciliationLoading ? 'Encolando...' : 'Iniciar Cuadratura' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Historial de Cuadraturas -->
+    <h3 style="color: #334155; font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem;">Historial de Ejecuciones</h3>
+    
+    <div class="table-responsive">
+      <table class="table premium-table mb-0" style="font-size: 0.85rem;">
+        <thead>
+          <tr>
+            <th>Fecha Ejecución</th>
+            <th>Rango Evaluado</th>
+            <th>Licitaciones Evaluadas</th>
+            <th>Licitaciones Actualizadas</th>
+            <th>Estado</th>
+            <th>Detalle / Mensaje</th>
+            <th class="text-end">Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let run of reconciliationRuns">
+            <td>
+              <i class="bi bi-calendar3 text-muted me-1"></i>
+              {{ run.iniciado_en | date:'dd/MM/yyyy HH:mm:ss' }}
+            </td>
+            <td>
+              <span class="badge bg-light text-dark">
+                {{ run.rango_dias ? 'Últimos ' + run.rango_dias + ' días' : 'Todo el Historial' }}
+              </span>
+            </td>
+            <td><strong>{{ run.total_evaluadas || 0 }}</strong></td>
+            <td>
+              <span class="badge bg-success-subtle text-success fw-bold" style="padding: 4px 8px; border-radius: 4px;" *ngIf="run.total_actualizadas > 0">
+                +{{ run.total_actualizadas }}
+              </span>
+              <span *ngIf="!run.total_actualizadas || run.total_actualizadas === 0">0</span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getEstadoClass(run.estado)">
+                {{ run.estado }}
+              </span>
+            </td>
+            <td [title]="run.mensaje_error">
+              <span *ngIf="run.mensaje_error" class="text-danger" style="display: block; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ run.mensaje_error }}
+              </span>
+              <span *ngIf="!run.mensaje_error && run.estado === 'COMPLETADO'" class="text-muted italic">Completado sin errores</span>
+              <span *ngIf="!run.mensaje_error && run.estado === 'PENDIENTE'" class="text-info italic">En cola de espera...</span>
+              <span *ngIf="!run.mensaje_error && run.estado === 'EN_PROCESO'" class="text-warning italic">Ejecutando en worker...</span>
+            </td>
+            <td class="text-end text-muted">{{ run.creador_nombre || 'sistema' }}</td>
+          </tr>
+          <tr *ngIf="reconciliationRuns.length === 0">
+            <td colspan="7" class="text-center text-muted py-4">
+              <i class="bi bi-clock-history fs-3 text-muted mb-2 d-block"></i>
+              No hay ejecuciones registradas. Presiona "Iniciar Cuadratura" para ejecutar la primera.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

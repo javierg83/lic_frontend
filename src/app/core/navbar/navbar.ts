@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../services/auth';
@@ -9,13 +9,26 @@ import { AuthService } from '../services/auth';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   public isMenuOpen = false;
+  public dbName = '';
 
   constructor(
     private router: Router,
     private auth: AuthService
   ) { }
+
+  ngOnInit() {
+    this.auth.getDbInfo().subscribe({
+      next: (res) => {
+        this.dbName = res?.data?.db_name || '';
+      },
+      error: () => {
+        this.dbName = '';
+      }
+    });
+  }
+
 
   get userName(): string {
     return this.auth.getNombreUsuario() || 'Usuario';

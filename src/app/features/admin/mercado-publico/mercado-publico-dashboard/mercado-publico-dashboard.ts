@@ -36,7 +36,7 @@ export class MercadoPublicoDashboard implements OnInit {
   loadRecentRuns() {
     this.mpService.getDownloadRuns().subscribe({
       next: (runs) => {
-        this.recentRuns = runs.slice(0, 5); // Solo las últimas 5
+        this.recentRuns = runs.slice(0, 20); // Mostrar las últimas 20
         this.cdr.detectChanges();
       }
     });
@@ -89,6 +89,50 @@ export class MercadoPublicoDashboard implements OnInit {
           this.loadRecentRuns();
         }
       });
+    }
+  }
+
+  isLicitacionRun(type: string): boolean {
+    if (!type) return false;
+    const t = type.toLowerCase();
+    return t === 'licitaciones' || t === 'licitacion' || t === 'mercado_publico';
+  }
+
+  isCompraAgilRun(type: string): boolean {
+    if (!type) return false;
+    const t = type.toLowerCase();
+    return t === 'scraping_compra_agil' || t === 'compras_agiles' || t === 'compra_agil';
+  }
+
+  isTransferRun(type: string): boolean {
+    return false;
+  }
+
+  getRunTypeText(type: string): string {
+    if (!type) return 'Desconocido';
+    const t = type.toLowerCase();
+    if (t === 'licitaciones' || t === 'licitacion' || t === 'mercado_publico') return 'Licitación';
+    if (this.isCompraAgilRun(type)) return 'Compra Ágil';
+    return type;
+  }
+
+  // Paginación
+  currentPage = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.ceil(this.recentRuns.length / this.pageSize) || 1;
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
     }
   }
 }

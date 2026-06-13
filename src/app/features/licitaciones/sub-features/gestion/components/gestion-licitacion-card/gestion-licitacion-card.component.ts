@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { GestionService } from '../../services/gestion.service';
 import { GestionLicitacion, GestionDocumento } from '../../models/gestion.model';
 
+import { environment } from '../../../../../../../environments/environment';
+
 @Component({
     selector: 'app-gestion-licitacion-card',
     standalone: true,
@@ -13,6 +15,7 @@ import { GestionLicitacion, GestionDocumento } from '../../models/gestion.model'
     styleUrls: ['./gestion-licitacion-card.component.css']
 })
 export class GestionLicitacionCardComponent implements OnInit {
+    public env = environment;
     @Input() licitacionId!: string;
     @Input() showTitle = true;
 

@@ -53,6 +53,11 @@ export class AuthService {
     return localStorage.getItem('nombre_empresa');
   }
 
+  getDbInfo(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/auth/db-info`);
+  }
+
+
   isLogged(): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false;

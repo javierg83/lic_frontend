@@ -248,6 +248,7 @@
                     </span>
                 </td>
                 <td>
+                    <span *ngIf="item.tipo_licitacion !== 'COMPRA_AGIL' && item.codigo_licitacion">[{{ item.codigo_licitacion }}] </span>
                     {{ cleanNombre(item.nombre) }}
                     <div *ngIf="item.macro_categoria" style="margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;">
                         <span class="badge bg-info text-dark" style="background-color: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;"><i class="bi bi-robot"></i> {{ item.macro_categoria }}</span>
@@ -273,7 +274,8 @@
                 </td>
                 <td>{{ item.cantidad_homologados || 0 }}</td>
                 <td>
-                    <span class="status-badge">{{ item.estado }}</span>
+                    <span *ngIf="isAdmin()" class="status-badge" title="Estado Interno" style="margin-bottom: 4px; display: block; text-align: center;">{{ item.estado }}</span>
+                    <span *ngIf="item.estado_publicacion" class="status-badge" style="background-color: #f8fafc; color: #64748b; border: 1px solid #cbd5e1; display: block; text-align: center;" title="Estado Mercado Público">{{ item.estado_publicacion }}</span>
                 </td>
                 <td>
                     <span *ngIf="item.fecha_publicacion; else sinFechaPub">
@@ -326,12 +328,13 @@
                     <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA') + (item.subcategoria ? ' - ' + item.subcategoria : '')">
                         {{ item.tipo_licitacion === 'COMPRA_AGIL' ? ('Compra Ágil' + (item.subcategoria ? ' - ' + item.subcategoria : '')) : 'Licitación' }}
                     </span>
-                    <span class="status-badge">{{ item.estado }}</span>
+                    <span *ngIf="isAdmin()" class="status-badge" title="Estado Interno">{{ item.estado }}</span>
+                    <span *ngIf="item.estado_publicacion" class="status-badge" style="background-color: #f8fafc; color: #64748b; border: 1px solid #cbd5e1;" title="Estado Mercado Público">{{ item.estado_publicacion }}</span>
                 </div>
 
                 <!-- Título -->
-                <h3 class="card-title" [title]="cleanNombre(item.nombre) + (item.titulo ? ' - ' + item.titulo : '')">
-                    {{ cleanNombre(item.nombre) }}{{ item.titulo ? ' - ' + item.titulo : '' }}
+                <h3 class="card-title" [title]="(item.tipo_licitacion !== 'COMPRA_AGIL' && item.codigo_licitacion ? '[' + item.codigo_licitacion + '] ' : '') + cleanNombre(item.nombre) + (item.titulo ? ' - ' + item.titulo : '')">
+                    <span *ngIf="item.tipo_licitacion !== 'COMPRA_AGIL' && item.codigo_licitacion">[{{ item.codigo_licitacion }}] </span>{{ cleanNombre(item.nombre) }}{{ item.titulo ? ' - ' + item.titulo : '' }}
                 </h3>
 
                 <!-- Categorías -->

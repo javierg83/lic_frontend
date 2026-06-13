@@ -29,6 +29,7 @@ export interface CaStagingItem {
   codigo_compra_agil: string;
   titulo: string;
   organismo: string;
+  estado_mp?: string;
   estado_staging: string;
   fecha_publicacion?: string;
   fecha_cierre?: string;
@@ -183,5 +184,17 @@ export class MercadoPublicoService {
 
   clearAllCaStaging(): Observable<any> {
     return this.http.post(`${this.API_URL}/compras-agiles/staging/clear-all`, {});
+  }
+
+  // ==========================================
+  // CUADRATURA / RECONCILIACION
+  // ==========================================
+
+  triggerReconciliation(days: number | null): Observable<any> {
+    return this.http.post(`${this.API_URL}/reconciliation/run`, { days });
+  }
+
+  getReconciliationRuns(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/reconciliation/runs`);
   }
 }

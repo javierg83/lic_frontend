@@ -123,25 +123,35 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let run of recentRuns">
-                  <td class="small">{{ run.created_at | date:'HH:mm:ss' }}</td>
+                <tr *ngFor="let run of recentRuns | slice:(currentPage-1)*pageSize:currentPage*pageSize">
+                  <td class="small">{{ run.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</td>
                   <td>
                     <span class="badge" [ngClass]="{
-                      'bg-primary': run.tipo_fuente?.toLowerCase() === 'licitaciones',
-                      'bg-success': run.tipo_fuente === 'scraping_compra_agil'
+                      'bg-primary': isLicitacionRun(run.tipo_fuente),
+                      'bg-success': isCompraAgilRun(run.tipo_fuente),
+                      'bg-info text-dark': isTransferRun(run.tipo_fuente),
+                      'bg-secondary': !isLicitacionRun(run.tipo_fuente) && !isCompraAgilRun(run.tipo_fuente) && !isTransferRun(run.tipo_fuente)
                     }">
                       <i class="bi" [ngClass]="{
-                        'bi-bank me-1': run.tipo_fuente?.toLowerCase() === 'licitaciones',
-                        'bi-cart-check me-1': run.tipo_fuente === 'scraping_compra_agil'
+                        'bi-bank me-1': isLicitacionRun(run.tipo_fuente),
+                        'bi-cart-check me-1': isCompraAgilRun(run.tipo_fuente),
+                        'bi-arrow-left-right me-1': isTransferRun(run.tipo_fuente),
+                        'bi-gear me-1': !isLicitacionRun(run.tipo_fuente) && !isCompraAgilRun(run.tipo_fuente) && !isTransferRun(run.tipo_fuente)
                       }"></i>
-                      {{ run.tipo_fuente?.toLowerCase() === 'licitaciones' ? 'Licitación' : 'Compra Ágil' }}
+                      {{ getRunTypeText(run.tipo_fuente) }}
                     </span>
                   </td>
-                  <td class="small">{{ run.fecha_desde | date:'dd/MM' }} al {{ run.fecha_hasta | date:'dd/MM' }}</td>
+                  <td class="small">
+                    <span *ngIf="run.fecha_desde && run.fecha_hasta">
+                      {{ run.fecha_desde | date:'dd/MM' }} al {{ run.fecha_hasta | date:'dd/MM' }}
+                    </span>
+                    <span *ngIf="!run.fecha_desde || !run.fecha_hasta">-</span>
+                  </td>
                   <td>
                     <span class="badge" [ngClass]="{
                       'bg-success': run.estado === 'COMPLETADO',
                       'bg-warning': run.estado === 'EN_PROCESO',
+                      'bg-info text-dark': run.estado === 'CON_ERRORES',
                       'bg-danger': run.estado === 'CANCELADO' || run.estado === 'ERROR'
                     }">{{ run.estado }}</span>
                   </td>
@@ -157,28 +167,41 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Controles de Paginación -->
+          <div class="d-flex justify-content-between align-items-center mt-3 small" *ngIf="recentRuns.length > pageSize">
+            <span class="text-muted">Mostrando página {{ currentPage }} de {{ totalPages }}</span>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 1" (click)="prevPage()">
+                <i class="bi bi-chevron-left"></i> Ant.
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === totalPages" (click)="nextPage()">
+                Sig. <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-4">
-          <div class="card access-card premium-card h-100" routerLink="/admin/mercado-publico/staging">
-            <div class="card-body text-center d-flex flex-column justify-content-center">
-              <div class="icon-circle mb-3"><i class="bi bi-inbox text-success"></i></div>
-              <h5 class="fw-bold">Bandeja Staging</h5>
-              <p class="text-muted small">Revisa las licitaciones crudas antes de transferirlas.</p>
-            </div>
-          </div>
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card access-card premium-card h-100" routerLink="/admin/mercado-publico/staging">
+        <div class="card-body text-center d-flex flex-column justify-content-center">
+          <div class="icon-circle mb-3"><i class="bi bi-inbox text-success"></i></div>
+          <h5 class="fw-bold">Bandeja Staging</h5>
+          <p class="text-muted small">Revisa las licitaciones crudas antes de transferirlas.</p>
         </div>
-        
-        <div class="col-md-6 mb-4">
-          <div class="card access-card premium-card h-100 disabled-card">
-            <div class="card-body text-center d-flex flex-column justify-content-center">
-              <div class="icon-circle mb-3"><i class="bi bi-clock-history text-secondary"></i></div>
-              <h5 class="fw-bold">Historial Completo</h5>
-              <p class="text-muted small">Próximamente. Registro histórico de todas las extracciones.</p>
-            </div>
-          </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+      <div class="card access-card premium-card h-100 disabled-card">
+        <div class="card-body text-center d-flex flex-column justify-content-center">
+          <div class="icon-circle mb-3"><i class="bi bi-clock-history text-secondary"></i></div>
+          <h5 class="fw-bold">Historial Completo</h5>
+          <p class="text-muted small">Próximamente. Registro histórico de todas las extracciones.</p>
         </div>
       </div>
     </div>
