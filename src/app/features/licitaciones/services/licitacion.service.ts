@@ -140,6 +140,14 @@ export class LicitacionService {
         );
     }
 
+    reprocessLicitacion(id: string): Observable<ApiResponse<void>> {
+        return this.http.post<ApiResponse<void>>(`${this.API_URL}/${id}/reprocess`, {}).pipe(
+            catchError(err => {
+                return of({ success: false, message: 'Error al iniciar el reprocesamiento de la licitación', data: null as any });
+            })
+        );
+    }
+
     bulkDeleteLicitaciones(ids: string[]): Observable<ApiResponse<void>> {
         return this.http.post<ApiResponse<void>>(`${this.API_URL}/bulk-delete`, { ids }).pipe(
             catchError(err => {

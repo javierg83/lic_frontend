@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LicitacionService } from '../../services/licitacion.service';
 import { LicitacionShowResponse, AuditoriaItem } from '../../models/licitacion.model';
@@ -20,6 +20,7 @@ import { AuthService } from '../../../../core/services/auth';
 })
 export class LicitacionShowComponent implements OnInit {
     private route = inject(ActivatedRoute);
+    private router = inject(Router);
     private licitacionService = inject(LicitacionService);
     private authService = inject(AuthService);
 
@@ -33,6 +34,7 @@ export class LicitacionShowComponent implements OnInit {
     public isEditing = signal<boolean>(false);
     public editForm = signal<Partial<LicitacionShowResponse>>({});
     public saving = signal<boolean>(false);
+    public reprocessing = signal<boolean>(false);
 
     // Notifications
     public notification = signal<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
@@ -138,6 +140,33 @@ export class LicitacionShowComponent implements OnInit {
             error: () => {
                 this.showNotification('Error de conexión', 'error');
                 this.saving.set(false);
+            }
+        });
+    }
+
+    reprocessLicitacion(): void {
+        const id = this.licitacion()?.id;
+        if (!id) return;
+
+        const confirmReprocess = confirm('¿Está seguro de que desea reprocesar esta licitación? Se eliminarán los datos procesados actuales del Core y se reiniciará el traspaso/procesamiento desde Staging.');
+        if (!confirmReprocess) return;
+
+        this.reprocessing.set(true);
+        this.licitacionService.reprocessLicitacion(id.toString()).subscribe({
+            next: (res) => {
+                if (res.success) {
+                    this.showNotification('Reprocesamiento iniciado. Redirigiendo...', 'success');
+                    setTimeout(() => {
+                        this.router.navigate(['/licitaciones/list']);
+                    }, 2000);
+                } else {
+                    this.showNotification(res.message || 'Error al iniciar reprocesamiento', 'error');
+                    this.reprocessing.set(false);
+                }
+            },
+            error: () => {
+                this.showNotification('Error de conexión', 'error');
+                this.reprocessing.set(false);
             }
         });
     }

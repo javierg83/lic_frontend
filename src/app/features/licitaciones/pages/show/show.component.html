@@ -25,11 +25,16 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="header-content">
+                <div class="header-content" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                     <span>1. Cabecera de la Licitación</span>
-                    <button *ngIf="!isEditing()" class="tag-edit" (click)="startEdit()">
-                        Editar
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button *ngIf="!isEditing() && isAdmin()" class="tag-reprocess" (click)="reprocessLicitacion()" [disabled]="reprocessing()">
+                            {{ reprocessing() ? 'Reprocesando...' : 'Reprocesar' }}
+                        </button>
+                        <button *ngIf="!isEditing()" class="tag-edit" (click)="startEdit()">
+                            Editar
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
