@@ -43,6 +43,7 @@ export interface LicitacionListItem {
     subcategoria_2?: string;
     titulo?: string;
     descripcion?: string;
+    cantidad_adjuntos?: number;
 }
 
 export interface LicitacionListResponse {
