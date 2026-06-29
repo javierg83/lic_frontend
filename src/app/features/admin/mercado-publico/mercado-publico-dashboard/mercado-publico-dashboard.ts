@@ -116,6 +116,24 @@ export class MercadoPublicoDashboard implements OnInit {
     return type;
   }
 
+  formatDateRange(run: any): string {
+    if (!run.fecha_desde || !run.fecha_hasta) return '-';
+    
+    let dStr = typeof run.fecha_desde === 'string' ? run.fecha_desde : (run.fecha_desde.toISOString ? run.fecha_desde.toISOString() : '');
+    let hStr = typeof run.fecha_hasta === 'string' ? run.fecha_hasta : (run.fecha_hasta.toISOString ? run.fecha_hasta.toISOString() : '');
+
+    dStr = dStr.split('T')[0];
+    hStr = hStr.split('T')[0];
+
+    const dParts = dStr.split('-');
+    const hParts = hStr.split('-');
+
+    if (dParts.length === 3 && hParts.length === 3) {
+      return `${dParts[2]}/${dParts[1]} al ${hParts[2]}/${hParts[1]}`;
+    }
+    return '-';
+  }
+
   // Paginación
   currentPage = 1;
   pageSize = 5;

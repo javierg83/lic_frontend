@@ -142,10 +142,7 @@
                     </span>
                   </td>
                   <td class="small">
-                    <span *ngIf="run.fecha_desde && run.fecha_hasta">
-                      {{ run.fecha_desde | date:'dd/MM' }} al {{ run.fecha_hasta | date:'dd/MM' }}
-                    </span>
-                    <span *ngIf="!run.fecha_desde || !run.fecha_hasta">-</span>
+                    {{ formatDateRange(run) }}
                   </td>
                   <td>
                     <span class="badge" [ngClass]="{

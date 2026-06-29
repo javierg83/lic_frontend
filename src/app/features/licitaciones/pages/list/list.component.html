@@ -247,8 +247,8 @@
                     <input type="checkbox" [checked]="selectedIds.has(item.id)" (change)="toggleSelection(item.id)">
                 </td>
                 <td>
-                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA') + (item.subcategoria ? ' - ' + item.subcategoria : '')">
-                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? ('Compra Ágil' + (item.subcategoria ? ' - ' + item.subcategoria : '')) : 'Licitación' }}
+                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA')">
+                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
                     </span>
                 </td>
                 <td>
@@ -338,8 +338,8 @@
             <div>
                 <!-- Top info: tipo y estado -->
                 <div class="card-top">
-                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA') + (item.subcategoria ? ' - ' + item.subcategoria : '')">
-                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? ('Compra Ágil' + (item.subcategoria ? ' - ' + item.subcategoria : '')) : 'Licitación' }}
+                    <span class="badge badge-info" [title]="(item.tipo_licitacion || 'LICITACION_PUBLICA')">
+                        {{ item.tipo_licitacion === 'COMPRA_AGIL' ? 'Compra Ágil' : 'Licitación' }}
                     </span>
                     <span *ngIf="isAdmin()" class="status-badge" title="Estado Interno">{{ item.estado }}</span>
                     <span *ngIf="item.estado_publicacion" class="status-badge" style="background-color: #f8fafc; color: #64748b; border: 1px solid #cbd5e1;" title="Estado Mercado Público">{{ item.estado_publicacion }}</span>
